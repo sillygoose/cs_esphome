@@ -265,6 +265,15 @@ def check_config(config):
                                   {'format': {'required': True, 'keys': [], 'type': str}},
                                   {'level': {'required': True, 'keys': [], 'type': str}},
                               ]}},
+                              {'circuitsetup': {'required': True, 'keys': [
+                                  {'url': {'required': True, 'keys': [], 'type': str}},
+                                  {'port': {'required': True, 'keys': [], 'type': int}},
+                                  {'password': {'required': True, 'keys': [], 'type': str}},
+                              ]}},
+                              {'site': {'required': True, 'keys': [
+                                  {'name': {'required': True, 'keys': [], 'type': str}},
+                                  {'tz': {'required': True, 'keys': [], 'type': str}},
+                              ]}},
                               {'influxdb2': {'required': False, 'keys': [
                                   {'enable': {'required': True, 'keys': [], 'type': bool}},
                                   {'org': {'required': True, 'keys': [], 'type': str}},

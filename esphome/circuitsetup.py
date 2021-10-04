@@ -17,27 +17,30 @@ from exceptions import FailedInitialization
 
 _LOGGER = logging.getLogger('esphome')
 
-_SENSOR_LOOKUP = None
 
+class CircuitSetup():
+    """Class to describe CircuitSetup hardware."""
 
-class CS24():
-    """Class to describe a CS hardware."""
+    _SENSOR_LOOKUP = None
 
-    def __init__(self, loop, config):
+    def __init__(self, config):
         """Create a new CS object."""
         self._config = config
-        self._loop = loop
         self._esphome = None
+        self._name = None
         self._sensor_by_keys = None
         self._influx = InfluxDB()
 
     async def start(self):
-        """Initialize the PVSite object."""
+        """Initialize the CS ESPHome API."""
         config = self._config
-        #self._tzinfo = tz.gettz(config.tz)
+        self._tzinfo = tz.gettz(config.site.tz)
 
         try:
-            self._esphome = aioesphomeapi.APIClient(eventloop=self._loop, address="cs24.local", port=6053, password="")
+            url = config.circuitsetup.url
+            port = config.circuitsetup.port
+            password = config.circuitsetup.password
+            self._esphome = aioesphomeapi.APIClient(eventloop=asyncio.get_running_loop(), address=url, port=port, password=password)
             await self._esphome.connect(login=True)
 
             api_version = self._esphome.api_version
@@ -48,6 +51,7 @@ class CS24():
 
         try:
             device_info = await self._esphome.device_info()
+            self._name = device_info.name
             _LOGGER.info(f"Name: '{device_info.name}', model is {device_info.model}")
             _LOGGER.info(f"ESPHome version: {device_info.esphome_version} built on {device_info.compilation_time}")
         except Exception as e:
@@ -55,10 +59,10 @@ class CS24():
             return False
 
         try:
-            global _SENSOR_LOOKUP
+            #global _SENSOR_LOOKUP
             sensors, services = await self._esphome.list_entities_services()
-            _SENSOR_LOOKUP = dict((sensor.key, sensor.name) for sensor in sensors)
-            self._sensor_by_keys = _SENSOR_LOOKUP
+            CircuitSetup._SENSOR_LOOKUP = dict((sensor.key, sensor.name) for sensor in sensors)
+            self._sensor_by_keys = CircuitSetup._SENSOR_LOOKUP
         except Exception as e:
             _LOGGER.error(f"Unexpected exception accessing list_entities_services(): {e}")
             return False
@@ -74,12 +78,11 @@ class CS24():
         """Run the site and wait for an event to exit."""
         def cb(state):
             if type(state) == aioesphomeapi.SensorState:
-                _LOGGER.info(f"{_SENSOR_LOOKUP[state.key]}: {state.state}")
+                _LOGGER.info(f"{CircuitSetup._SENSOR_LOOKUP[state.key]}: {state.state}")
 
         await self._esphome.subscribe_states(cb)
         while True:
             await asyncio.sleep(2)
-            #_LOGGER.info(f"waiting...")
 
     async def stop(self):
         """Shutdown."""

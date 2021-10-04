@@ -6,6 +6,17 @@ esphome:
     format: '[%(asctime)s] [%(module)s] [%(levelname)s] %(message)s'
     level: 'INFO'
 
+  # Site details for
+  site:
+    name:         !secret site_name
+    tz:           !secret site_tz
+
+  # ESPHome API fields
+  circuitsetup:
+    url:          !secret esphome_url
+    port:         !secret esphome_port
+    password:     !secret esphome_password
+
   # InfluxDB setup
   # The InfluxDB interface uses the newer 2.0 client which supports both the 2.0 and 1.8.x InfluxDB versions
   # with just minor changes in the configuration making a future upgrade to v2 a simple change of options.

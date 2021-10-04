@@ -13,9 +13,10 @@ import asyncio
 import aiohttp
 
 from delayedints import DelayedKeyboardInterrupt
-from circuitsetup import CS24
+from circuitsetup import CircuitSetup
 import version
 import logfiles
+
 from exceptions import TerminateSignal, NormalCompletion, AbnormalCompletion, FailedInitialization
 
 
@@ -79,7 +80,7 @@ class ESPHome():
     async def _astart(self):
         """Asynchronous initialization code."""
         config = self._config.esphome
-        self._cs24 = CS24(loop=self._loop, config=config)
+        self._cs24 = CircuitSetup(config=config)
         result = await self._cs24.start()
         if not result:
             raise FailedInitialization

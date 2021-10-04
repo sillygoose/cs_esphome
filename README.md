@@ -30,11 +30,11 @@ Python data collection utility for CircuitSetup Expandable 6 Channel ESP32 Energ
 
 2.  Rename the `example.secrets.yaml` file to `secrets.yaml`, if you plan on using secrets.  The `secrets.yaml` file is tagged in the `.gitignore` file and will not be included in the repository but if you wish you can put `secrets.yaml` in any parent directory as **esphome** will start in the current directory and look in each parent directory up to your home directory for it (or just the current directory if you are not running in a user profile).
 
-    Edit `esphome.yaml` and `secrets.yaml` to match your site, you will need the IP address for the CS24 and the login credentials.  If interfacing to InfluxDB you need the host address site name, bucket, and login credentials.
+    Edit `esphome.yaml` and `secrets.yaml` to match your site, you will need the URL and port for the CircuitSetup hardware and the login credentials.  If interfacing to InfluxDB you need the host URL,  site name, bucket, and login credentials.
 
 There are some other fields to configure for the log files, time zone, etc, these should be easy to figure out.
 
-3.  Test that **esphome** connects to your CS24 hardware and the InfluxDB database:
+3.  Test that **esphome** connects to your CircuitSetup hardware and the InfluxDB database:
 
     `python3 esphome/esphome.py`
 
@@ -99,6 +99,8 @@ If you happen to make errors and get locked out of your inverters (confirm by be
 #
 ## Thanks
 Thanks for the following packages used to build this software:
+- ESPHome API
+    - https://github.com/esphome/aioesphomeapi
 - YAML configuration file support
     - https://python-configuration.readthedocs.io
 - Tricks for managing startup and shutdown

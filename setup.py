@@ -10,7 +10,7 @@ URL = "https://github.com/sillygoose/esphome-cs24.git"
 setup(
     name="esphome-cs24",
     version=VERSION,
-    description="CircuitSetup CS24 power monitoring data collection utility",
+    description="CircuitSetup power monitoring data collection utility",
     long_description=Path("README.md").read_text(),
     long_description_content_type="text/markdown",
     url=URL,
