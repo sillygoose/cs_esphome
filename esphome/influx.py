@@ -18,13 +18,8 @@ from exceptions import FailedInitialization
 _LOGGER = logging.getLogger('esphome')
 
 LP_LOOKUP = {
-    'ac_measurements/power': {'measurement': 'ac_measurements', 'tags': ['_inverter'], 'field': 'power', 'output': True},
-    'ac_measurements/voltage': {'measurement': 'ac_measurements', 'tags': ['_inverter'], 'field': 'voltage', 'output': True},
-    'ac_measurements/current': {'measurement': 'ac_measurements', 'tags': ['_inverter'], 'field': 'current', 'output': True},
-    'ac_measurements/efficiency': {'measurement': 'ac_measurements', 'tags': ['_inverter'], 'field': 'efficiency', 'output': False},
-    'dc_measurements/power': {'measurement': 'dc_measurements', 'tags': ['_inverter', '_string'], 'field': 'power', 'output': True},
-    'dc_measurements/voltage': {'measurement': 'dc_measurements', 'tags': ['_inverter', '_string'], 'field': 'voltage', 'output': False},
-    'dc_measurements/current': {'measurement': 'dc_measurements', 'tags': ['_inverter', '_string'], 'field': 'current', 'output': False},
+    'cs24/power': {'measurement': 'measurement', 'field': 'power', 'output': True},
+    'cs24/voltage': {'measurement': 'measurement', 'field': 'voltage', 'output': True},
 }
 
 
@@ -97,26 +92,17 @@ class InfluxDB:
             self._client.close()
             self._client = None
 
-    def write_points(self, points):
+    def write_state(self, state):
         if not self._write_api:
             return False
+
+        points = []
+
+        lp = f""
+        points.append(lp)
         try:
             self._write_api.write(bucket=self._bucket, record=points, write_precision=WritePrecision.S)
-            result = True
+            return True
         except Exception as e:
             _LOGGER.error(f"Database write() call failed in write_points(): {e}")
-            result = False
-        return result
-
-
-if __name__ == "__main__":
-    yaml_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'esphome.yaml')
-    config = config_from_yaml(data=yaml_file, read_from_file=True)
-    influxdb = InfluxDB()
-    result = influxdb.start(config=config.esphome.influxdb2)
-    if not result:
-        print("Something failed during initialization")
-    else:
-        #influxdb.write_sma_sensors(testdata)
-        influxdb.stop()
-        print("Done")
+            return False

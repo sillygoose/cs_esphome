@@ -18,18 +18,40 @@ from exceptions import FailedInitialization
 _LOGGER = logging.getLogger('esphome')
 
 
+#accuracy_decimals
+def parse_sensors(yaml, entities):
+    sensors_by_name = {}
+    sensors_by_key = {}
+    keys_by_name = dict((sensor.name, sensor.key) for sensor in entities)
+    units_by_name = dict((sensor.name, sensor.unit_of_measurement) for sensor in entities)
+    decimals_by_name = dict((sensor.name, sensor.accuracy_decimals) for sensor in entities)
+    for entry in yaml:
+        for details in entry.values():
+            sensor_name = details.get('sensor_name', None)
+            display_name = details.get('display_name', None)
+            unit = units_by_name.get(sensor_name, None)
+            key = keys_by_name.get(sensor_name, None)
+            decimals = decimals_by_name.get(sensor_name, None)
+            if key and unit:
+                sensors_by_name[sensor_name] = {'display_name': display_name, 'unit': unit, 'key': key, 'precision': decimals}
+                sensors_by_key[key] = {'display_name': display_name, 'unit': unit, 'sensor_name': sensor_name, 'precision': decimals}
+    return sensors_by_name, sensors_by_key
+
+
 class CircuitSetup():
     """Class to describe CircuitSetup hardware."""
 
     _SENSOR_LOOKUP = None
+    _INFLUX = None
 
     def __init__(self, config):
         """Create a new CS object."""
         self._config = config
         self._esphome = None
         self._name = None
-        self._sensor_by_keys = None
-        self._influx = InfluxDB()
+        self._sensors_by_name = None
+        self._sensors_by_key = None
+        CircuitSetup._INFLUX = InfluxDB()
 
     async def start(self):
         """Initialize the CS ESPHome API."""
@@ -59,26 +81,34 @@ class CircuitSetup():
             return False
 
         try:
-            #global _SENSOR_LOOKUP
-            sensors, services = await self._esphome.list_entities_services()
-            CircuitSetup._SENSOR_LOOKUP = dict((sensor.key, sensor.name) for sensor in sensors)
-            self._sensor_by_keys = CircuitSetup._SENSOR_LOOKUP
+            entities, services = await self._esphome.list_entities_services()
+            CircuitSetup._SENSOR_LOOKUP = dict((sensor.key, sensor.name) for sensor in entities)
         except Exception as e:
-            _LOGGER.error(f"Unexpected exception accessing list_entities_services(): {e}")
+            _LOGGER.error(f"Unexpected exception accessing '{self._name}' list_entities_services(): {e}")
             return False
 
         if 'influxdb2' in config.keys():
             try:
-                self._influx.start(config=config.influxdb2)
+                CircuitSetup._INFLUX.start(config=config.influxdb2)
             except FailedInitialization:
                 return False
+
+        self._sensors_by_name, self._sensors_by_key = parse_sensors(yaml=config.sensors, entities=entities)
         return True
+
 
     async def run(self):
         """Run the site and wait for an event to exit."""
         def cb(state):
             if type(state) == aioesphomeapi.SensorState:
-                _LOGGER.info(f"{CircuitSetup._SENSOR_LOOKUP[state.key]}: {state.state}")
+                sensor = self._sensors_by_key.get(state.key, None)
+                if sensor:
+                    display_name = sensor.get('display_name', None)
+                    if display_name:
+                        unit = sensor.get('unit', None)
+                        n = sensor.get('precision', None)
+                        _LOGGER.info(f"{display_name}: {state.state:.{n}f} {unit}")
+                #CircuitSetup._INFLUX.write_state(state=state)
 
         await self._esphome.subscribe_states(cb)
         while True:
@@ -90,6 +120,6 @@ class CircuitSetup():
             await self._esphome.disconnect()
             self._esphome = None
             await asyncio.sleep(0.25)
-        if self._influx:
-            self._influx.stop()
-            self._influx = None
+        if CircuitSetup._INFLUX:
+            CircuitSetup._INFLUX.stop()
+            CircuitSetup._INFLUX = None
