@@ -22,6 +22,6 @@ RUN pip3 install -e .
 WORKDIR /sillygoose/esphome/esphome
 ADD secrets.yaml .
 
-# run multisma2
+# run esphome
 WORKDIR /sillygoose
 CMD ["python3", "esphome/esphome/esphome.py"]

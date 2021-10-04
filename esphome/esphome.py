@@ -73,25 +73,25 @@ class ESPHome():
             finally:
                 if delay > 0:
                     print(
-                        f"esphome is delaying restart for {delay} seconds (Docker will restart multisma2, otherwise exits)")
+                        f"esphome is delaying restart for {delay} seconds (Docker will restart esphome, otherwise exits)")
                     time.sleep(delay)
 
     async def _astart(self):
         """Asynchronous initialization code."""
         config = self._config.esphome
-        self._cs24 = CS24(self._session, config)
+        self._cs24 = CS24(loop=self._loop, config=config)
         result = await self._cs24.start()
         if not result:
             raise FailedInitialization
 
     async def _arun(self):
         """Asynchronous run code."""
-        await self._site.run()
+        await self._cs24.run()
 
     async def _astop(self):
         """Asynchronous closing code."""
         _LOGGER.info("Closing esphome application")
-        if self._site:
+        if self._cs24:
             await self._cs24.stop()
 
     def _start(self):
@@ -131,7 +131,7 @@ def main():
 
 
 if __name__ == "__main__":
-    # make sure we can run multisma2
+    # make sure we can run esphome
     if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
         main()
     else:

@@ -18,8 +18,8 @@ esphome:
   #   influxdb2.token         set to a valid v2 token or v1.8.x 'username:password' ('str')
   influxdb2:
     enable: True
-    org:    !secret influxdb2_org
-    url:    !secret influxdb2_url
-    bucket: !secret influxdb2_bucket
-    token:  !secret influxdb2_token
+    org:    !secret esphome_influxdb2_org
+    url:    !secret esphome_influxdb2_url
+    bucket: !secret esphome_influxdb2_bucket
+    token:  !secret esphome_influxdb2_token
 

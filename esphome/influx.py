@@ -25,22 +25,6 @@ LP_LOOKUP = {
     'dc_measurements/power': {'measurement': 'dc_measurements', 'tags': ['_inverter', '_string'], 'field': 'power', 'output': True},
     'dc_measurements/voltage': {'measurement': 'dc_measurements', 'tags': ['_inverter', '_string'], 'field': 'voltage', 'output': False},
     'dc_measurements/current': {'measurement': 'dc_measurements', 'tags': ['_inverter', '_string'], 'field': 'current', 'output': False},
-    'status/reason_for_derating': {'measurement': 'status', 'tags': ['_inverter'], 'field': 'derating', 'output': True},
-    'status/general_operating_status': {'measurement': 'status', 'tags': ['_inverter'], 'field': 'operating_status', 'output': True},
-    'status/grid_relay': {'measurement': 'status', 'tags': ['_inverter'], 'field': 'grid_relay', 'output': True},
-    'status/condition': {'measurement': 'status', 'tags': ['_inverter'], 'field': 'condition', 'output': True},
-    'production/total_wh': {'measurement': 'production', 'tags': ['_inverter'], 'field': 'total_wh', 'output': True},
-    'production/midnight': {'measurement': 'production', 'tags': ['_inverter'], 'field': 'midnight', 'output': True},
-    'production/today': {'measurement': 'production', 'tags': ['_inverter'], 'field': 'today', 'output': True},
-    'production/month': {'measurement': 'production', 'tags': ['_inverter'], 'field': 'month', 'output': True},
-    'production/year': {'measurement': 'production', 'tags': ['_inverter'], 'field': 'year', 'output': True},
-    'production/lifetime': {'measurement': 'production', 'tags': ['_inverter'], 'field': 'lifetime', 'output': False},
-    'co2avoided/today': {'measurement': 'co2avoided', 'tags': ['_inverter'], 'field': 'today', 'output': False},
-    'co2avoided/month': {'measurement': 'co2avoided', 'tags': ['_inverter'], 'field': 'month', 'output': False},
-    'co2avoided/year': {'measurement': 'co2avoided', 'tags': ['_inverter'], 'field': 'year', 'output': False},
-    'co2avoided/lifetime': {'measurement': 'co2avoided', 'tags': ['_inverter'], 'field': 'lifetime', 'output': False},
-    'sun/position': {'measurement': 'sun', 'tags': None, 'field': None, 'output': True},
-    'sun/irradiance': {'measurement': 'sun', 'tags': ['_type'], 'field': 'irradiance', 'output': True},
 }
 
 
@@ -124,151 +108,15 @@ class InfluxDB:
             result = False
         return result
 
-    def write_history(self, site, topic):
-        if not self._write_api:
-            return False
-
-        lookup = LP_LOOKUP.get(topic, None)
-        if not lookup:
-            _LOGGER.error(f"write_history(): unknown topic '{topic}'")
-            return False
-
-        measurement = lookup.get('measurement')
-        tags = lookup.get('tags', None)
-        field = lookup.get('field', None)
-        lps = []
-        for inverter in site:
-            inverter_name = inverter.pop(0)
-            name = inverter_name.get('inverter', 'sunnyboy')
-            for history in inverter:
-                t = history['t']
-                v = history['v']
-                if v is None:
-                    continue
-                lp = f"{measurement}"
-                if tags and len(tags):
-                    lp += f",{tags[0]}={name}"
-                if isinstance(v, int):
-                    lp += f" {field}={v}i {t}"
-                    lps.append(lp)
-                else:
-                    _LOGGER.error(
-                        f"write_history(): unanticipated type '{type(v)}' in measurement '{measurement}/{field}'")
-                    continue
-
-        try:
-            self._write_api.write(bucket=self._bucket, record=lps, write_precision=WritePrecision.S)
-            return True
-        except Exception as e:
-            _LOGGER.error(f"Database write() call failed in write_history(): {e}")
-            return False
-
-    def write_sma_sensors(self, sensor, timestamp=None):
-        if not self._client:
-            return False
-
-        ts = timestamp if timestamp is not None else int(time.time())
-        lps = []
-        for old_point in sensor:
-            point = old_point.copy()
-            topic = point.pop('topic', None)
-            point.pop('precision', None)
-            if topic:
-                lookup = LP_LOOKUP.get(topic, None)
-                if not lookup:
-                    _LOGGER.error(f"write_sma_sensors(): unknown topic '{topic}'")
-                    continue
-
-                if not lookup.get('output', False):
-                    continue
-
-                if topic == 'production/today':
-                    day = datetime.datetime.fromtimestamp(ts).date()
-                    dt = datetime.datetime.combine(day, datetime.time(0, 0))
-                    ts = int(dt.timestamp())
-                elif topic == 'production/month':
-                    month = datetime.date.fromtimestamp(ts).replace(day=1)
-                    dt = datetime.datetime.combine(month, datetime.time(0, 0))
-                    ts = int(dt.timestamp())
-                elif topic == 'production/year':
-                    year = datetime.date.fromtimestamp(ts).replace(month=1, day=1)
-                    dt = datetime.datetime.combine(year, datetime.time(0, 0))
-                    ts = int(dt.timestamp())
-
-                measurement = lookup.get('measurement')
-                tags = lookup.get('tags', None)
-                for k, v in point.items():
-                    field = lookup.get('field')
-                    # sample: dc_measurements
-                    lp = f'{measurement}'
-                    if tags and len(tags):
-                        # sample: dc_measurements,_inverter=sb71
-                        lp += f',{tags[0]}={k}'
-                    if not field:
-                        field = k
-                    if isinstance(v, int):
-                        # sample: ac_measurements,_inverter=sb71 power=0.23 1556813561098
-                        lp += f' {field}={v}i {ts}'
-                        lps.append(lp)
-                    elif isinstance(v, float):
-                        # sample: ac_measurements,_inverter=sb71 power=0.23 1556813561098
-                        lp += f' {field}={v} {ts}'
-                        lps.append(lp)
-                    elif isinstance(v, dict):
-                        lp_prefix = f'{lp}'
-                        for k1, v1 in v.items():
-                            # sample: dc_measurements,_inverter=sb71
-                            lp = f'{lp_prefix}'
-                            if tags and len(tags) > 1:
-                                # sample: dc_measurements,_inverter=sb71,_string=a
-                                lp += f',{tags[1]}={k1}'
-                            if isinstance(v1, int):
-                                # sample: dc_measurements,_inverter=sb71,_string=a power=1000 1556813561098
-                                lp += f' {field}={v1}i {ts}'
-                                lps.append(lp)
-                            elif isinstance(v1, float):
-                                # sample: dc_measurements,_inverter=sb71,_string=a current=0.23 1556813561098
-                                lp += f' {field}={v1} {ts}'
-                                lps.append(lp)
-                            else:
-                                _LOGGER.error(
-                                    f"write_sma_sensors(): unanticipated dictionary type '{type(v1)}' in measurement '{measurement}/{field}'")
-                    else:
-                        _LOGGER.error(
-                            f"write_sma_sensors(): unanticipated type '{type(v)}' in measurement '{measurement}/{field}'")
-                        continue
-
-        try:
-            self._write_api.write(bucket=self._bucket, record=lps, write_precision=WritePrecision.S)
-            result = True
-        except Exception as e:
-            _LOGGER.error(f"Database write() call failed in write_sma_sensors(): {e}")
-            _LOGGER.error(f": {lps}")
-            result = False
-        return result
-
-
-#
-# Debug code to test instandalone mode
-#
-
-testdata = [
-    {'sb51': 0, 'sb71': 0, 'sb72': 0, 'site': 0, 'topic': 'ac_measurements/power'},
-    {'sb51': {'a': 0, 'b': 0, 'c': 0, 'sb51': 0}, 'sb71': {'a': 0, 'b': 0, 'c': 0, 'sb71': 0},
-        'sb72': {'a': 0, 'b': 0, 'c': 0, 'sb72': 0}, 'site': 0, 'topic': 'dc_measurements/power'},
-    {'sb51': {'a': 10.0, 'b': 20.0, 'c': 30.0}, 'sb71': {'a': 40.0, 'b': 50.0, 'c': 60.0},
-        'sb72': {'a': 70.0, 'b': 80.0, 'c': 90.0}, 'topic': 'dc_measurements/voltage'},
-    {'sb51': 16777213, 'sb71': 16777213, 'sb72': 16777213, 'topic': 'status/general_operating_status'}
-]
 
 if __name__ == "__main__":
-    yaml_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'multisma2.yaml')
+    yaml_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'esphome.yaml')
     config = config_from_yaml(data=yaml_file, read_from_file=True)
     influxdb = InfluxDB()
-    result = influxdb.start(config=config.multisma2.influxdb2)
+    result = influxdb.start(config=config.esphome.influxdb2)
     if not result:
         print("Something failed during initialization")
     else:
-        influxdb.write_sma_sensors(testdata)
+        #influxdb.write_sma_sensors(testdata)
         influxdb.stop()
         print("Done")

@@ -28,7 +28,7 @@ Python data collection utility for CircuitSetup Expandable 6 Channel ESP32 Energ
     pip3 install -e .
 ```
 
-2.  Rename the `example.secrets.yaml` file to `secrets.yaml`, if you plan on using secrets.  The `secrets.yaml` file is tagged in the `.gitignore` file and will not be included in the repository but if you wish you can put `secrets.yaml` in any parent directory as **multisma2** will start in the current directory and look in each parent directory up to your home directory for it (or just the current directory if you are not running in a user profile).
+2.  Rename the `example.secrets.yaml` file to `secrets.yaml`, if you plan on using secrets.  The `secrets.yaml` file is tagged in the `.gitignore` file and will not be included in the repository but if you wish you can put `secrets.yaml` in any parent directory as **esphome** will start in the current directory and look in each parent directory up to your home directory for it (or just the current directory if you are not running in a user profile).
 
     Edit `esphome.yaml` and `secrets.yaml` to match your site, you will need the IP address for the CS24 and the login credentials.  If interfacing to InfluxDB you need the host address site name, bucket, and login credentials.
 
@@ -48,13 +48,13 @@ Once you have a working `esphome.yaml` file you can build a Docker container tha
     sudo docker-compose up -d
 ```
 
-where `your-tag` is a string of your choosing (the `--no-cache` option will force Docker to pull the latest version of **multisma2** from GitHub).  The `docker-compose.yaml` file assumes the image to be `esphome:latest`, the second command adds this tag so you can use the docker-compose file to start the new instance and keep the old image as a backup until the new version checks out.
+where `your-tag` is a string of your choosing (the `--no-cache` option will force Docker to pull the latest version of **esphome** from GitHub).  The `docker-compose.yaml` file assumes the image to be `esphome:latest`, the second command adds this tag so you can use the docker-compose file to start the new instance and keep the old image as a backup until the new version checks out.
 
 As an example, suppose you download the current **esphome** build of 1.0.0.  Then to create and run the Docker container you would use
 
 ```
     sudo docker build --no-cache -t esphome:1.0.0 .
-    sudo docker image tag esphome:1.0.0 multisma2:latest
+    sudo docker image tag esphome:1.0.0 esphome:latest
     sudo docker-compose up -d
 ```
 #
@@ -86,11 +86,6 @@ This dashboard uses the following Grafana panel plug-ins:
     grafana-cli plugins install flant-statusmap-panel
     grafana-cli plugins install mxswat-separator-panel
 ```
-
-### Home Assistant
-This last example is a dashboard made in Home Assistant driven by the MQTT output of **multisma2**.
-
-![Home Assistant dashboard using MQTT:](https://raw.githubusercontent.com/sillygoose/multisma2/main/images/home-assistant-production.jpg)
 
 ## Errors
 If you happen to make errors and get locked out of your inverters (confirm by being unable to log into an inverter using the WebConnect browser interface), the Sunny Boy inverters can be reset by

@@ -29,7 +29,7 @@ async def main():
     loop = asyncio.get_running_loop()
 
     try:
-        cli = aioesphomeapi.APIClient(loop, "cs24.local", 6053, "")
+        cli = aioesphomeapi.APIClient(eventloop=loop, address="cs24.local", port=6053, password="")
         await cli.connect(login=True)
 
         api_version = cli.api_version
