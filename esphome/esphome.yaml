@@ -1,0 +1,25 @@
+# Copy this file to 'esphome.yaml' and complete with your site details.
+esphome:
+  # Application log file customization, logging levels are 'INFO', 'WARN', and 'ERROR'
+  log:
+    file: 'log/esphome'
+    format: '[%(asctime)s] [%(module)s] [%(levelname)s] %(message)s'
+    level: 'INFO'
+
+  # InfluxDB setup
+  # The InfluxDB interface uses the newer 2.0 client which supports both the 2.0 and 1.8.x InfluxDB versions
+  # with just minor changes in the configuration making a future upgrade to v2 a simple change of options.
+  #
+  # Influxdb configuration options:
+  #   influxdb2.enable        set to True to enable InfluxDB output ('bool')
+  #   influxdb2.bucket        set to the InfluxDB bucket (v2) or 'database/retention_policy' (v1.8)('str')
+  #   influxdb2.url           set to the InfluxDB server URL and port ('str')
+  #   influxdb2.org           set to the v2 organization or '-' if using v1.8.x ('str')
+  #   influxdb2.token         set to a valid v2 token or v1.8.x 'username:password' ('str')
+  influxdb2:
+    enable: True
+    org:    !secret influxdb2_org
+    url:    !secret influxdb2_url
+    bucket: !secret influxdb2_bucket
+    token:  !secret influxdb2_token
+
