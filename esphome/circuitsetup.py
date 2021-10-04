@@ -17,6 +17,8 @@ from exceptions import FailedInitialization
 
 _LOGGER = logging.getLogger('esphome')
 
+_SENSOR_LOOKUP = None
+
 
 class CS24():
     """Class to describe a CS hardware."""
@@ -53,8 +55,10 @@ class CS24():
             return False
 
         try:
+            global _SENSOR_LOOKUP
             sensors, services = await self._esphome.list_entities_services()
-            self._sensor_by_keys = dict((sensor.key, sensor.name) for sensor in sensors)
+            _SENSOR_LOOKUP = dict((sensor.key, sensor.name) for sensor in sensors)
+            self._sensor_by_keys = _SENSOR_LOOKUP
         except Exception as e:
             _LOGGER.error(f"Unexpected exception accessing list_entities_services(): {e}")
             return False
@@ -70,17 +74,19 @@ class CS24():
         """Run the site and wait for an event to exit."""
         def cb(state):
             if type(state) == aioesphomeapi.SensorState:
-                _LOGGER.info(f"working...")
-                #_LOGGER.info(f"{sensor_by_keys[state.key]}: {state.state}")
+                _LOGGER.info(f"{_SENSOR_LOOKUP[state.key]}: {state.state}")
 
         await self._esphome.subscribe_states(cb)
         while True:
-            await asyncio.sleep(5)
-            _LOGGER.info(f"waiting...")
+            await asyncio.sleep(2)
+            #_LOGGER.info(f"waiting...")
 
     async def stop(self):
         """Shutdown."""
         if self._esphome:
             await self._esphome.disconnect()
             self._esphome = None
-        self._influx.stop()
+            await asyncio.sleep(0.25)
+        if self._influx:
+            self._influx.stop()
+            self._influx = None

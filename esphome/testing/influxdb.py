@@ -3,6 +3,7 @@
 import logging
 import aioesphomeapi
 import asyncio
+import time
 
 from influxdb_client import InfluxDBClient, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -23,11 +24,8 @@ _CLIENT = None
 _WRITE_API = None
 
 
-async def main():
-    logging.basicConfig(format=_DEFAULT_LOG_FORMAT, level=_DEFAULT_LOG_LEVEL)
-
+async def main_loop():
     loop = asyncio.get_running_loop()
-
     try:
         cli = aioesphomeapi.APIClient(eventloop=loop, address="cs24.local", port=6053, password="")
         await cli.connect(login=True)
@@ -63,11 +61,25 @@ async def main():
     await cli.subscribe_states(cb)
 
 
-loop = asyncio.get_event_loop()
-try:
-    asyncio.ensure_future(main())
-    loop.run_forever()
-except KeyboardInterrupt:
-    pass
-finally:
-    loop.close()
+def main():
+    logging.basicConfig(format=_DEFAULT_LOG_FORMAT, level=_DEFAULT_LOG_LEVEL)
+    loop = asyncio.get_event_loop()
+    try:
+        _LOGGER.info(f"ensure_future(main())")
+        task = asyncio.ensure_future(main_loop())
+        _LOGGER.info(f"run_forever(): {asyncio.isfuture(task)}")
+        loop.run_forever()
+        _LOGGER.info(f"Done")
+    except KeyboardInterrupt:
+        _LOGGER.info(f"KeyboardInterrupt")
+        task.cancel()
+        _LOGGER.info(f"task.cancel()")
+        loop.stop()
+        _LOGGER.info(f"loop.stop()")
+        time.sleep(1)
+    finally:
+        _LOGGER.info(f"finally")
+        loop.close()
+
+if __name__ == '__main__':
+    main()

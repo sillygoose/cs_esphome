@@ -23,3 +23,37 @@ esphome:
     bucket: !secret esphome_influxdb2_bucket
     token:  !secret esphome_influxdb2_token
 
+  # Sensor setup
+  sensors:
+    - sensor:
+        sensor_name:    'cs24_ct11_w'
+        display_name:   'phase 1'
+        unit:           'W'
+    - sensor:
+        sensor_name:    'cs24_ct12_w'
+        display_name:   'phase 2'
+        unit:           'W'
+    - sensor:
+        sensor_name:    'cs24_ct23_w'
+        display_name:   'Hot water'
+        unit:           'W'
+    - sensor:
+        sensor_name:    'cs24_ct24_w'
+        display_name:   'JuiceBox'
+        unit:           'W'
+    - sensor:
+        sensor_name:    'cs24_volts_ph1'
+        display_name:   'Phase 1 voltage'
+        unit:           'V'
+    - sensor:
+        sensor_name:    'cs24_volts_ph2'
+        display_name:   'Phase 2 voltage'
+        unit:           'V'
+    - sensor:
+        sensor_name:    'cs24_w'
+        display_name:   'Total demand'
+        unit:           'W'
+    - sensor:
+        sensor_name:    'cs24_kw'
+        display_name:   'Total demand'
+        unit:           'kW'

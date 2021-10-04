@@ -272,6 +272,13 @@ def check_config(config):
                                   {'bucket': {'required': True, 'keys': [], 'type': str}},
                                   {'token': {'required': True, 'keys': [], 'type': str}},
                               ]}},
+                              {'sensors': {'required': True, 'keys': [
+                                  {'sensor': {'required': True, 'keys': [
+                                      {'sensor_name': {'required': True, 'keys': [], 'type': str}},
+                                      {'display_name': {'required': True, 'keys': [], 'type': str}},
+                                      {'unit': {'required': True, 'keys': [], 'type': str}},
+                                  ]}},
+                              ]}},
                           ],
                           },
         },
