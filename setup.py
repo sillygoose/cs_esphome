@@ -4,13 +4,13 @@
 from pathlib import Path
 from setuptools import setup
 
-VERSION = "0.0.1"
-URL = "https://github.com/sillygoose/esphome-cs24.git"
+VERSION = "0.1.0"
+URL = "https://github.com/sillygoose/esphome.git"
 
 setup(
     name="esphome-cs24",
     version=VERSION,
-    description="CircuitSetup power monitoring data collection utility",
+    description="CircuitSetup/ESPHome home energy data collection utility",
     long_description=Path("README.md").read_text(),
     long_description_content_type="text/markdown",
     url=URL,

@@ -10,12 +10,12 @@ esphome:
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.
   #   circuitsetup.url        set to the ESPHome API url ('str')
-  #   circuitsetup.port       set to the ESPHome API port ('int')
-  #   circuitsetup.password   set to the ESPHome API password ('str')
+  #   circuitsetup.port       optional ESPHome API port, defaults to 6053 ('int')
+  #   circuitsetup.password   optional ESPHome API password, defaults to '' ('str')
   circuitsetup:
     url:          !secret esphome_url
-    port:         !secret esphome_port
-    password:     !secret esphome_password
+#    port:         !secret esphome_port
+#    password:     !secret esphome_password
 
   # InfluxDB setup
   # The InfluxDB interface uses the newer 2.0 client which supports both the 2.0 and 1.8.x InfluxDB versions

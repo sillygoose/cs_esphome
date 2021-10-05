@@ -262,8 +262,8 @@ def check_config(config):
                               ]}},
                               {'circuitsetup': {'required': True, 'keys': [
                                   {'url': {'required': True, 'keys': [], 'type': str}},
-                                  {'port': {'required': True, 'keys': [], 'type': int}},
-                                  {'password': {'required': True, 'keys': [], 'type': str}},
+                                  {'port': {'required': False, 'keys': [], 'type': int}},
+                                  {'password': {'required': False, 'keys': [], 'type': str}},
                               ]}},
                               {'influxdb2': {'required': False, 'keys': [
                                   {'enable': {'required': True, 'keys': [], 'type': bool}},

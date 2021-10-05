@@ -118,7 +118,7 @@ def main():
         return
 
     logfiles.start(config)
-    _LOGGER.info(f"esphome energy collection utility {version.get_version()}, PID is {os.getpid()}")
+    _LOGGER.info(f"CircuitSEtup/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
 
     try:
         config = read_config(checking=True)
