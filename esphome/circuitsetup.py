@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-from dateutil import tz
 import aioesphomeapi
 
 from influx import InfluxDB
@@ -57,8 +56,6 @@ class CircuitSetup():
     async def start(self):
         """Initialize the CS ESPHome API."""
         config = self._config
-        self._tzinfo = tz.gettz(config.site.tz)
-
         try:
             url = config.circuitsetup.url
             port = config.circuitsetup.port

@@ -1,4 +1,6 @@
-# Copy this file to 'esphome.yaml' and complete with your site details.
+# YAML configuration file for configuring the esphome software to connect to the
+# ESPHome API and subscribe to energy sensor updates from the CircuitSetup hardware.
+
 esphome:
   # Application log file customization, logging levels are 'INFO', 'WARN', and 'ERROR'
   log:
@@ -6,12 +8,11 @@ esphome:
     format: '[%(asctime)s] [%(module)s] [%(levelname)s] %(message)s'
     level: 'INFO'
 
-  # Site details for
-  site:
-    name:         !secret site_name
-    tz:           !secret site_tz
-
   # ESPHome API fields
+  # These options are used to login into the ESPHome API to collect the sensor data.
+  #   circuitsetup.url        set to the ESPHome API url ('str')
+  #   circuitsetup.port       set to the ESPHome API port ('int')
+  #   circuitsetup.password   set to the ESPHome API password ('str')
   circuitsetup:
     url:          !secret esphome_url
     port:         !secret esphome_port
@@ -19,14 +20,12 @@ esphome:
 
   # InfluxDB setup
   # The InfluxDB interface uses the newer 2.0 client which supports both the 2.0 and 1.8.x InfluxDB versions
-  # with just minor changes in the configuration making a future upgrade to v2 a simple change of options.
-  #
-  # Influxdb configuration options:
+  # with just minor changes in the following options.
   #   influxdb2.enable        set to True to enable InfluxDB output ('bool')
-  #   influxdb2.bucket        set to the InfluxDB bucket (v2) or 'database/retention_policy' (v1.8)('str')
+  #   influxdb2.bucket        set to the InfluxDB bucket ('str')
   #   influxdb2.url           set to the InfluxDB server URL and port ('str')
-  #   influxdb2.org           set to the v2 organization or '-' if using v1.8.x ('str')
-  #   influxdb2.token         set to a valid v2 token or v1.8.x 'username:password' ('str')
+  #   influxdb2.org           set to the v2 organization ('str')
+  #   influxdb2.token         set to a valid v2 token ('str')
   influxdb2:
     enable: True
     org:    !secret esphome_influxdb2_org
@@ -35,6 +34,13 @@ esphome:
     token:  !secret esphome_influxdb2_token
 
   # Sensor setup
+  # Sensors are a list of one or more sensors in the ESPHome subscription.
+  #   sensor.enable         optional, defaults to True if not present
+  #   sensor.sensor_name    set to the CS sensor name ('str')
+  #   sensor.display_name   set to the desired display name ('str')
+  #   sensor.measurement    set to the InfluxDB _measurement ('str')
+  #   sensor.tag            set to an optional InfluxDB tag ('str')
+  #   sensor.field          set to the InfluxDB field ('str')
   sensors:
     - sensor:
         enable:         True
