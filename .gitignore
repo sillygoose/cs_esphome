@@ -1,5 +1,6 @@
 # ignore any secrets files
-*secrets.yaml
+secrets.yaml
+*_secrets.yaml
 
 # Python files
 tox.ini
