@@ -37,24 +37,28 @@ esphome:
   # Sensor setup
   sensors:
     - sensor:
+        enable:         True
         sensor_name:    'cs24_volts'
         display_name:   'Line Voltage'
         measurement:    'voltage'
         tag:            'line'
         field:          'line'
     - sensor:
+        enable:         True
         sensor_name:    'cs24_volts_ph1'
         display_name:   'Phase 1 Voltage'
         measurement:    'voltage'
         tag:            'line'
         field:          'line_1'
     - sensor:
+        enable:         True
         sensor_name:    'cs24_volts_ph2'
         display_name:   'Phase 2 Voltage'
         measurement:    'voltage'
         tag:            'line'
         field:          'line_2'
     - sensor:
+        enable:         False
         sensor_name:    'cs24_frequency'
         display_name:   'Line Frequency'
         measurement:    'frequency'
@@ -91,10 +95,46 @@ esphome:
         tag:            'line'
         field:          'line_2'
     - sensor:
+        sensor_name:    'cs24_ct13_w'
+        display_name:   'Tesla'
+        measurement:    'power'
+        tag:            'transportation'
+        field:          'tesla_hpwc'
+    - sensor:
+        sensor_name:    'cs24_ct14_w'
+        display_name:   'Datacenter'
+        measurement:    'power'
+        tag:            'basement'
+        field:          'datacenter'
+    - sensor:
+        sensor_name:    'cs24_ct15_w'
+        display_name:   'Basement East'
+        measurement:    'power'
+        tag:            'basement'
+        field:          'east'
+    - sensor:
+        sensor_name:    'cs24_ct16_w'
+        display_name:   'Dryer'
+        measurement:    'power'
+        tag:            'laundry'
+        field:          'dryer'
+    - sensor:
+        sensor_name:    'cs24_ct21_w'
+        display_name:   'Heat pump'
+        measurement:    'power'
+        tag:            'hvac'
+        field:          'hvac'
+    - sensor:
+        sensor_name:    'cs24_ct22_w'
+        display_name:   'Washer'
+        measurement:    'power'
+        tag:            'laundry'
+        field:          'washer'
+    - sensor:
         sensor_name:    'cs24_ct23_w'
         display_name:   'Hot water'
         measurement:    'power'
-        tag:            'system'
+        tag:            ''
         field:          'hot_water'
     - sensor:
         sensor_name:    'cs24_ct24_w'
@@ -102,3 +142,99 @@ esphome:
         measurement:    'power'
         tag:            'transportation'
         field:          'juicebox'
+    - sensor:
+        sensor_name:    'cs24_ct25_w'
+        display_name:   'Range'
+        measurement:    'power'
+        tag:            'kitchen'
+        field:          'range'
+    - sensor:
+        sensor_name:    'cs24_ct26_w'
+        display_name:   'Microwave'
+        measurement:    'power'
+        tag:            'kitchen'
+        field:          'microwave'
+    - sensor:
+        sensor_name:    'cs24_ct31_w'
+        display_name:   'Sump pump'
+        measurement:    'power'
+        tag:            'basement'
+        field:          'sump'
+    - sensor:
+        sensor_name:    'cs24_ct32_w'
+        display_name:   'Main Bedroom'
+        measurement:    'power'
+        tag:            'bedroom'
+        field:          'main'
+    - sensor:
+        sensor_name:    'cs24_ct33_w'
+        display_name:   'Refrigerator'
+        measurement:    'power'
+        tag:            'kitchen'
+        field:          'refrigerator'
+    - sensor:
+        sensor_name:    'cs24_ct34_w'
+        display_name:   'GFI Outlets'
+        measurement:    'power'
+        tag:            'kitchen'
+        field:          'outlets1'
+    - sensor:
+        sensor_name:    'cs24_ct35_w'
+        display_name:   'GFI Outlets'
+        measurement:    'power'
+        tag:            'kitchen'
+        field:          'outlets2'
+    - sensor:
+        sensor_name:    'cs24_ct36_w'
+        display_name:   'Dishwasher'
+        measurement:    'power'
+        tag:            'kitchen'
+        field:          'dishwater'
+    - sensor:
+        sensor_name:    'cs24_ct41_w'
+        display_name:   'Guest bedrooms'
+        measurement:    'power'
+        tag:            'bedroom'
+        field:          'guest'
+    - sensor:
+        sensor_name:    'cs24_ct42_w'
+        display_name:   'Living room'
+        measurement:    'power'
+        tag:            'main'
+        field:          'livingroom'
+    - sensor:
+        sensor_name:    'cs24_ct43_w'
+        display_name:   'Foyer/bath'
+        measurement:    'power'
+        tag:            'main'
+        field:          'foyer'
+    - sensor:
+        sensor_name:    'cs24_ct44_w'
+        display_name:   'Refrigerator'
+        measurement:    'power'
+        tag:            'basement'
+        field:          'refrigerator'
+    - sensor:
+        sensor_name:    'cs24_ct45_w'
+        display_name:   'Garage/Freezer'
+        measurement:    'power'
+        tag:            'garage'
+        field:          'garage'
+    - sensor:
+        sensor_name:    'cs24_ct46_w'
+        display_name:   'Basement'
+        measurement:    'power'
+        tag:            'basement'
+        field:          'basement'
+    - sensor:
+        sensor_name:    'cs24_load'
+        display_name:   'Total Load'
+        measurement:    'current'
+        tag:            ''
+        field:          'total'
+    - sensor:
+        sensor_name:    'cs24_mia'
+        display_name:   'Missing load'
+        measurement:    'current'
+        tag:            ''
+        field:          'missing'

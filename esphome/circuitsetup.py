@@ -1,25 +1,17 @@
 """Code to interface with the CircuitSetup 6-channel energy monitor."""
 
-from dataclasses import field
-import os
 import asyncio
-import datetime
-import time
 import logging
 from dateutil import tz
 import aioesphomeapi
 
-import version
-
 from influx import InfluxDB
-
 from exceptions import FailedInitialization
 
 
 _LOGGER = logging.getLogger('esphome')
 
 
-#accuracy_decimals
 def parse_sensors(yaml, entities):
     sensors_by_name = {}
     sensors_by_key = {}
@@ -28,24 +20,19 @@ def parse_sensors(yaml, entities):
     decimals_by_name = dict((sensor.name, sensor.accuracy_decimals) for sensor in entities)
     for entry in yaml:
         for details in entry.values():
+            enable = details.get('enable', True)
             sensor_name = details.get('sensor_name', None)
-            display_name = details.get('display_name', None)
-            measurement = details.get('measurement', None)
-            tag = details.get('tag', None)
-            field = details.get('field', None)
-            unit = units_by_name.get(sensor_name, None)
             key = keys_by_name.get(sensor_name, None)
-            decimals = decimals_by_name.get(sensor_name, None)
-
-            if key and unit:
+            if key and enable:
                 data = {
-                    'sensor_name': sensor_name,
-                    'display_name': display_name,
-                    'unit': unit, 'key': key,
-                    'precision': decimals,
-                    'measurement': measurement,
-                    'tag': tag,
-                    'field': field,
+                    'sensor_name': details.get('sensor_name', None),
+                    'display_name': details.get('display_name', None),
+                    'unit': units_by_name.get(sensor_name, None),
+                    'key': keys_by_name.get(sensor_name, None),
+                    'precision': decimals_by_name.get(sensor_name, None),
+                    'measurement': details.get('measurement', None),
+                    'tag': details.get('tag', None),
+                    'field': details.get('field', None),
                 }
                 sensors_by_name[sensor_name] = data
                 sensors_by_key[key] = data
@@ -54,9 +41,8 @@ def parse_sensors(yaml, entities):
 
 
 class CircuitSetup():
-    """Class to describe CircuitSetup hardware."""
+    """Class to describe the CircuitSetup ESPHome API."""
 
-    _SENSOR_LOOKUP = None
     _INFLUX = None
 
     def __init__(self, config):
@@ -97,7 +83,6 @@ class CircuitSetup():
 
         try:
             entities, services = await self._esphome.list_entities_services()
-            CircuitSetup._SENSOR_LOOKUP = dict((sensor.key, sensor.name) for sensor in entities)
         except Exception as e:
             _LOGGER.error(f"Unexpected exception accessing '{self._name}' list_entities_services(): {e}")
             return False
@@ -112,7 +97,7 @@ class CircuitSetup():
         return True
 
     async def run(self):
-        """Run the site and wait for an event to exit."""
+        """Run and process the subscribed data."""
         def prepare(state):
             if type(state) == aioesphomeapi.SensorState:
                 sensor = self._sensors_by_key.get(state.key, None)

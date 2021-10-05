@@ -96,7 +96,6 @@ class InfluxDB:
         if not self._write_api:
             return False
 
-        #{'sensor_name': sensor_name, 'display_name': display_name, 'unit': unit, 'key': key, 'precision': decimals}
         ts = timestamp if timestamp is not None else int(time.time())
 
         measurement = sensor.get('measurement', None)
@@ -118,6 +117,7 @@ class InfluxDB:
             lp += f" {field}={v} {ts}"
         else:
             _LOGGER.error(f"write_sensor(): unanticipated type '{type(v)}' in measurement '{measurement}/{field}'")
+            return False
 
         points = []
         points.append(lp)

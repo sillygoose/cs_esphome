@@ -283,6 +283,7 @@ def check_config(config):
                               ]}},
                               {'sensors': {'required': True, 'keys': [
                                   {'sensor': {'required': True, 'keys': [
+                                      {'enable': {'required': False, 'keys': [], 'type': bool}},
                                       {'sensor_name': {'required': True, 'keys': [], 'type': str}},
                                       {'display_name': {'required': True, 'keys': [], 'type': str}},
                                       {'measurement': {'required': True, 'keys': [], 'type': str}},
