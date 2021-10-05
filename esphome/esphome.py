@@ -10,7 +10,6 @@ import signal
 from readconfig import read_config
 
 import asyncio
-import aiohttp
 
 from delayedints import DelayedKeyboardInterrupt
 from circuitsetup import CircuitSetup

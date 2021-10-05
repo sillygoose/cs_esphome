@@ -3,11 +3,8 @@
 # InfluxDB Line Protocol Reference
 # https://docs.influxdata.com/influxdb/v2.0/reference/syntax/line-protocol/
 
-import os
 import time
-import datetime
 import logging
-from config import config_from_yaml
 
 from influxdb_client import InfluxDBClient, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
