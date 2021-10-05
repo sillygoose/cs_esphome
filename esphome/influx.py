@@ -8,6 +8,7 @@ import logging
 
 from influxdb_client import InfluxDBClient, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
+from influxdb_client.rest import ApiException
 
 from exceptions import FailedInitialization
 
@@ -46,40 +47,44 @@ class InfluxDB:
                     _LOGGER.error(f"Expected type '{required.get(key).__name__}' for option 'influxdb2.{key}'")
                     errors = True
         if errors:
-            raise FailedInitialization(Exception("Errors detected in 'influxdb2' YAML options"))
+            raise FailedInitialization(f"one or more errors detected in 'influxdb2' YAML options")
         return options
 
     def start(self, config):
-        self.check_config(config)
-        if not config.enable:
-            return True
+        try:
+            self.check_config(config)
+            if not config.enable:
+                return True
+        except Exception as e:
+            raise FailedInitialization(f"unexpected YAML file exception: {e}")
 
         try:
             self._bucket = config.bucket
             self._client = InfluxDBClient(url=config.url, token=config.token, org=config.org)
             if not self._client:
-                raise Exception(
-                    f"Failed to get InfluxDBClient from {config.url} (check url, token, and/or organization)")
+                raise FailedInitialization(f"failed to get InfluxDBClient from {config.url} (check url, token, and/or organization)")
 
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
             if not self._write_api:
-                raise Exception(f"Failed to get client write_api() object from {config.url}")
+                raise FailedInitialization(f"failed to get client write_api() object from {config.url}")
 
             query_api = self._client.query_api()
             if not query_api:
-                raise Exception(f"Failed to get client query_api() object from {config.url}")
+                raise FailedInitialization(f"failed to get client query_api() object from {config.url}")
             try:
                 query_api.query(f'from(bucket: "{self._bucket}") |> range(start: -1m)')
-                _LOGGER.info(f"Connected to the InfluxDB database at {config.url}, bucket '{self._bucket}'")
-            except Exception:
-                raise Exception(f"Unable to access bucket '{self._bucket}' at {config.url}")
+                _LOGGER.info(f"Connected to InfluxDB2: {config.url}, bucket '{self._bucket}'")
+                return True
+            except ApiException as e:
+                raise FailedInitialization(f"unable to access bucket '{self._bucket}' at {config.url}: {e.reason}")
 
+        except FailedInitialization:
+            raise
         except Exception as e:
             _LOGGER.error(f"{e}")
             self.stop()
-            return False
+            raise FailedInitialization(f"unexpected exception: {e}")
 
-        return True
 
     def stop(self):
         if self._write_api:

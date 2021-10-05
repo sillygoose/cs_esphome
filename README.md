@@ -104,6 +104,8 @@ If you happen to make errors and get locked out of your inverters (confirm by be
 Thanks for the following packages used to build this software:
 - ESPHome API
     - https://github.com/esphome/aioesphomeapi
+- InfluxDB2 API
+    - https://influxdb-client.readthedocs.io/en/stable/api.html
 - YAML configuration file support
     - https://python-configuration.readthedocs.io
 - Tricks for managing startup and shutdown

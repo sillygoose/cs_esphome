@@ -89,7 +89,8 @@ class CircuitSetup():
         if 'influxdb2' in config.keys():
             try:
                 CircuitSetup._INFLUX.start(config=config.influxdb2)
-            except FailedInitialization:
+            except FailedInitialization as e:
+                _LOGGER.error(f"InfluxDB2 initialization failed: {e}")
                 return False
 
         self._sensors_by_name, self._sensors_by_key = parse_sensors(yaml=config.sensors, entities=entities)
