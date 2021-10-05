@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  multisma2:
+    container_name: esphome
+    image: esphome:latest
+    restart: always
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - ./volumes/esphome/log:/esphome/log
