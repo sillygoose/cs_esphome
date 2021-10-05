@@ -17,13 +17,13 @@ from exceptions import FailedInitialization
 
 
 CONFIG_YAML = "esphome.yaml"
-SECRET_YAML = "secrets.yaml"
+SECRET_YAML = ".esphome_secrets.yaml"
 
 JSON_TYPE = Union[List, Dict, str]  # pylint: disable=invalid-name
 DICT_T = TypeVar("DICT_T", bound=Dict)  # pylint: disable=invalid-name
 
 _LOGGER = logging.getLogger("esphome")
-__SECRET_CACHE: Dict[str, JSON_TYPE] = {}
+_SECRET_CACHE: Dict[str, JSON_TYPE] = {}
 
 
 def buildYAMLExceptionString(exception, file='esphome'):
@@ -54,14 +54,14 @@ def buildYAMLExceptionString(exception, file='esphome'):
 
         errmsg = f"YAML file error {type}in {file}:{line}, column {column}: {info}"
 
-    except Exception:
-        errmsg = f"YAML file error and no idea how it is encoded."
+    except Exception as e:
+        errmsg = f"YAML file error: {e}."
 
     return errmsg
 
 
 class ConfigError(Exception):
-    """General YAML configurtion file exception."""
+    """General YAML configuration file exception."""
 
 
 class FullLineLoader(yaml.FullLoader):
@@ -99,8 +99,8 @@ def parse_yaml(content: Union[str, TextIO]) -> JSON_TYPE:
 def _load_secret_yaml(secret_path: str) -> JSON_TYPE:
     """Load the secrets yaml from path."""
     secret_path = os.path.join(secret_path, SECRET_YAML)
-    if secret_path in __SECRET_CACHE:
-        return __SECRET_CACHE[secret_path]
+    if secret_path in _SECRET_CACHE:
+        return _SECRET_CACHE[secret_path]
 
     _LOGGER.debug("Loading %s", secret_path)
     try:
@@ -111,15 +111,14 @@ def _load_secret_yaml(secret_path: str) -> JSON_TYPE:
     except FileNotFoundError:
         secrets = {}
 
-    __SECRET_CACHE[secret_path] = secrets
+    _SECRET_CACHE[secret_path] = secrets
     return secrets
 
 
 def secret_yaml(loader: FullLineLoader, node: yaml.nodes.Node) -> JSON_TYPE:
     """Load secrets and embed it into the configuration YAML."""
     if os.path.basename(loader.name) == SECRET_YAML:
-        _LOGGER.error("secrets.yaml: attempt to load secret from within secrets file")
-        raise ConfigError("secrets.yaml: attempt to load secret from within secrets file")
+        raise ConfigError(f"{SECRET_YAML}: attempt to load secret from within secrets file")
 
     secret_path = os.path.dirname(loader.name)
     home_path = str(Path.home())
@@ -128,11 +127,7 @@ def secret_yaml(loader: FullLineLoader, node: yaml.nodes.Node) -> JSON_TYPE:
     while True:
         secrets = _load_secret_yaml(secret_path)
         if node.value in secrets:
-            _LOGGER.debug(
-                "Secret %s retrieved from secrets.yaml in folder %s",
-                node.value,
-                secret_path,
-            )
+            _LOGGER.debug(f"Secret '{node.value}' retrieved from {secret_path}/{SECRET_YAML}")
             return secrets[node.value]
 
         if not do_walk or (secret_path == home_path):

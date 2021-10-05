@@ -5,7 +5,7 @@ import logging
 import aioesphomeapi
 
 from influx import InfluxDB
-from exceptions import FailedInitialization
+from exceptions import FailedInitialization, WatchdogTimer
 
 
 _LOGGER = logging.getLogger('esphome')
@@ -101,8 +101,7 @@ class CircuitSetup():
             await asyncio.sleep(60)
             current_watchdog = CircuitSetup._WATCHDOG
             if saved_watchdog == current_watchdog:
-                _LOGGER.error(f"Lost connection to {self._name}: restarting")
-                # throw exception
+                raise WatchdogTimer(f"Lost connection to {self._name}")
             saved_watchdog = current_watchdog
 
     async def run(self):
@@ -113,11 +112,14 @@ class CircuitSetup():
                 sensor = self._sensors_by_key.get(state.key, None)
                 if sensor and CircuitSetup._INFLUX:
                     CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state.state)
-
-        await asyncio.gather(
-            self._esphome.subscribe_states(prepare),
-            self.watchdog(),
-        )
+        try:
+            await asyncio.gather(
+                self._esphome.subscribe_states(prepare),
+                self.watchdog(),
+            )
+        except WatchdogTimer as e:
+            _LOGGER.error(f"'{e}', exiting")
+            self.stop()
 
     async def stop(self):
         """Shutdown."""

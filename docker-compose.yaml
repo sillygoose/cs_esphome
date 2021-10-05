@@ -8,3 +8,7 @@ services:
       - TZ=America/New_York
     volumes:
       - ./volumes/esphome/log:/esphome/log
+
+networks:
+  default:
+    name: ${HOSTNAME}

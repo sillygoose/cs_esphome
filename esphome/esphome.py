@@ -16,7 +16,7 @@ from circuitsetup import CircuitSetup
 import version
 import logfiles
 
-from exceptions import TerminateSignal, NormalCompletion, AbnormalCompletion, FailedInitialization
+from exceptions import TerminateSignal, NormalCompletion, AbnormalCompletion, FailedInitialization, WatchdogTimer
 
 
 _LOGGER = logging.getLogger('esphome')
@@ -39,7 +39,7 @@ class ESPHome():
 
     def run(self):
         """Code to handle the start(), run(), and stop() interfaces."""
-        # ERROR_DELAY might be non-zero when SMA errors are detected *for now not implemented)
+        # ERROR_DELAY might be non-zero when some errors are detected *for now not implemented)
         ERROR_DELAY = 0
         delay = 0
         try:
@@ -55,6 +55,9 @@ class ESPHome():
 
         except (KeyboardInterrupt, NormalCompletion, TerminateSignal):
             pass
+        except WatchdogTimer as e:
+            _LOGGER.critical("Watchdog timer detected: {e}")
+            delay = 10
         except AbnormalCompletion:
             # _LOGGER.critical("Received AbnormalCompletion exception detected")
             delay = ERROR_DELAY
@@ -63,7 +66,6 @@ class ESPHome():
             delay = ERROR_DELAY
         except Exception as e:
             _LOGGER.error(f"Unexpected exception caught: {e}")
-            delay = 0
         finally:
             try:
                 with DelayedKeyboardInterrupt():
@@ -72,8 +74,7 @@ class ESPHome():
                 _LOGGER.critical("Received KeyboardInterrupt during shutdown")
             finally:
                 if delay > 0:
-                    print(
-                        f"esphome is delaying restart for {delay} seconds (Docker will restart esphome, otherwise exits)")
+                    _LOGGER.info(f"esphome is delaying restart for {delay} seconds (Docker will restart esphome, otherwise exits)")
                     time.sleep(delay)
 
     async def _astart(self):

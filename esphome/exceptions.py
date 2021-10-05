@@ -15,5 +15,9 @@ class FailedInitialization(Exception):
     """esphome initialization failed."""
 
 
+class WatchdogTimer(Exception):
+    """Watchdog timer tripped."""
+
+
 class TerminateSignal(Exception):
     """SIGTERM."""

@@ -1,6 +1,5 @@
 # YAML configuration file for configuring the esphome software to connect to the
 # ESPHome API and subscribe to energy sensor updates from the CircuitSetup hardware.
-
 esphome:
   # Application log file customization, logging levels are 'INFO', 'WARN', and 'ERROR'
   log:
