@@ -20,7 +20,7 @@ RUN pip3 install -e .
 
 # add the site-specific configuration/secrets file
 WORKDIR /sillygoose/esphome/esphome
-ADD secrets.yaml .
+ADD .esphome_secrets.yaml .
 
 # run esphome
 WORKDIR /sillygoose
