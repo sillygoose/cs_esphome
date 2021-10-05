@@ -93,17 +93,31 @@ class CircuitSetup():
         self._sensors_by_name, self._sensors_by_key = parse_sensors(yaml=config.sensors, entities=entities)
         return True
 
+    _WATCHDOG = 0
+    async def watchdog(self):
+        """Check that we are connected to the CircuitSetup hardware."""
+        saved_watchdog = CircuitSetup._WATCHDOG
+        while True:
+            await asyncio.sleep(60)
+            current_watchdog = CircuitSetup._WATCHDOG
+            if saved_watchdog == current_watchdog:
+                _LOGGER.error(f"Lost connection to {self._name}: restarting")
+                # throw exception
+            saved_watchdog = current_watchdog
+
     async def run(self):
         """Run and process the subscribed data."""
         def prepare(state):
+            CircuitSetup._WATCHDOG += 1
             if type(state) == aioesphomeapi.SensorState:
                 sensor = self._sensors_by_key.get(state.key, None)
                 if sensor and CircuitSetup._INFLUX:
                     CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state.state)
 
-        await self._esphome.subscribe_states(prepare)
-        while True:
-            await asyncio.sleep(2)
+        await asyncio.gather(
+            self._esphome.subscribe_states(prepare),
+            self.watchdog(),
+        )
 
     async def stop(self):
         """Shutdown."""
