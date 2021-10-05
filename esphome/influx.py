@@ -18,8 +18,8 @@ from exceptions import FailedInitialization
 _LOGGER = logging.getLogger('esphome')
 
 LP_LOOKUP = {
-    'cs24/power': {'measurement': 'measurement', 'field': 'power', 'output': True},
-    'cs24/voltage': {'measurement': 'measurement', 'field': 'voltage', 'output': True},
+    'cs24/power': {'measurement': 'power', 'field': 'power', 'output': True},
+    'cs24/voltage': {'measurement': 'voltage', 'field': 'voltage', 'output': True},
 }
 
 
@@ -92,17 +92,38 @@ class InfluxDB:
             self._client.close()
             self._client = None
 
-    def write_state(self, state):
+    def write_sensor(self, sensor, state, timestamp=None):
         if not self._write_api:
             return False
 
-        points = []
+        #{'sensor_name': sensor_name, 'display_name': display_name, 'unit': unit, 'key': key, 'precision': decimals}
+        ts = timestamp if timestamp is not None else int(time.time())
 
-        lp = f""
+        measurement = sensor.get('measurement', None)
+        tag = sensor.get('tag', None)
+        field = sensor.get('field', None)
+        precision = sensor.get('precision', None)
+        v = round(state, precision) if isinstance(state, float) else state
+
+        if measurement is None or tag is None or field is None or precision is None:
+            return False
+
+        lp = f"{measurement}"
+        if tag and len(tag):
+            lp += f",_location={tag}"
+
+        if isinstance(v, int):
+            lp += f" {field}={v}i {ts}"
+        elif isinstance(v, float):
+            lp += f" {field}={v} {ts}"
+        else:
+            _LOGGER.error(f"write_sensor(): unanticipated type '{type(v)}' in measurement '{measurement}/{field}'")
+
+        points = []
         points.append(lp)
         try:
             self._write_api.write(bucket=self._bucket, record=points, write_precision=WritePrecision.S)
             return True
         except Exception as e:
-            _LOGGER.error(f"Database write() call failed in write_points(): {e}")
+            _LOGGER.error(f"Database write() call failed in write_sensor(): {e}")
             return False

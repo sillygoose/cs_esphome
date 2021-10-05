@@ -1,5 +1,6 @@
 """Code to interface with the CircuitSetup 6-channel energy monitor."""
 
+from dataclasses import field
 import os
 import asyncio
 import datetime
@@ -29,12 +30,26 @@ def parse_sensors(yaml, entities):
         for details in entry.values():
             sensor_name = details.get('sensor_name', None)
             display_name = details.get('display_name', None)
+            measurement = details.get('measurement', None)
+            tag = details.get('tag', None)
+            field = details.get('field', None)
             unit = units_by_name.get(sensor_name, None)
             key = keys_by_name.get(sensor_name, None)
             decimals = decimals_by_name.get(sensor_name, None)
+
             if key and unit:
-                sensors_by_name[sensor_name] = {'display_name': display_name, 'unit': unit, 'key': key, 'precision': decimals}
-                sensors_by_key[key] = {'display_name': display_name, 'unit': unit, 'sensor_name': sensor_name, 'precision': decimals}
+                data = {
+                    'sensor_name': sensor_name,
+                    'display_name': display_name,
+                    'unit': unit, 'key': key,
+                    'precision': decimals,
+                    'measurement': measurement,
+                    'tag': tag,
+                    'field': field,
+                }
+                sensors_by_name[sensor_name] = data
+                sensors_by_key[key] = data
+
     return sensors_by_name, sensors_by_key
 
 
@@ -96,21 +111,15 @@ class CircuitSetup():
         self._sensors_by_name, self._sensors_by_key = parse_sensors(yaml=config.sensors, entities=entities)
         return True
 
-
     async def run(self):
         """Run the site and wait for an event to exit."""
-        def cb(state):
+        def prepare(state):
             if type(state) == aioesphomeapi.SensorState:
                 sensor = self._sensors_by_key.get(state.key, None)
-                if sensor:
-                    display_name = sensor.get('display_name', None)
-                    if display_name:
-                        unit = sensor.get('unit', None)
-                        n = sensor.get('precision', None)
-                        _LOGGER.info(f"{display_name}: {state.state:.{n}f} {unit}")
-                #CircuitSetup._INFLUX.write_state(state=state)
+                if sensor and CircuitSetup._INFLUX:
+                    CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state.state)
 
-        await self._esphome.subscribe_states(cb)
+        await self._esphome.subscribe_states(prepare)
         while True:
             await asyncio.sleep(2)
 
