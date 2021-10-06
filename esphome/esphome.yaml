@@ -48,7 +48,6 @@ esphome:
         measurement:    'voltage'
         tag:            'panel'
         field:          'line'
-        integral:       False
     - sensor:
         enable:         True
         sensor_name:    'cs24_volts_ph1'
@@ -56,7 +55,6 @@ esphome:
         measurement:    'voltage'
         tag:            'panel'
         field:          'line_1'
-        integral:       False
     - sensor:
         enable:         True
         sensor_name:    'cs24_volts_ph2'
@@ -64,7 +62,6 @@ esphome:
         measurement:    'voltage'
         tag:            'panel'
         field:          'line_2'
-        integral:       False
     - sensor:
         enable:         False
         sensor_name:    'cs24_frequency'
@@ -72,14 +69,12 @@ esphome:
         measurement:    'frequency'
         tag:            'panel'
         field:          'frequency'
-        integral:       False
     - sensor:
         sensor_name:    'cs24_pf1'
         display_name:   'Power Factor'
         measurement:    'power_factor'
         tag:            'panel'
         field:          'pf'
-        integral:       False
     - sensor:
         sensor_name:    'cs24_w'
         display_name:   'Total demand'
@@ -242,11 +237,9 @@ esphome:
         measurement:    'current'
         tag:            ''
         field:          'total'
-        integral:       False
     - sensor:
         sensor_name:    'cs24_mia'
         display_name:   'Missing load'
         measurement:    'current'
         tag:            ''
         field:          'missing'
-        integral:       False
