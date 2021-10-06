@@ -265,7 +265,6 @@ def check_config(config):
                                   {'password': {'required': False, 'keys': [], 'type': str}},
                               ]}},
                               {'influxdb2': {'required': False, 'keys': [
-                                  {'enable': {'required': True, 'keys': [], 'type': bool}},
                                   {'org': {'required': True, 'keys': [], 'type': str}},
                                   {'url': {'required': True, 'keys': [], 'type': str}},
                                   {'bucket': {'required': True, 'keys': [], 'type': str}},
@@ -279,6 +278,13 @@ def check_config(config):
                                       {'measurement': {'required': True, 'keys': [], 'type': str}},
                                       {'device': {'required': True, 'keys': [], 'type': str}},
                                       {'location': {'required': True, 'keys': [], 'type': str}},
+                                  ]}},
+                              ]}},
+                              {'settings': {'required': False, 'keys': [
+                                  {'sampling': {'required': False, 'keys': [
+                                      {'fast': {'required': False, 'keys': [], 'type': int}},
+                                      {'medium': {'required': False, 'keys': [], 'type': int}},
+                                      {'slow': {'required': False, 'keys': [], 'type': int}},
                                   ]}},
                               ]}},
                           ],

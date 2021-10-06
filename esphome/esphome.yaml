@@ -26,54 +26,22 @@ esphome:
   #   influxdb2.org           set to the v2 organization ('str')
   #   influxdb2.token         set to a valid v2 token ('str')
   influxdb2:
-    enable: True
     org:    !secret esphome_influxdb2_org
     url:    !secret esphome_influxdb2_url
     bucket: !secret esphome_influxdb2_bucket
     token:  !secret esphome_influxdb2_token
 
-  # Sensor setup
-  # Sensors are a list of one or more sensors in the ESPHome subscription.
-  #   sensor.enable         optional, defaults to True if not present
-  #   sensor.sensor_name    set to the CS sensor name ('str')
-  #   sensor.display_name   set to the desired display name ('str')
-  #   sensor.measurement    set to the InfluxDB _measurement ('str')
-  #   sensor.tag            set to an optional InfluxDB tag ('str')
-  #   sensor.field          set to the InfluxDB field ('str')
-  sensors:
-# YAML configuration file for configuring the esphome software to connect to the
-# ESPHome API and subscribe to energy sensor updates from the CircuitSetup hardware.
-esphome:
-  # Application log file customization, logging levels are 'INFO', 'WARN', and 'ERROR'
-  log:
-    file: 'log/esphome'
-    format: '[%(asctime)s] [%(module)s] [%(levelname)s] %(message)s'
-    level: 'INFO'
-
-  # ESPHome API fields
-  # These options are used to login into the ESPHome API to collect the sensor data.
-  #   circuitsetup.url        set to the ESPHome API url ('str')
-  #   circuitsetup.port       optional ESPHome API port, defaults to 6053 ('int')
-  #   circuitsetup.password   optional ESPHome API password, defaults to '' ('str')
-  circuitsetup:
-    url:          !secret esphome_url
-    port:         !secret esphome_port
-    password:     !secret esphome_password
-
-  # InfluxDB setup
-  # The InfluxDB interface uses the newer 2.0 client which supports both the 2.0 and 1.8.x InfluxDB versions
-  # with just minor changes in the following options.
-  #   influxdb2.enable        set to True to enable InfluxDB output ('bool')
-  #   influxdb2.bucket        set to the InfluxDB bucket ('str')
-  #   influxdb2.url           set to the InfluxDB server URL and port ('str')
-  #   influxdb2.org           set to the v2 organization ('str')
-  #   influxdb2.token         set to a valid v2 token ('str')
-  influxdb2:
-    enable: True
-    org:    !secret esphome_influxdb2_org
-    url:    !secret esphome_influxdb2_url
-    bucket: !secret esphome_influxdb2_bucket
-    token:  !secret esphome_influxdb2_token
+  # esphome settings
+  # Allows some settings to be modified without editing the code
+  # settings.sampling defines how often the event loops run
+  #   settings.sampling.fast      sets fast loop sample period (in seconds) (int)
+  #   settings.sampling.medium    sets medium loop sample period (in seconds) (int)
+  #   settings.sampling.slow      sets slow loop sample period (in seconds) (int)
+  settings:
+    sampling:
+      fast:     10
+      medium:   30
+      slow:     60
 
   # Sensor setup
   # Sensors are a list of one or more sensors in the ESPHome subscription.

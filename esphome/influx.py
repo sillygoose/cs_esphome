@@ -22,11 +22,29 @@ LP_LOOKUP = {
 }
 
 
+def check_config(influxdb2) -> bool:
+    """Check that the needed YAML options exist."""
+    errors = False
+    required = {'url': str, 'token': str, 'bucket': str, 'org': str}
+    options = dict(influxdb2)
+    for key in required:
+        if key not in options.keys():
+            _LOGGER.error(f"Missing required 'influxdb2' option in YAML file: '{key}'")
+            errors = True
+        else:
+            v = options.get(key, None)
+            if not isinstance(v, required.get(key)):
+                _LOGGER.error(f"Expected type '{required.get(key).__name__}' for option 'influxdb2.{key}'")
+                errors = True
+    if errors:
+        raise FailedInitialization(f"one or more errors detected in 'influxdb2' YAML options")
+    return options
+
+
 class InfluxDB:
     def __init__(self):
         self._client = None
         self._write_api = None
-        self._query_api = None
         self._enabled = False
         self._token = None
         self._org = None
@@ -37,31 +55,9 @@ class InfluxDB:
         if self._client:
             self._client.close()
 
-    def check_config(self, influxdb2) -> bool:
-        """Check that the needed YAML options exist."""
-        errors = False
-        required = {'enable': bool, 'url': str, 'token': str, 'bucket': str, 'org': str}
-        options = dict(influxdb2)
-        for key in required:
-            if key not in options.keys():
-                _LOGGER.error(f"Missing required 'influxdb2' option in YAML file: '{key}'")
-                errors = True
-            else:
-                v = options.get(key, None)
-                if not isinstance(v, required.get(key)):
-                    _LOGGER.error(f"Expected type '{required.get(key).__name__}' for option 'influxdb2.{key}'")
-                    errors = True
-        if errors:
-            raise FailedInitialization(f"one or more errors detected in 'influxdb2' YAML options")
-        return options
-
     def start(self, config):
-        try:
-            self.check_config(config)
-            if not config.enable:
-                return True
-        except Exception as e:
-            raise FailedInitialization(f"unexpected YAML file exception: {e}")
+        """Initilaze the InflixDB client."""
+        check_config(config)
 
         result = False
         try:
@@ -74,19 +70,27 @@ class InfluxDB:
                 raise FailedInitialization(f"failed to get InfluxDBClient from {self._url} (check url, token, and/or organization)")
 
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
-            if not self._write_api:
-                raise FailedInitialization(f"failed to get client write_api() object from {self._url}")
 
-            query_api = self._client.query_api()
-            if not query_api:
-                raise FailedInitialization(f"failed to get client query_api() object from {self._url}")
+            for i in range(1, 3):
+                try:
+                    query_api = self._client.query_api()
+                    query_api.query(f'from(bucket: "{self._bucket}") |> range(start: -1m)')
+                    _LOGGER.info(f"Connected to InfluxDB2: {self._url}, bucket '{self._bucket}'")
+                    break
+                except ApiException as e:
+                    buckets_api = self._client.buckets_api()
+                    bucket = buckets_api.create_bucket(bucket_name=self._bucket, org_id=self._org, retention_rules=None, org=None)
+                    if bucket:
+                        _LOGGER.info(f"Created missing bucket '{self._bucket}' at {self._url}")
+                    continue
+            else:
+                FailedInitialization(f"unable to access bucket '{self._bucket}' at {self._url}: {e.reason}")
 
-            query_api.query(f'from(bucket: "{self._bucket}") |> range(start: -1m)')
-            _LOGGER.info(f"Connected to InfluxDB2: {self._url}, bucket '{self._bucket}'")
             result = True
 
         except FailedInitialization as e:
             _LOGGER.error(f"InfluxDB2 client {e}")
+            self._client = None
         except NewConnectionError:
             _LOGGER.error(f"InfluxDB2 client unable to connect to host at {self._url}")
         except ApiException as e:
