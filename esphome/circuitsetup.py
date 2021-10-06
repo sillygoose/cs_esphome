@@ -80,8 +80,8 @@ class CircuitSetup():
             self._sampling_slow = config.settings.sampling.get('slow', _DEFAULT_SLOW)
 
         if 'influxdb2' in config.keys():
-            CircuitSetup._INFLUX = InfluxDB()
-            if not CircuitSetup._INFLUX.start(config=config.influxdb2):
+            CircuitSetup._INFLUX = InfluxDB(config)
+            if not CircuitSetup._INFLUX.start():
                 CircuitSetup._INFLUX = None
                 return False
 

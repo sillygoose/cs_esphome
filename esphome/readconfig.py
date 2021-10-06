@@ -269,7 +269,10 @@ def check_config(config):
                                   {'url': {'required': True, 'keys': [], 'type': str}},
                                   {'bucket': {'required': True, 'keys': [], 'type': str}},
                                   {'token': {'required': True, 'keys': [], 'type': str}},
-                                  {'new_bucket': {'required': False, 'keys': [], 'type': bool}},
+                              ]}},
+                              {'debug': {'required': False, 'keys': [
+                                  {'create_bucket': {'required': False, 'keys': [], 'type': bool}},
+                                  {'delete_bucket': {'required': False, 'keys': [], 'type': bool}},
                               ]}},
                               {'sensors': {'required': True, 'keys': [
                                   {'sensor': {'required': True, 'keys': [

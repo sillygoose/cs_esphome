@@ -22,42 +22,21 @@ LP_LOOKUP = {
     'cs24/voltage': {'measurement': 'voltage', 'field': 'voltage', 'output': True},
 }
 
-
-def check_config(influxdb2) -> bool:
-    """Check that the needed YAML options exist."""
-    errors = False
-    required = {'url': str, 'token': str, 'bucket': str, 'org': str}
-    options = dict(influxdb2)
-    for key in required:
-        if key not in options.keys():
-            _LOGGER.error(f"Missing required 'influxdb2' option in YAML file: '{key}'")
-            errors = True
-        else:
-            v = options.get(key, None)
-            if not isinstance(v, required.get(key)):
-                _LOGGER.error(f"Expected type '{required.get(key).__name__}' for option 'influxdb2.{key}'")
-                errors = True
-    if errors:
-        raise FailedInitialization(f"one or more errors detected in 'influxdb2' YAML options")
-    return options
-
-
-def delete_bucket(api, name):
-    bucket = api.find_bucket_by_name(name)
-    if bucket:
-        api.delete_bucket(bucket)
-        bucket = api.find_bucket_by_name(name)
-        if not bucket:
-            return True
-    return False
-
-
-def create_bucket():
-    return
+_INFLUXDB2_OPTIONS = {
+    'url': {'type': str, 'required': True},
+    'token': {'type': str, 'required': True},
+    'bucket': {'type': str, 'required': True},
+    'org': {'type': str, 'required': True},
+}
+_DEBUG_OPTIONS = {
+    'create_bucket': {'type': bool, 'required': False},
+    'delete_bucket': {'type': bool, 'required': False},
+}
 
 
 class InfluxDB:
-    def __init__(self):
+    def __init__(self, config):
+        self._config = config
         self._client = None
         self._write_api = None
         self._enabled = False
@@ -65,45 +44,38 @@ class InfluxDB:
         self._org = None
         self._url = None
         self._bucket = None
+        self._options = None
 
     def __del__(self):
         if self._client:
             self._client.close()
 
-    def start(self, config):
-        """Initilaze the InflixDB client."""
-        check_config(config)
+    def start(self):
+        """Initialize the InflixDB client."""
+        try:
+            influxdb_options = self.retrieve_options(self._config, 'influxdb2', _INFLUXDB2_OPTIONS)
+            debug_options = self.retrieve_options(self._config, 'debug', _DEBUG_OPTIONS)
+        except FailedInitialization as e:
+            _LOGGER.error(f"{e}")
+            return False
 
         result = False
         try:
-            self._bucket = config.bucket
-            self._url = config.url
-            self._token = config.token
-            self._org = config.org
+            self._bucket = influxdb_options.get('bucket')
+            self._url = influxdb_options.get('url')
+            self._token = influxdb_options.get('token')
+            self._org = influxdb_options.get('org')
             self._client = InfluxDBClient(url=self._url, token=self._token, org=self._org)
             if not self._client:
                 raise FailedInitialization(f"failed to get InfluxDBClient from {self._url} (check url, token, and/or organization)")
-
-            if config.get('new_bucket', None) and delete_bucket(api=self._client.buckets_api(), name=self._bucket):
-                _LOGGER.info(f"Deleted bucket '{self._bucket}' at {self._url}")
-
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
 
-            for i in range(1, 3):
-                try:
-                    query_api = self._client.query_api()
-                    query_api.query(f'from(bucket: "{self._bucket}") |> range(start: -1m)')
-                    _LOGGER.info(f"Connected to InfluxDB2: {self._url}, bucket '{self._bucket}'")
-                    break
-                except ApiException as e:
-                    buckets_api = self._client.buckets_api()
-                    bucket = buckets_api.create_bucket(bucket_name=self._bucket, org_id=self._org, retention_rules=None, org=None)
-                    if bucket:
-                        _LOGGER.info(f"Created missing bucket '{self._bucket}' at {self._url}")
-                    continue
-            else:
-                FailedInitialization(f"unable to access bucket '{self._bucket}' at {self._url}: {e.reason}")
+            if debug_options.get('delete_bucket', None) and self.delete_bucket():
+                _LOGGER.info(f"Deleted bucket '{self._bucket}' at {self._url}")
 
+            if not self.connect_bucket():
+                FailedInitialization(f"unable to access bucket '{self._bucket}' at {self._url}")
+            _LOGGER.info(f"Connected to InfluxDB2: {self._url}, bucket '{self._bucket}'")
             result = True
 
         except FailedInitialization as e:
@@ -163,3 +135,47 @@ class InfluxDB:
         except Exception as e:
             _LOGGER.error(f"Database write() call failed in write_sensor(): {e}")
             return False
+
+
+    def retrieve_options(self, config, key, option_list) -> dict:
+        """Retrieve requested options."""
+        errors = False
+        options = dict(config[key])
+        for option, value in option_list.items():
+            required = value.get('required', None)
+            type = value.get('type', None)
+            if required:
+                if option not in options.keys():
+                    _LOGGER.error(f"Missing required option in YAML file: '{option}'")
+                    errors = True
+                else:
+                    v = options.get(option, None)
+                    if not isinstance(v, type):
+                        _LOGGER.error(f"Expected type '{type}' for option '{option}'")
+                        errors = True
+        if errors:
+            raise FailedInitialization(f"One or more errors detected in '{key}' YAML options")
+        return options
+
+
+    def delete_bucket(self):
+        buckets_api = self._client.buckets_api()
+        bucket = buckets_api.find_bucket_by_name(self._bucket)
+        if bucket:
+            buckets_api.delete_bucket(bucket)
+            bucket = buckets_api.find_bucket_by_name(self._bucket)
+            if not bucket:
+                return True
+        return False
+
+
+    def connect_bucket(self):
+        buckets_api = self._client.buckets_api()
+        bucket = buckets_api.find_bucket_by_name(self._bucket)
+        if bucket:
+            return True
+        bucket = buckets_api.create_bucket(bucket_name=self._bucket, org_id=self._org, retention_rules=None, org=None)
+        if bucket:
+            _LOGGER.info(f"Created bucket '{self._bucket}' at {self._url}")
+            return True
+        return False
