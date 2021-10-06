@@ -3,6 +3,7 @@
 # InfluxDB Line Protocol Reference
 # https://docs.influxdata.com/influxdb/v2.0/reference/syntax/line-protocol/
 
+from os import name
 import time
 import logging
 
@@ -41,6 +42,20 @@ def check_config(influxdb2) -> bool:
     return options
 
 
+def delete_bucket(api, name):
+    bucket = api.find_bucket_by_name(name)
+    if bucket:
+        api.delete_bucket(bucket)
+        bucket = api.find_bucket_by_name(name)
+        if not bucket:
+            return True
+    return False
+
+
+def create_bucket():
+    return
+
+
 class InfluxDB:
     def __init__(self):
         self._client = None
@@ -68,6 +83,9 @@ class InfluxDB:
             self._client = InfluxDBClient(url=self._url, token=self._token, org=self._org)
             if not self._client:
                 raise FailedInitialization(f"failed to get InfluxDBClient from {self._url} (check url, token, and/or organization)")
+
+            if config.get('new_bucket', None) and delete_bucket(api=self._client.buckets_api(), name=self._bucket):
+                _LOGGER.info(f"Deleted bucket '{self._bucket}' at {self._url}")
 
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
 

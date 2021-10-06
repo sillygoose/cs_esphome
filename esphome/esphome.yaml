@@ -25,11 +25,13 @@ esphome:
   #   influxdb2.url           set to the InfluxDB server URL and port ('str')
   #   influxdb2.org           set to the v2 organization ('str')
   #   influxdb2.token         set to a valid v2 token ('str')
+  ###new_bucket
   influxdb2:
     org:    !secret esphome_influxdb2_org
     url:    !secret esphome_influxdb2_url
     bucket: !secret esphome_influxdb2_bucket
     token:  !secret esphome_influxdb2_token
+    new_bucket:    True
 
   # esphome settings
   # Allows some settings to be modified without editing the code
