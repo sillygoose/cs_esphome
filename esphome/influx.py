@@ -101,7 +101,6 @@ class InfluxDB:
     def write_sensor(self, sensor, state, timestamp=None):
         if not self._write_api:
             return False
-
         ts = timestamp if timestamp is not None else int(time.time())
 
         measurement = sensor.get('measurement', None)

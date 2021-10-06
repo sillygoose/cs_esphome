@@ -123,13 +123,19 @@ class CircuitSetup():
             if type(state) == aioesphomeapi.SensorState:
                 sensor = self._sensors_by_key.get(state.key, None)
                 if sensor:
-                    now = int(time.time())
-                    if sensor.get('integral', True):
+                    now = time.time()
+                    ts = int(now)
+                    if sensor.get('integralx', False):
                         previous = sensor.get('last_sample', None)
-                        now = time.time()
-                        delta =
+                        delta = now - previous
+                        integral = state.state * delta
+                        sensor['last_sample'] = now
+                        sensor['today'] += integral
+                        sensor['month'] += integral
+                        sensor['year'] += integral
                     if CircuitSetup._INFLUX:
-                        CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state.state, timestamp=int(now))
+                        CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state.state, timestamp=ts)
+                        #CircuitSetup._INFLUX.write_integral(sensor=sensor, timestamp=ts)
         try:
             await asyncio.gather(
                 self._esphome.subscribe_states(prepare),
