@@ -1,13 +1,17 @@
 """Code to interface with the CircuitSetup 6-channel energy monitor."""
 
+import os
 import time
 import asyncio
 import logging
+import datetime
+
 import aioesphomeapi
 from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
 
+import version
 from influx import InfluxDB
-from exceptions import FailedInitialization, WatchdogTimer
+from exceptions import FailedInitialization, WatchdogTimer, InfluxDBWriteError
 
 _LOGGER = logging.getLogger('esphome')
 
@@ -32,12 +36,8 @@ def parse_sensors(yaml, entities):
                     'key': keys_by_name.get(sensor_name, None),
                     'precision': decimals_by_name.get(sensor_name, None),
                     'measurement': details.get('measurement', None),
-                    'tag': details.get('tag', None),
-                    'field': details.get('field', None),
-                    'last_sample': now,
-                    'today': 0.0,
-                    'month': 0.0,
-                    'year': 0.0,
+                    'device': details.get('device', None),
+                    'location': details.get('location', None),
                 }
                 sensors_by_name[sensor_name] = data
                 sensors_by_key[key] = data
@@ -55,8 +55,10 @@ class CircuitSetup():
     def __init__(self, config):
         """Create a new CS object."""
         self._config = config
+        self._task_gather = None
         self._esphome = None
         self._name = None
+        self._sampler_queue = None
         self._sensors_by_name = None
         self._sensors_by_key = None
         CircuitSetup._INFLUX = InfluxDB()
@@ -64,6 +66,11 @@ class CircuitSetup():
     async def start(self):
         """Initialize the CS ESPHome API."""
         config = self._config
+
+        if 'influxdb2' in config.keys():
+            if not CircuitSetup._INFLUX.start(config=config.influxdb2):
+                return False
+
         try:
             url = config.circuitsetup.url
             port = config.circuitsetup.get('port', CircuitSetup._DEFAULT_ESPHOME_API_PORT)
@@ -98,12 +105,55 @@ class CircuitSetup():
             _LOGGER.error(f"Unexpected exception accessing '{self._name}' list_entities_services(): {e}")
             return False
 
-        if 'influxdb2' in config.keys():
-            if not CircuitSetup._INFLUX.start(config=config.influxdb2):
-                return False
-
         self._sensors_by_name, self._sensors_by_key = parse_sensors(yaml=config.sensors, entities=entities)
         return True
+
+    async def run(self):
+        try:
+            self._sampler_queue = asyncio.Queue()
+            self._task_gather = asyncio.gather(
+                self.midnight(),
+                self.sampler_task(),
+                self.posting_task(),
+                self.watchdog(),
+            )
+            await self._task_gather
+        except InfluxDBWriteError as e:
+            _LOGGER.error(f"{e}")
+        except Exception as e:
+            _LOGGER.error(f"something else: {e}")
+
+    async def midnight(self) -> None:
+        """Task to wake up after midnight and update the solar data for the new day."""
+        while True:
+            now = datetime.datetime.now()
+            tomorrow = now + datetime.timedelta(days=1)
+            midnight = datetime.datetime.combine(tomorrow, datetime.time(0, 5))
+            await asyncio.sleep((midnight - now).total_seconds())
+
+            # Update internal sun info and the daily production
+            _LOGGER.info(f"esphome energy collection utility {version.get_version()}, PID is {os.getpid()}")
+
+    async def posting_task(self):
+        """Process the subscribed data."""
+        while True:
+            data = await self._sampler_queue.get()
+            sensor = data.get('sensor', None)
+            state = data.get('state', None)
+            self._sampler_queue.task_done()
+            if sensor and state and CircuitSetup._INFLUX:
+                ts = data.get('ts', None)
+                CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state, timestamp=ts)
+
+    async def sampler_task(self):
+        """Post the subscribed data."""
+        def sensor_callback(state):
+            CircuitSetup._WATCHDOG += 1
+            if type(state) == aioesphomeapi.SensorState:
+                sensor = self._sensors_by_key.get(state.key, None)
+                self._sampler_queue.put_nowait({'sensor': sensor, 'state': state.state, 'ts': int(time.time())})
+
+        await self._esphome.subscribe_states(sensor_callback)
 
     _WATCHDOG = 0
     async def watchdog(self):
@@ -116,37 +166,11 @@ class CircuitSetup():
                 raise WatchdogTimer(f"Lost connection to {self._name}")
             saved_watchdog = current_watchdog
 
-    async def run(self):
-        """Run and process the subscribed data."""
-        def prepare(state):
-            CircuitSetup._WATCHDOG += 1
-            if type(state) == aioesphomeapi.SensorState:
-                sensor = self._sensors_by_key.get(state.key, None)
-                if sensor:
-                    now = time.time()
-                    ts = int(now)
-                    if sensor.get('integralx', False):
-                        previous = sensor.get('last_sample', None)
-                        delta = now - previous
-                        integral = state.state * delta
-                        sensor['last_sample'] = now
-                        sensor['today'] += integral
-                        sensor['month'] += integral
-                        sensor['year'] += integral
-                    if CircuitSetup._INFLUX:
-                        CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state.state, timestamp=ts)
-                        #CircuitSetup._INFLUX.write_integral(sensor=sensor, timestamp=ts)
-        try:
-            await asyncio.gather(
-                self._esphome.subscribe_states(prepare),
-                self.watchdog(),
-            )
-        except WatchdogTimer as e:
-            _LOGGER.error(f"'{e}', exiting")
-            self.stop()
-
     async def stop(self):
         """Shutdown."""
+        if self._task_gather:
+            self._task_gather.cancel()
+
         if self._esphome:
             await self._esphome.disconnect()
             self._esphome = None

@@ -19,5 +19,9 @@ class WatchdogTimer(Exception):
     """Watchdog timer tripped."""
 
 
+class InfluxDBWriteError(Exception):
+    """Watchdog timer tripped."""
+
+
 class TerminateSignal(Exception):
     """SIGTERM."""
