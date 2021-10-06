@@ -1,12 +1,13 @@
 """Code to interface with the CircuitSetup 6-channel energy monitor."""
 
+import time
 import asyncio
 import logging
 import aioesphomeapi
+from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
 
 from influx import InfluxDB
 from exceptions import FailedInitialization, WatchdogTimer
-
 
 _LOGGER = logging.getLogger('esphome')
 
@@ -23,6 +24,7 @@ def parse_sensors(yaml, entities):
             sensor_name = details.get('sensor_name', None)
             key = keys_by_name.get(sensor_name, None)
             if key and enable:
+                now = time.time()
                 data = {
                     'sensor_name': details.get('sensor_name', None),
                     'display_name': details.get('display_name', None),
@@ -32,6 +34,10 @@ def parse_sensors(yaml, entities):
                     'measurement': details.get('measurement', None),
                     'tag': details.get('tag', None),
                     'field': details.get('field', None),
+                    'last_sample': now,
+                    'today': 0.0,
+                    'month': 0.0,
+                    'year': 0.0,
                 }
                 sensors_by_name[sensor_name] = data
                 sensors_by_key[key] = data
@@ -64,20 +70,26 @@ class CircuitSetup():
             password = config.circuitsetup.get('password', CircuitSetup._DEFAULT_ESPHOME_API_PASSWORD)
             self._esphome = aioesphomeapi.APIClient(eventloop=asyncio.get_running_loop(), address=url, port=port, password=password)
             await self._esphome.connect(login=True)
-
-            api_version = self._esphome.api_version
-            _LOGGER.info(f"ESPHome API version {api_version.major}.{api_version.minor}")
+        except SocketAPIError as e:
+            _LOGGER.error(f"{e}")
+            return False
+        except InvalidAuthAPIError as e:
+            _LOGGER.error(f"ESPHome login failed: {e}")
+            return False
         except Exception as e:
             _LOGGER.error(f"Unexpected exception connecting to ESPHome: {e}")
             return False
 
         try:
+            api_version = self._esphome.api_version
+            _LOGGER.info(f"ESPHome API version {api_version.major}.{api_version.minor}")
+
             device_info = await self._esphome.device_info()
             self._name = device_info.name
             _LOGGER.info(f"Name: '{device_info.name}', model is {device_info.model}")
             _LOGGER.info(f"ESPHome version: {device_info.esphome_version} built on {device_info.compilation_time}")
         except Exception as e:
-            _LOGGER.error(f"Unexpected exception accessing device_info(): {e}")
+            _LOGGER.error(f"Unexpected exception accessing version and/or device_info: {e}")
             return False
 
         try:
@@ -87,9 +99,7 @@ class CircuitSetup():
             return False
 
         if 'influxdb2' in config.keys():
-            try:
-                CircuitSetup._INFLUX.start(config=config.influxdb2)
-            except FailedInitialization:
+            if not CircuitSetup._INFLUX.start(config=config.influxdb2):
                 return False
 
         self._sensors_by_name, self._sensors_by_key = parse_sensors(yaml=config.sensors, entities=entities)
@@ -112,8 +122,20 @@ class CircuitSetup():
             CircuitSetup._WATCHDOG += 1
             if type(state) == aioesphomeapi.SensorState:
                 sensor = self._sensors_by_key.get(state.key, None)
-                if sensor and CircuitSetup._INFLUX:
-                    CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state.state)
+                if sensor:
+                    now = time.time()
+                    ts = int(now)
+                    if sensor.get('integralx', False):
+                        previous = sensor.get('last_sample', None)
+                        delta = now - previous
+                        integral = state.state * delta
+                        sensor['last_sample'] = now
+                        sensor['today'] += integral
+                        sensor['month'] += integral
+                        sensor['year'] += integral
+                    if CircuitSetup._INFLUX:
+                        CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state.state, timestamp=ts)
+                        #CircuitSetup._INFLUX.write_integral(sensor=sensor, timestamp=ts)
         try:
             await asyncio.gather(
                 self._esphome.subscribe_states(prepare),

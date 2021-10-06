@@ -22,7 +22,7 @@ SECRET_YAML = ".esphome_secrets.yaml"
 JSON_TYPE = Union[List, Dict, str]  # pylint: disable=invalid-name
 DICT_T = TypeVar("DICT_T", bound=Dict)  # pylint: disable=invalid-name
 
-_LOGGER = logging.getLogger("esphome")
+_LOGGER = logging.getLogger('esphome')
 _SECRET_CACHE: Dict[str, JSON_TYPE] = {}
 
 
@@ -55,7 +55,7 @@ def buildYAMLExceptionString(exception, file='esphome'):
         errmsg = f"YAML file error {type}in {file}:{line}, column {column}: {info}"
 
     except Exception as e:
-        errmsg = f"YAML file error: {e}."
+        errmsg = f"YAML file error: {e}"
 
     return errmsg
 
@@ -81,7 +81,7 @@ def load_yaml(fname: str) -> JSON_TYPE:
         with open(fname, encoding="utf-8") as conf_file:
             return parse_yaml(conf_file)
     except UnicodeDecodeError as exc:
-        _LOGGER.error("Unable to read file %s: %s", fname, exc)
+        _LOGGER.error(f"Unable to read '{fname}': {exc}")
         raise ConfigError(exc) from exc
 
 
@@ -197,11 +197,10 @@ def check_required_keys(yaml, required, path='') -> bool:
                     if len(requiredSubkeys):
                         passed = check_required_keys(yamlValue, requiredSubkeys, currentpath) and passed
                 else:
-                    raise FailedInitialization(Exception('Unexpected YAML checking error'))
+                    raise FailedInitialization('Unexpected YAML checking error')
             else:
-                raise FailedInitialization(Exception('Unexpected YAML checking error'))
+                raise FailedInitialization('Unexpected YAML checking error')
     return passed
-
 
 def check_unsupported(yaml, required, path=''):
     passed = True
@@ -296,10 +295,8 @@ def check_config(config):
         raise FailedInitialization(Exception(f"Unexpected exception: {e}"))
     return config if result else None
 
-
 def read_config(checking=False):
     """Open the YAML configuration file and optionally check the contents"""
-
     try:
         yaml.FullLoader.add_constructor('!secret', secret_yaml)
         yaml_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_YAML)
