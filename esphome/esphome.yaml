@@ -14,8 +14,8 @@ esphome:
   #   circuitsetup.password   optional ESPHome API password, defaults to '' ('str')
   circuitsetup:
     url:          !secret esphome_url
-#    port:         !secret esphome_port
-#    password:     !secret esphome_password
+    port:         !secret esphome_port
+    password:     !secret esphome_password
 
   # InfluxDB setup
   # The InfluxDB interface uses the newer 2.0 client which supports both the 2.0 and 1.8.x InfluxDB versions
@@ -46,65 +46,70 @@ esphome:
         sensor_name:    'cs24_volts'
         display_name:   'Line Voltage'
         measurement:    'voltage'
-        tag:            'line'
+        tag:            'panel'
         field:          'line'
+        integral:       False
     - sensor:
         enable:         True
         sensor_name:    'cs24_volts_ph1'
         display_name:   'Phase 1 Voltage'
         measurement:    'voltage'
-        tag:            'line'
+        tag:            'panel'
         field:          'line_1'
+        integral:       False
     - sensor:
         enable:         True
         sensor_name:    'cs24_volts_ph2'
         display_name:   'Phase 2 Voltage'
         measurement:    'voltage'
-        tag:            'line'
+        tag:            'panel'
         field:          'line_2'
+        integral:       False
     - sensor:
         enable:         False
         sensor_name:    'cs24_frequency'
         display_name:   'Line Frequency'
         measurement:    'frequency'
-        tag:            'line'
+        tag:            'panel'
         field:          'frequency'
+        integral:       False
     - sensor:
         sensor_name:    'cs24_pf1'
         display_name:   'Power Factor'
         measurement:    'power_factor'
-        tag:            'line'
-        field:          'power_factor'
+        tag:            'panel'
+        field:          'pf'
+        integral:       False
     - sensor:
         sensor_name:    'cs24_w'
         display_name:   'Total demand'
         measurement:    'power'
-        tag:            'site'
+        tag:            'panel'
         field:          'total_w'
     - sensor:
         sensor_name:    'cs24_kw'
         display_name:   'Total demand'
         measurement:    'power'
-        tag:            'site'
+        tag:            'panel'
         field:          'total_kw'
     - sensor:
         sensor_name:    'cs24_ct11_w'
         display_name:   'Phase 1 Power'
         measurement:    'power'
-        tag:            'line'
+        tag:            'panel'
         field:          'line_1'
     - sensor:
         sensor_name:    'cs24_ct12_w'
         display_name:   'Phase 2 Power'
         measurement:    'power'
-        tag:            'line'
+        tag:            'panel'
         field:          'line_2'
     - sensor:
         sensor_name:    'cs24_ct13_w'
-        display_name:   'Tesla'
+        display_name:   'Tesla HPWC'
         measurement:    'power'
-        tag:            'transportation'
-        field:          'tesla_hpwc'
+        tag:            'cars'
+        field:          'tesla'
     - sensor:
         sensor_name:    'cs24_ct14_w'
         display_name:   'Datacenter'
@@ -116,7 +121,7 @@ esphome:
         display_name:   'Basement East'
         measurement:    'power'
         tag:            'basement'
-        field:          'east'
+        field:          'east_basement'
     - sensor:
         sensor_name:    'cs24_ct16_w'
         display_name:   'Dryer'
@@ -145,7 +150,7 @@ esphome:
         sensor_name:    'cs24_ct24_w'
         display_name:   'JuiceBox'
         measurement:    'power'
-        tag:            'transportation'
+        tag:            'cars'
         field:          'juicebox'
     - sensor:
         sensor_name:    'cs24_ct25_w'
@@ -182,36 +187,36 @@ esphome:
         display_name:   'GFI Outlets'
         measurement:    'power'
         tag:            'kitchen'
-        field:          'outlets1'
+        field:          'outlets_1'
     - sensor:
         sensor_name:    'cs24_ct35_w'
         display_name:   'GFI Outlets'
         measurement:    'power'
         tag:            'kitchen'
-        field:          'outlets2'
+        field:          'outlets_2'
     - sensor:
         sensor_name:    'cs24_ct36_w'
         display_name:   'Dishwasher'
         measurement:    'power'
         tag:            'kitchen'
-        field:          'dishwater'
+        field:          'dishwasher'
     - sensor:
         sensor_name:    'cs24_ct41_w'
         display_name:   'Guest bedrooms'
         measurement:    'power'
         tag:            'bedroom'
-        field:          'guest'
+        field:          'guest_bedrooms'
     - sensor:
         sensor_name:    'cs24_ct42_w'
         display_name:   'Living room'
         measurement:    'power'
-        tag:            'main'
+        tag:            'main_floor'
         field:          'livingroom'
     - sensor:
         sensor_name:    'cs24_ct43_w'
         display_name:   'Foyer/bath'
         measurement:    'power'
-        tag:            'main'
+        tag:            'main_floor'
         field:          'foyer'
     - sensor:
         sensor_name:    'cs24_ct44_w'
@@ -237,9 +242,11 @@ esphome:
         measurement:    'current'
         tag:            ''
         field:          'total'
+        integral:       False
     - sensor:
         sensor_name:    'cs24_mia'
         display_name:   'Missing load'
         measurement:    'current'
         tag:            ''
         field:          'missing'
+        integral:       False

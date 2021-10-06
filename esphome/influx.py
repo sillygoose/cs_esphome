@@ -11,6 +11,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from influxdb_client.rest import ApiException
 
 from exceptions import FailedInitialization
+from urllib3.exceptions import NewConnectionError
 
 
 _LOGGER = logging.getLogger('esphome')
@@ -32,7 +33,7 @@ class InfluxDB:
         if self._client:
             self._client.close()
 
-    def check_config(self, influxdb2):
+    def check_config(self, influxdb2) -> bool:
         """Check that the needed YAML options exist."""
         errors = False
         required = {'enable': bool, 'url': str, 'token': str, 'bucket': str, 'org': str}
@@ -58,6 +59,7 @@ class InfluxDB:
         except Exception as e:
             raise FailedInitialization(f"unexpected YAML file exception: {e}")
 
+        result = False
         try:
             self._bucket = config.bucket
             self._client = InfluxDBClient(url=config.url, token=config.token, org=config.org)
@@ -71,19 +73,21 @@ class InfluxDB:
             query_api = self._client.query_api()
             if not query_api:
                 raise FailedInitialization(f"failed to get client query_api() object from {config.url}")
-            try:
-                query_api.query(f'from(bucket: "{self._bucket}") |> range(start: -1m)')
-                _LOGGER.info(f"Connected to InfluxDB2: {config.url}, bucket '{self._bucket}'")
-                return True
-            except ApiException as e:
-                raise FailedInitialization(f"unable to access bucket '{self._bucket}' at {config.url}: {e.reason}")
 
-        except FailedInitialization:
-            raise
+            query_api.query(f'from(bucket: "{self._bucket}") |> range(start: -1m)')
+            _LOGGER.info(f"Connected to InfluxDB2: {config.url}, bucket '{self._bucket}'")
+            result = True
+
+        except FailedInitialization as e:
+            _LOGGER.error(f"InfluxDB2 client {e}")
+        except NewConnectionError:
+            _LOGGER.error(f"InfluxDB2 client unable to connect to host at {config.url}")
+        except ApiException as e:
+            _LOGGER.error(f"InfluxDB2 client unable to access bucket '{self._bucket}' at {config.url}: {e.reason}")
         except Exception as e:
-            _LOGGER.error(f"{e}")
-            self.stop()
-            raise FailedInitialization(f"unexpected exception: {e}")
+            _LOGGER.error(f"Unexpected exception: {e}")
+        finally:
+            return result
 
 
     def stop(self):

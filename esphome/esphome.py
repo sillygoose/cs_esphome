@@ -56,13 +56,13 @@ class ESPHome():
         except (KeyboardInterrupt, NormalCompletion, TerminateSignal):
             pass
         except WatchdogTimer as e:
-            _LOGGER.critical("Watchdog timer detected: {e}")
+            _LOGGER.critical("Received WatchdogTimer exception: {e}")
             delay = 10
         except AbnormalCompletion:
-            # _LOGGER.critical("Received AbnormalCompletion exception detected")
+            _LOGGER.critical("Received AbnormalCompletion exception")
             delay = ERROR_DELAY
         except FailedInitialization:
-            # _LOGGER.critical("Received FailedInitialization exception detected")
+            # _LOGGER.critical("Received FailedInitialization exception")
             delay = ERROR_DELAY
         except Exception as e:
             _LOGGER.error(f"Unexpected exception caught: {e}")
