@@ -323,6 +323,27 @@ def read_config(checking=False):
     return config
 
 
+def retrieve_options(config, key, option_list) -> dict:
+    """Retrieve requested options."""
+    errors = False
+    options = dict(config[key])
+    for option, value in option_list.items():
+        required = value.get('required', None)
+        type = value.get('type', None)
+        if required:
+            if option not in options.keys():
+                _LOGGER.error(f"Missing required option in YAML file: '{option}'")
+                errors = True
+            else:
+                v = options.get(option, None)
+                if not isinstance(v, type):
+                    _LOGGER.error(f"Expected type '{type}' for option '{option}'")
+                    errors = True
+    if errors:
+        raise FailedInitialization(f"One or more errors detected in '{key}' YAML options")
+    return options
+
+
 if __name__ == '__main__':
     if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
         config = read_config()

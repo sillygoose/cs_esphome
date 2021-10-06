@@ -11,6 +11,8 @@ from influxdb_client import InfluxDBClient, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 from influxdb_client.rest import ApiException
 
+from readconfig import retrieve_options
+
 from exceptions import FailedInitialization, InfluxDBWriteError
 from urllib3.exceptions import NewConnectionError
 
@@ -46,15 +48,11 @@ class InfluxDB:
         self._bucket = None
         self._options = None
 
-    def __del__(self):
-        if self._client:
-            self._client.close()
-
     def start(self):
         """Initialize the InflixDB client."""
         try:
-            influxdb_options = self.retrieve_options(self._config, 'influxdb2', _INFLUXDB2_OPTIONS)
-            debug_options = self.retrieve_options(self._config, 'debug', _DEBUG_OPTIONS)
+            influxdb_options = retrieve_options(self._config, 'influxdb2', _INFLUXDB2_OPTIONS)
+            debug_options = retrieve_options(self._config, 'debug', _DEBUG_OPTIONS)
         except FailedInitialization as e:
             _LOGGER.error(f"{e}")
             return False
@@ -67,15 +65,15 @@ class InfluxDB:
             self._org = influxdb_options.get('org')
             self._client = InfluxDBClient(url=self._url, token=self._token, org=self._org)
             if not self._client:
-                raise FailedInitialization(f"failed to get InfluxDBClient from {self._url} (check url, token, and/or organization)")
+                raise FailedInitialization(f"failed to get InfluxDBClient from '{self._url}' (check url, token, and/or organization)")
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
 
             if debug_options.get('delete_bucket', None) and self.delete_bucket():
-                _LOGGER.info(f"Deleted bucket '{self._bucket}' at {self._url}")
+                _LOGGER.info(f"Deleted bucket '{self._bucket}' at '{self._url}'")
 
             if not self.connect_bucket():
-                FailedInitialization(f"unable to access bucket '{self._bucket}' at {self._url}")
-            _LOGGER.info(f"Connected to InfluxDB2: {self._url}, bucket '{self._bucket}'")
+                FailedInitialization(f"unable to access bucket '{self._bucket}' at '{self._url}'")
+            _LOGGER.info(f"Connected to InfluxDB2: '{self._url}', bucket '{self._bucket}'")
             result = True
 
         except FailedInitialization as e:
@@ -98,6 +96,7 @@ class InfluxDB:
         if self._client:
             self._client.close()
             self._client = None
+
 
     def write_sensor(self, sensor, state, timestamp=None):
         if not self._write_api:
@@ -135,27 +134,6 @@ class InfluxDB:
         except Exception as e:
             _LOGGER.error(f"Database write() call failed in write_sensor(): {e}")
             return False
-
-
-    def retrieve_options(self, config, key, option_list) -> dict:
-        """Retrieve requested options."""
-        errors = False
-        options = dict(config[key])
-        for option, value in option_list.items():
-            required = value.get('required', None)
-            type = value.get('type', None)
-            if required:
-                if option not in options.keys():
-                    _LOGGER.error(f"Missing required option in YAML file: '{option}'")
-                    errors = True
-                else:
-                    v = options.get(option, None)
-                    if not isinstance(v, type):
-                        _LOGGER.error(f"Expected type '{type}' for option '{option}'")
-                        errors = True
-        if errors:
-            raise FailedInitialization(f"One or more errors detected in '{key}' YAML options")
-        return options
 
 
     def delete_bucket(self):
