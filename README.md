@@ -1,4 +1,8 @@
 ## What's new
+#### 0.1.3
+queries!
+- sensors with integration write daily, monthly, and annual totals
+
 #### 0.1.2
 More improvements!
 - Can delete and/or create the database if requested
