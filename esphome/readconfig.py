@@ -282,6 +282,7 @@ def check_config(config):
                                       {'measurement': {'required': True, 'keys': [], 'type': str}},
                                       {'device': {'required': True, 'keys': [], 'type': str}},
                                       {'location': {'required': True, 'keys': [], 'type': str}},
+                                      {'integrate': {'required': False, 'keys': [], 'type': bool}},
                                   ]}},
                               ]}},
                               {'settings': {'required': False, 'keys': [

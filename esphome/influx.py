@@ -7,7 +7,7 @@ from os import name
 import time
 import logging
 
-from influxdb_client import InfluxDBClient, WritePrecision
+from influxdb_client import InfluxDBClient, WritePrecision, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from influxdb_client.rest import ApiException
 
@@ -18,11 +18,6 @@ from urllib3.exceptions import NewConnectionError
 
 
 _LOGGER = logging.getLogger('esphome')
-
-LP_LOOKUP = {
-    'cs24/power': {'measurement': 'power', 'field': 'power', 'output': True},
-    'cs24/voltage': {'measurement': 'voltage', 'field': 'voltage', 'output': True},
-}
 
 _INFLUXDB2_OPTIONS = {
     'url': {'type': str, 'required': True},
@@ -41,12 +36,11 @@ class InfluxDB:
         self._config = config
         self._client = None
         self._write_api = None
-        self._enabled = False
+        self._query_api = None
         self._token = None
         self._org = None
         self._url = None
         self._bucket = None
-        self._options = None
 
     def start(self):
         """Initialize the InflixDB client."""
@@ -63,10 +57,11 @@ class InfluxDB:
             self._url = influxdb_options.get('url')
             self._token = influxdb_options.get('token')
             self._org = influxdb_options.get('org')
-            self._client = InfluxDBClient(url=self._url, token=self._token, org=self._org)
+            self._client = InfluxDBClient(url=self._url, token=self._token, org=self._org, enable_gzip=True)
             if not self._client:
                 raise FailedInitialization(f"failed to get InfluxDBClient from '{self._url}' (check url, token, and/or organization)")
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
+            self._query_api = self._client.query_api()
 
             if debug_options.get('delete_bucket', None) and self.delete_bucket():
                 _LOGGER.info(f"Deleted bucket '{self._bucket}' at '{self._url}'")
@@ -88,7 +83,6 @@ class InfluxDB:
         finally:
             return result
 
-
     def stop(self):
         if self._write_api:
             self._write_api.close()
@@ -97,6 +91,39 @@ class InfluxDB:
             self._client.close()
             self._client = None
 
+    def bucket(self):
+        return self._bucket
+
+    def write_api(self):
+        return self._write_api
+
+    def query_api(self):
+        return self._query_api
+
+    def write_point(self, measurement, tag, device, value, timestamp=None):
+        """Write a sensor to the database."""
+        tag_name = tag.get('t', '')
+        tag_value = tag.get('v', '')
+        if len(tag_name) and len(tag_value):
+            point = Point(f"{measurement}").tag(f"{tag_name}", f"{tag_value}").field(f"{device}", value).time(timestamp, write_precision=WritePrecision.S)
+        else:
+            point = Point(f"{measurement}").field(f"{device}", value).time(timestamp, write_precision=WritePrecision.S)
+
+        try:
+            self._write_api.write(bucket=self._bucket, record=[point])
+        except ApiException as e:
+            raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
+        except Exception as e:
+            raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
+
+    def write_points(self, points):
+        """Write a list of Points to the database."""
+        try:
+            self._write_api.write(bucket=self._bucket, record=points)
+        except ApiException as e:
+            raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
+        except Exception as e:
+            raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
 
     def write_sensor(self, sensor, state, timestamp=None):
         """Write a sensor to the database."""
@@ -109,25 +136,18 @@ class InfluxDB:
         if measurement is None or device is None:
             raise InfluxDBFormatError(f"'measurement' and/or 'device' are required")
 
-        lp = f"{measurement}"
-        if location and len(location):
-            lp += f",_location={location}"
-
         v = round(state, precision) if (precision and isinstance(state, float)) else state
-        if isinstance(v, int):
-            lp += f" {device}={v}i {ts}"
-        elif isinstance(v, float):
-            lp += f" {device}={v} {ts}"
+        if location and len(location):
+            point = Point(f"{measurement}").tag("_location", f"{location}").field(f"{device}", v).time(ts, write_precision=WritePrecision.S)
         else:
-            raise InfluxDBFormatError(f"write_sensor(): unanticipated type '{type(v)}' in measurement '{measurement}/{device}'")
+            point = Point(f"{measurement}").field(f"{device}", v).time(ts, write_precision=WritePrecision.S)
 
         try:
-            self._write_api.write(bucket=self._bucket, record=[lp], write_precision=WritePrecision.S)
+            self._write_api.write(bucket=self._bucket, record=[point])
         except ApiException as e:
             raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
-
 
     def delete_bucket(self):
         buckets_api = self._client.buckets_api()
@@ -138,7 +158,6 @@ class InfluxDB:
             if not bucket:
                 return True
         return False
-
 
     def connect_bucket(self):
         buckets_api = self._client.buckets_api()

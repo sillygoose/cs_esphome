@@ -12,7 +12,7 @@ esphome:
   #  debug.delete_bucket    deletes the bucket if it exists
   debug:
     create_bucket:  True
-    delete_bucket:  False
+    delete_bucket:  True
 
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.
@@ -99,6 +99,7 @@ esphome:
         measurement:    'power'
         device:         'total_w'
         location:       'panel'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_load'
         display_name:   'Total Load'
@@ -112,7 +113,7 @@ esphome:
         device:         'missing'
         location:       'panel'
 
-    # Individual devices
+    # Individual CTs
     - sensor:
         sensor_name:    'cs24_ct11_w'
         display_name:   'Phase 1 Power'
@@ -131,6 +132,7 @@ esphome:
         measurement:    'power'
         device:         'tesla'
         location:       'cars'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct14_w'
         display_name:   'Datacenter'
@@ -173,18 +175,21 @@ esphome:
         measurement:    'power'
         device:         'juicebox'
         location:       'cars'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct25_w'
         display_name:   'Range'
         measurement:    'power'
         device:         'range'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct26_w'
         display_name:   'Microwave'
         measurement:    'power'
         device:         'microwave'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct31_w'
         display_name:   'Sump pump'
@@ -203,24 +208,28 @@ esphome:
         measurement:    'power'
         device:         'refrigerator'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct34_w'
         display_name:   'GFI Outlets'
         measurement:    'power'
         device:         'outlets_1'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct35_w'
         display_name:   'GFI Outlets'
         measurement:    'power'
         device:         'outlets_2'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct36_w'
         display_name:   'Dishwasher'
         measurement:    'power'
         device:         'dishwasher'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct41_w'
         display_name:   'Guest bedrooms'
@@ -257,15 +266,3 @@ esphome:
         measurement:    'power'
         device:         'west_basement'
         location:       'basement'
-    - sensor:
-        sensor_name:    'cs24_load'
-        display_name:   'Total Load'
-        measurement:    'current'
-        device:         'total'
-        location:       'panel'
-    - sensor:
-        sensor_name:    'cs24_mia'
-        display_name:   'Missing load'
-        measurement:    'current'
-        device:         'missing'
-        location:       'panel'
