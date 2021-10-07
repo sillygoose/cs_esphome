@@ -1,4 +1,10 @@
 ## What's new
+#### 0.1.2
+More improvements!
+- Can delete and/or create the database if requested
+- More tasks to prepare for future database queries
+- Improved error handling
+
 #### 0.1.0
 Coming together but still a prototype.
 - ESPHome sensors written to InfluxDB2

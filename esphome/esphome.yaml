@@ -7,7 +7,6 @@ esphome:
     format: '[%(asctime)s] [%(module)s] [%(levelname)s] %(message)s'
     level: 'INFO'
 
-
   # debug fields
   #  debug.create_bucket    creates the InfluxDB2 bucket if it does not exist
   #  debug.delete_bucket    deletes the bucket if it exists
