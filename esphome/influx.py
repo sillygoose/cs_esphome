@@ -116,6 +116,15 @@ class InfluxDB:
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
 
+    def write_points(self, points):
+        """Write a list of Points to the database."""
+        try:
+            self._write_api.write(bucket=self._bucket, record=points)
+        except ApiException as e:
+            raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
+        except Exception as e:
+            raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
+
     def write_sensor(self, sensor, state, timestamp=None):
         """Write a sensor to the database."""
         ts = timestamp if timestamp is not None else int(time.time())

@@ -100,6 +100,7 @@ esphome:
         measurement:    'power'
         device:         'total_w'
         location:       'panel'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_load'
         display_name:   'Total Load'
@@ -132,6 +133,7 @@ esphome:
         measurement:    'power'
         device:         'tesla'
         location:       'cars'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct14_w'
         display_name:   'Datacenter'
@@ -174,6 +176,7 @@ esphome:
         measurement:    'power'
         device:         'juicebox'
         location:       'cars'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct25_w'
         display_name:   'Range'

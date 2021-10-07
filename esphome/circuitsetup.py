@@ -10,44 +10,13 @@ import aioesphomeapi
 from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
 
 import version
+import sensors
+import query
+
 from influx import InfluxDB
 from exceptions import FailedInitialization, WatchdogTimer
 
 _LOGGER = logging.getLogger('esphome')
-
-# Default sampling values used when not defined in the configuration file
-_DEFAULT_FAST = 30
-_DEFAULT_MEDIUM = 60
-_DEFAULT_SLOW = 120
-
-
-def parse_sensors(yaml, entities):
-    sensors_by_name = {}
-    sensors_by_key = {}
-    keys_by_name = dict((sensor.name, sensor.key) for sensor in entities)
-    units_by_name = dict((sensor.name, sensor.unit_of_measurement) for sensor in entities)
-    decimals_by_name = dict((sensor.name, sensor.accuracy_decimals) for sensor in entities)
-    for entry in yaml:
-        for details in entry.values():
-            enable = details.get('enable', True)
-            sensor_name = details.get('sensor_name', None)
-            key = keys_by_name.get(sensor_name, None)
-            if key and enable:
-                now = time.time()
-                data = {
-                    'sensor_name': details.get('sensor_name', None),
-                    'display_name': details.get('display_name', None),
-                    'unit': units_by_name.get(sensor_name, None),
-                    'key': keys_by_name.get(sensor_name, None),
-                    'precision': decimals_by_name.get(sensor_name, None),
-                    'measurement': details.get('measurement', None),
-                    'device': details.get('device', None),
-                    'location': details.get('location', None),
-                }
-                sensors_by_name[sensor_name] = data
-                sensors_by_key[key] = data
-
-    return sensors_by_name, sensors_by_key
 
 
 class CircuitSetup():
@@ -58,6 +27,10 @@ class CircuitSetup():
     _DEFAULT_ESPHOME_API_PASSWORD = ''
     _WATCHDOG = 0
 
+    _DEFAULT_FAST = 30
+    _DEFAULT_MEDIUM = 60
+    _DEFAULT_SLOW = 120
+
     def __init__(self, config):
         """Create a new CircuitSetup object."""
         self._config = config
@@ -66,18 +39,20 @@ class CircuitSetup():
         self._name = None
         self._sensors_by_name = None
         self._sensors_by_key = None
-        self._sampling_fast = _DEFAULT_FAST
-        self._sampling_medium = _DEFAULT_MEDIUM
-        self._sampling_slow = _DEFAULT_SLOW
+        self._sensors_integrate = None
+        self._sensors_locations = None
+        self._sampling_fast = CircuitSetup._DEFAULT_FAST
+        self._sampling_medium = CircuitSetup._DEFAULT_MEDIUM
+        self._sampling_slow = CircuitSetup._DEFAULT_SLOW
 
     async def start(self):
         """Initialize the CS ESPHome API."""
         config = self._config
 
         if 'settings' in config.keys() and 'sampling' in config.settings.keys():
-            self._sampling_fast = config.settings.sampling.get('fast', _DEFAULT_FAST)
-            self._sampling_medium = config.settings.sampling.get('medium', _DEFAULT_MEDIUM)
-            self._sampling_slow = config.settings.sampling.get('slow', _DEFAULT_SLOW)
+            self._sampling_fast = config.settings.sampling.get('fast', CircuitSetup._DEFAULT_FAST)
+            self._sampling_medium = config.settings.sampling.get('medium', CircuitSetup._DEFAULT_MEDIUM)
+            self._sampling_slow = config.settings.sampling.get('slow', CircuitSetup._DEFAULT_SLOW)
 
         if 'influxdb2' in config.keys():
             CircuitSetup._INFLUX = InfluxDB(config)
@@ -122,7 +97,9 @@ class CircuitSetup():
             _LOGGER.error(f"Unexpected exception accessing '{self._name}' list_entities_services(): {e}")
             return False
 
-        self._sensors_by_name, self._sensors_by_key = parse_sensors(yaml=config.sensors, entities=entities)
+        self._sensors_by_name, self._sensors_by_key = sensors.parse_sensors(yaml=config.sensors, entities=entities)
+        self._sensors_locations = sensors.parse_by_location(self._sensors_by_name)
+        self._sensors_integrate = sensors.parse_by_integration(self._sensors_by_name)
         return True
 
     async def run(self):
@@ -215,24 +192,8 @@ class CircuitSetup():
             query_api = CircuitSetup._INFLUX.query_api()
             bucket = CircuitSetup._INFLUX.bucket()
             try:
-                midnight = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
-                for name in ['cs24_w', 'cs24_ct14_w', 'cs24_ct33_w']:
-                    sensor = self._sensors_by_name.get(name)
-                    location = sensor.get('location')
-                    device = sensor.get('device')
-                    measurement = sensor.get('measurement')
-                    query = f'from(bucket: "{bucket}")' \
-                    f' |> range(start: {midnight})' \
-                    f' |> filter(fn: (r) => r["_measurement"] == "{measurement}")' \
-                    f' |> filter(fn: (r) => r["_field"] == "{device}")' \
-                    f' |> filter(fn: (r) => r["_location"] == "{location}")' \
-                    f' |> integral(unit: 1h, column: "_value")'
-                    tables = query_api.query(query)
-                    for table in tables:
-                        for row in table.records:
-                            #_LOGGER.info(f"{device}: {row.values.get('_value'):.3f} Wh")
-                            value = row.values.get('_value')
-                            CircuitSetup._INFLUX.write_point(measurement, {'t': '_integral', 'v': 'today'}, device, value, timestamp=midnight)
+                points = query.integrate(query_api, bucket, self._sensors_integrate)
+                CircuitSetup._INFLUX.write_points(points)
             except Exception as e:
                 _LOGGER.info(f"{e}")
 
