@@ -230,7 +230,10 @@ class CircuitSetup():
             queue.task_done()
             if sensor and state and CircuitSetup._INFLUX:
                 ts = packet.get('ts', None)
-                CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state, timestamp=ts)
+                try:
+                    CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state, timestamp=ts)
+                except Exception as e:
+                    _LOGGER.warning(f"{e}")
 
     async def task_sampler(self, queue):
         """Post the subscribed data."""

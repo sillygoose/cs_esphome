@@ -23,5 +23,13 @@ class InfluxDBWriteError(Exception):
     """Watchdog timer tripped."""
 
 
+class InfluxDBFormatError(Exception):
+    """Illegal or unsupport database output format."""
+
+
+class InfluxDBInitializationError(Exception):
+    """InfluxDB is not properly initialized."""
+
+
 class TerminateSignal(Exception):
     """SIGTERM."""

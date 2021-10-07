@@ -16,18 +16,15 @@ _DEFAULT_LOG_LEVEL = 'INFO'
 
 def check_config(options):
     """Check that the the proper log option but don't check the keys."""
-
     if 'esphome' not in options.keys():
         return None
     if 'log' not in options.esphome.keys():
         return None
-
     return dict(options.esphome.log)
 
 
 def start(config):
     """Create the application log."""
-
     log_options = check_config(config)
     if not log_options:
         log_file = _DEFAULT_LOG_FILE

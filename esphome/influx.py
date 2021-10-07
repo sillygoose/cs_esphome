@@ -13,7 +13,7 @@ from influxdb_client.rest import ApiException
 
 from readconfig import retrieve_options
 
-from exceptions import FailedInitialization, InfluxDBWriteError
+from exceptions import FailedInitialization, InfluxDBWriteError, InfluxDBFormatError, InfluxDBInitializationError
 from urllib3.exceptions import NewConnectionError
 
 
@@ -99,41 +99,34 @@ class InfluxDB:
 
 
     def write_sensor(self, sensor, state, timestamp=None):
-        if not self._write_api:
-            return False
+        """Write a sensor to the database."""
         ts = timestamp if timestamp is not None else int(time.time())
 
         measurement = sensor.get('measurement', None)
         device = sensor.get('device', None)
         location = sensor.get('location', None)
         precision = sensor.get('precision', None)
-        v = round(state, precision) if isinstance(state, float) else state
-
-        if measurement is None or device is None or location is None or precision is None:
-            return False
+        if measurement is None or device is None:
+            raise InfluxDBFormatError(f"'measurement' and/or 'device' are required")
 
         lp = f"{measurement}"
         if location and len(location):
             lp += f",_location={location}"
 
+        v = round(state, precision) if (precision and isinstance(state, float)) else state
         if isinstance(v, int):
             lp += f" {device}={v}i {ts}"
         elif isinstance(v, float):
             lp += f" {device}={v} {ts}"
         else:
-            _LOGGER.error(f"write_sensor(): unanticipated type '{type(v)}' in measurement '{measurement}/{device}'")
-            return False
+            raise InfluxDBFormatError(f"write_sensor(): unanticipated type '{type(v)}' in measurement '{measurement}/{device}'")
 
-        points = []
-        points.append(lp)
         try:
-            self._write_api.write(bucket=self._bucket, record=points, write_precision=WritePrecision.S)
-            return True
+            self._write_api.write(bucket=self._bucket, record=[lp], write_precision=WritePrecision.S)
         except ApiException as e:
             raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
-            _LOGGER.error(f"Database write() call failed in write_sensor(): {e}")
-            return False
+            raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
 
 
     def delete_bucket(self):
