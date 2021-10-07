@@ -192,8 +192,12 @@ class CircuitSetup():
             query_api = CircuitSetup._INFLUX.query_api()
             bucket = CircuitSetup._INFLUX.bucket()
             try:
-                points = query.integrate(query_api, bucket, self._sensors_integrate)
-                CircuitSetup._INFLUX.write_points(points)
+                today = query.integrate_today(query_api, bucket, self._sensors_integrate)
+                CircuitSetup._INFLUX.write_points(today)
+                month = query.integrate_month(query_api, bucket, self._sensors_integrate)
+                CircuitSetup._INFLUX.write_points(month)
+                year = query.integrate_year(query_api, bucket, self._sensors_integrate)
+                CircuitSetup._INFLUX.write_points(year)
             except Exception as e:
                 _LOGGER.info(f"{e}")
 

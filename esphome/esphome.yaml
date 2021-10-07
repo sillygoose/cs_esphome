@@ -183,12 +183,14 @@ esphome:
         measurement:    'power'
         device:         'range'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct26_w'
         display_name:   'Microwave'
         measurement:    'power'
         device:         'microwave'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct31_w'
         display_name:   'Sump pump'
@@ -207,24 +209,28 @@ esphome:
         measurement:    'power'
         device:         'refrigerator'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct34_w'
         display_name:   'GFI Outlets'
         measurement:    'power'
         device:         'outlets_1'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct35_w'
         display_name:   'GFI Outlets'
         measurement:    'power'
         device:         'outlets_2'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct36_w'
         display_name:   'Dishwasher'
         measurement:    'power'
         device:         'dishwasher'
         location:       'kitchen'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct41_w'
         display_name:   'Guest bedrooms'
@@ -261,15 +267,3 @@ esphome:
         measurement:    'power'
         device:         'west_basement'
         location:       'basement'
-    - sensor:
-        sensor_name:    'cs24_load'
-        display_name:   'Total Load'
-        measurement:    'current'
-        device:         'total'
-        location:       'panel'
-    - sensor:
-        sensor_name:    'cs24_mia'
-        display_name:   'Missing load'
-        measurement:    'current'
-        device:         'missing'
-        location:       'panel'
