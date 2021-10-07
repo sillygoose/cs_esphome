@@ -13,7 +13,7 @@ esphome:
   #  debug.delete_bucket    deletes the bucket if it exists
   debug:
     create_bucket:  True
-    delete_bucket:  False
+    delete_bucket:  True
 
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.
