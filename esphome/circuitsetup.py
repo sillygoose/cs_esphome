@@ -11,7 +11,7 @@ from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
 
 import version
 from influx import InfluxDB
-from exceptions import FailedInitialization, WatchdogTimer, InfluxDBWriteError
+from exceptions import FailedInitialization, WatchdogTimer
 
 _LOGGER = logging.getLogger('esphome')
 
@@ -144,8 +144,6 @@ class CircuitSetup():
                 self.posting_task(queues.get('sampler')),
             )
             await self._task_gather
-        except InfluxDBWriteError as e:
-            _LOGGER.error(f"{e}")
         except Exception as e:
             _LOGGER.error(f"something else: {e}")
 
@@ -167,7 +165,7 @@ class CircuitSetup():
         while True:
             now = datetime.datetime.now()
             tomorrow = now + datetime.timedelta(days=1)
-            midnight = datetime.datetime.combine(tomorrow, datetime.time(0, 5))
+            midnight = datetime.datetime.combine(tomorrow, datetime.time(0, 1))
             await asyncio.sleep((midnight - now).total_seconds())
 
             # Update internal sun info and the daily production
@@ -213,6 +211,30 @@ class CircuitSetup():
             timestamp = await queue.get()
             queue.task_done()
             _LOGGER.debug(f"task_medium(queue)")
+
+            query_api = CircuitSetup._INFLUX.query_api()
+            bucket = CircuitSetup._INFLUX.bucket()
+            try:
+                midnight = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
+                for name in ['cs24_w', 'cs24_ct14_w', 'cs24_ct33_w']:
+                    sensor = self._sensors_by_name.get(name)
+                    location = sensor.get('location')
+                    device = sensor.get('device')
+                    measurement = sensor.get('measurement')
+                    query = f'from(bucket: "{bucket}")' \
+                    f' |> range(start: {midnight})' \
+                    f' |> filter(fn: (r) => r["_measurement"] == "{measurement}")' \
+                    f' |> filter(fn: (r) => r["_field"] == "{device}")' \
+                    f' |> filter(fn: (r) => r["_location"] == "{location}")' \
+                    f' |> integral(unit: 1h, column: "_value")'
+                    tables = query_api.query(query)
+                    for table in tables:
+                        for row in table.records:
+                            #_LOGGER.info(f"{device}: {row.values.get('_value'):.3f} Wh")
+                            value = row.values.get('_value')
+                            CircuitSetup._INFLUX.write_point(measurement, {'t': '_integral', 'v': 'today'}, device, value, timestamp=midnight)
+            except Exception as e:
+                _LOGGER.info(f"{e}")
 
     async def task_slow(self, queue):
         """Work done at a slow sample rate."""

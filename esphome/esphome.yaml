@@ -113,7 +113,7 @@ esphome:
         device:         'missing'
         location:       'panel'
 
-    # Individual devices
+    # Individual CTs
     - sensor:
         sensor_name:    'cs24_ct11_w'
         display_name:   'Phase 1 Power'
