@@ -136,7 +136,7 @@ class InfluxDB:
         if measurement is None or device is None:
             raise InfluxDBFormatError(f"'measurement' and/or 'device' are required")
 
-        v = round(state, precision) if (precision and isinstance(state, float)) else state
+        v = round(state, precision) if ((precision != None) and isinstance(state, float)) else state
         if location and len(location):
             point = Point(f"{measurement}").tag("_location", f"{location}").field(f"{device}", v).time(ts, write_precision=WritePrecision.S)
         else:
