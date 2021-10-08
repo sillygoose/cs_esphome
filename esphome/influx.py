@@ -63,18 +63,19 @@ class InfluxDB:
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
             self._query_api = self._client.query_api()
 
-            if os.environ.get('ESPHOME_DEBUG', None) and debug_options.get('delete_bucket', None) and self.delete_bucket():
+            esphome_debug = os.getenv('ESPHOME_DEBUG', 'False').lower() in ('true', '1', 't')
+            if esphome_debug and debug_options.get('delete_bucket', None) and self.delete_bucket():
                 _LOGGER.info(f"Deleted bucket '{self._bucket}' at '{self._url}'")
 
-            create_bucket = os.getenv('ESPHOME_DEBUG', 'False').lower() in ('true', '1', 't') and debug_options.get('create_bucket', None)
-            if not self.connect_bucket(create_bucket):
-                FailedInitialization(f"unable to access bucket '{self._bucket}' at '{self._url}'")
+            if not self.connect_bucket(esphome_debug and debug_options.get('create_bucket', None)):
+                raise FailedInitialization(f"unable to access bucket '{self._bucket}' at '{self._url}'")
             _LOGGER.info(f"Connected to InfluxDB2: '{self._url}', bucket '{self._bucket}'")
             result = True
 
         except FailedInitialization as e:
             _LOGGER.error(f"InfluxDB2 client {e}")
             self._client = None
+            raise
         except NewConnectionError:
             _LOGGER.error(f"InfluxDB2 client unable to connect to host at {self._url}")
         except ApiException as e:
