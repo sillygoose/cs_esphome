@@ -1,4 +1,8 @@
 ## What's new
+#### 0.1.4
+ESPHOME_DEBUG environment variable!
+- ignores debug options in YAML file when not defined
+
 #### 0.1.3
 queries!
 - sensors with integration write daily, monthly, and annual totals
