@@ -15,12 +15,17 @@ def parse_by_location(sensors):
             continue
         if location and integrate:
             device = sensor.get('device', None)
+            measurement = sensor.get('measurement', None)
             locations = location_directory.get(location, None)
             if not locations:
-                location_directory[location] = [device]
+                location_directory[location] = [{'device': device, 'measurement': measurement}]
             else:
                 entry = location_directory[location]
-                entry.append(device)
+                location_measurement = entry[0].get('measurement', None)
+                if location_measurement != measurement:
+                    _LOGGER.error("All measurments in a location must be the same!")
+                    return {}
+                entry.append({'device': device, 'measurement': measurement})
                 location_directory[location] = entry
 
     return location_directory

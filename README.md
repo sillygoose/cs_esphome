@@ -1,18 +1,17 @@
 ## What's new
 #### 0.1.5
-TBD
--
+New database schema supports reporting sensor and location values and integration (today, month, and year totals).
 
 #### 0.1.4
-ESPHOME_DEBUG environment variable!
+ESPHOME_DEBUG environment variable
 - ignores debug options in YAML file when not defined
 
 #### 0.1.3
-queries!
+queries
 - sensors with integration write daily, monthly, and annual totals
 
 #### 0.1.2
-More improvements!
+More improvements
 - Can delete and/or create the database if requested
 - More tasks to prepare for future database queries
 - Improved error handling
@@ -82,15 +81,27 @@ As an example, suppose you download the current **esphome** build of 1.0.0.  The
 ## InfluxDB2 Schemas
 Data is organized in InfluxDB2 using the following schemas, refer to the Flux queries for examples of pulling data from InfluxDB2 for dashboard or other use.
 
-    AC production measurements:
-        _measurement    ac_production
-        _inverter       inverter name(s), site
-        _field          power (W), current (A), voltage (V)
+    Power factor measurements:
+        _measurement    power_factor
+        _field          pf
 
-    DC production measurements:
-        _measurement    dc_production
-        _inverter       inverter name(s), site
-        _field          power (W), current (A), voltage (V)
+    Voltage measurements:
+        _measurement    voltage
+        _field          iine (V), line_1 (V), line_2 (V)
+
+    Current measurements:
+        _measurement    current
+        _field          total (A), missing (A)
+
+    Power measurements:
+        _measurement    power
+        _location       location (used to group devices by location such as 'kitchen' for all kitchen devices)
+        _field          device(s) (W), total_w (W)
+
+    Energy measurements:
+        _measurement    energy
+        _energy         device(s), location(s)
+        _field          today (Wh), month (Wh), year (Wh)
 
 #
 ## Example Dashboards
