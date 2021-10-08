@@ -42,6 +42,7 @@ class InfluxDB:
         self._url = None
         self._bucket = None
 
+
     def start(self):
         """Initialize the InflixDB client."""
         try:
@@ -84,6 +85,7 @@ class InfluxDB:
         finally:
             return result
 
+
     def stop(self):
         if self._write_api:
             self._write_api.close()
@@ -92,39 +94,45 @@ class InfluxDB:
             self._client.close()
             self._client = None
 
+
     def bucket(self):
         return self._bucket
+
 
     def write_api(self):
         return self._write_api
 
+
     def query_api(self):
         return self._query_api
 
-    def write_point(self, measurement, tag, device, value, timestamp=None):
-        """Write a sensor to the database."""
-        tag_name = tag.get('t', '')
-        tag_value = tag.get('v', '')
-        if len(tag_name) and len(tag_value):
-            point = Point(f"{measurement}").tag(f"{tag_name}", f"{tag_value}").field(f"{device}", value).time(timestamp, write_precision=WritePrecision.S)
-        else:
-            point = Point(f"{measurement}").field(f"{device}", value).time(timestamp, write_precision=WritePrecision.S)
+
+    def write_point(self, measurement, tags, device, value, timestamp=None):
+        """Write a single sensor to the database."""
+        lp_tags = ''
+        separator = ''
+        for tag in tags:
+            lp_tags += f"{separator}{tag.get('t')}={tag.get('v')}"
+            separator = ','
+        lp = f"{measurement}," + lp_tags + f" {device}={value} {timestamp}"
 
         try:
-            self._write_api.write(bucket=self._bucket, record=[point])
+            self._write_api.write(bucket=self._bucket, record=lp, write_precision=WritePrecision.S)
         except ApiException as e:
             raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
+
 
     def write_points(self, points):
-        """Write a list of Points to the database."""
+        """Write a list of points to the database."""
         try:
-            self._write_api.write(bucket=self._bucket, record=points)
+            self._write_api.write(bucket=self._bucket, record=points, write_precision=WritePrecision.S)
         except ApiException as e:
             raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
+
 
     def write_sensor(self, sensor, state, timestamp=None):
         """Write a sensor to the database."""
@@ -137,18 +145,16 @@ class InfluxDB:
         if measurement is None or device is None:
             raise InfluxDBFormatError(f"'measurement' and/or 'device' are required")
 
-        v = round(state, precision) if ((precision != None) and isinstance(state, float)) else state
-        if location and len(location):
-            point = Point(f"{measurement}").tag("_location", f"{location}").field(f"{device}", v).time(ts, write_precision=WritePrecision.S)
-        else:
-            point = Point(f"{measurement}").field(f"{device}", v).time(ts, write_precision=WritePrecision.S)
+        value = round(state, precision) if ((precision != None) and isinstance(state, float)) else state
+        lp = f'{measurement},_location={location} {device}={value} {timestamp}'
 
         try:
-            self._write_api.write(bucket=self._bucket, record=[point])
+            self._write_api.write(bucket=self._bucket, record=lp, write_precision=WritePrecision.S)
         except ApiException as e:
             raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
+
 
     def delete_bucket(self):
         buckets_api = self._client.buckets_api()
@@ -159,6 +165,7 @@ class InfluxDB:
             if not bucket:
                 return True
         return False
+
 
     def connect_bucket(self, create_bucket=False):
         buckets_api = self._client.buckets_api()

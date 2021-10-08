@@ -8,7 +8,7 @@ esphome:
     level: 'INFO'
 
 
-  # debug fields (requires ESPHOME_DEBUG to be set to True or 1
+  # debug fields (requires ESPHOME_DEBUG to be set to True or 1 to be in effect)
   #  debug.create_bucket    creates the InfluxDB2 bucket if it does not exist
   #  debug.delete_bucket    deletes the bucket if it exists
   debug:

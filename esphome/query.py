@@ -7,14 +7,15 @@ from influxdb_client import WritePrecision, Point
 _LOGGER = logging.getLogger('esphome')
 
 
-def create_point(measurement, tag, device, value, timestamp):
-    tag_name = tag.get('t', '')
-    tag_value = tag.get('v', '')
-    if len(tag_name) and len(tag_value):
-        point = Point(f"{measurement}").tag(f"{tag_name}", f"{tag_value}").field(f"{device}", value).time(timestamp, write_precision=WritePrecision.S)
-    else:
-        point = Point(f"{measurement}").field(f"{device}", value).time(timestamp, write_precision=WritePrecision.S)
-    return point
+def create_point(measurement, tags, device, value, timestamp):
+    lp_tags = ''
+    separator = ''
+    for tag in tags:
+        lp_tags += f"{separator}{tag.get('t')}={tag.get('v')}"
+        separator = ','
+
+    lp = f"{measurement}," + lp_tags + f" {device}={value} {timestamp}"
+    return lp
 
 
 def integrate_today(query_api, bucket, sensors):
@@ -27,16 +28,18 @@ def integrate_today(query_api, bucket, sensors):
         measurement = sensor.get('measurement')
         query = f'from(bucket: "{bucket}")' \
         f' |> range(start: {midnight})' \
-        f' |> filter(fn: (r) => r["_measurement"] == "{measurement}")' \
-        f' |> filter(fn: (r) => r["_field"] == "{device}")' \
-        f' |> filter(fn: (r) => r["_location"] == "{location}")' \
+        f' |> filter(fn: (r) => r._measurement == "{measurement}")' \
+        f' |> filter(fn: (r) => r._location == "{location}")' \
+        f' |> filter(fn: (r) => r._integral != "today" and r._integral != "month" and r._integral != "year")' \
+        f' |> filter(fn: (r) => r._field == "{device}")' \
         f' |> integral(unit: 1h, column: "_value")'
         tables = query_api.query(query)
         for table in tables:
             for row in table.records:
                 _LOGGER.debug(f"Today {device}: {row.values.get('_value'):.3f} Wh")
                 value = row.values.get('_value')
-                point = create_point(measurement=measurement, tag={'t': '_integral', 'v': 'today'}, device=device, value=value, timestamp=midnight)
+                tags = [{'t': '_integral', 'v': 'today'}, {'t': '_location', 'v': f'{location}'}]
+                point = create_point(measurement=measurement, tags=tags, device=device, value=value, timestamp=midnight)
                 points.append(point)
     return points
 
@@ -47,6 +50,7 @@ def integrate_month(query_api, bucket, sensors):
     points = []
     for sensor in sensors:
         device = sensor.get('device')
+        location = sensor.get('location')
         measurement = sensor.get('measurement')
         query = f'from(bucket: "{bucket}")' \
         f' |> range(start: {month_start})' \
@@ -59,8 +63,8 @@ def integrate_month(query_api, bucket, sensors):
             for row in table.records:
                 _LOGGER.debug(f"Month {device}: {row.values.get('_value'):.3f} Wh")
                 value = row.values.get('_value')
-                point = create_point(measurement=measurement, tag={'t': '_integral', 'v': 'month'}, device=device, value=value, timestamp=month_start)
-                points.append(point)
+                tags = [{'t': '_integral', 'v': 'month'}, {'t': '_location', 'v': f'{location}'}]
+                points.append(create_point(measurement=measurement, tags=tags, device=device, value=value, timestamp=month_start))
     return points
 
 
@@ -70,6 +74,7 @@ def integrate_year(query_api, bucket, sensors):
     points = []
     for sensor in sensors:
         device = sensor.get('device')
+        location = sensor.get('location')
         measurement = sensor.get('measurement')
         query = f'from(bucket: "{bucket}")' \
         f' |> range(start: {year_start})' \
@@ -82,6 +87,6 @@ def integrate_year(query_api, bucket, sensors):
             for row in table.records:
                 _LOGGER.debug(f"Year {device}: {row.values.get('_value'):.3f} Wh")
                 value = row.values.get('_value')
-                point = create_point(measurement=measurement, tag={'t': '_integral', 'v': 'year'}, device=device, value=value, timestamp=year_start)
-                points.append(point)
+                tags = [{'t': '_integral', 'v': 'year'}, {'t': '_location', 'v': f'{location}'}]
+                points.append(create_point(measurement=measurement, tags=tags, device=device, value=value, timestamp=year_start))
     return points

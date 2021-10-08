@@ -124,6 +124,7 @@ class CircuitSetup():
         except Exception as e:
             _LOGGER.error(f"something else: {e}")
 
+
     async def stop(self):
         """Shutdown."""
         if self._task_gather:
@@ -137,6 +138,7 @@ class CircuitSetup():
             CircuitSetup._INFLUX.stop()
             CircuitSetup._INFLUX = None
 
+
     async def midnight(self) -> None:
         """Task to wake up after midnight and update the solar data for the new day."""
         while True:
@@ -148,6 +150,7 @@ class CircuitSetup():
             # Update internal sun info and the daily production
             _LOGGER.info(f"esphome energy collection utility {version.get_version()}, PID is {os.getpid()}")
 
+
     async def watchdog(self):
         """Check that we are connected to the CircuitSetup hardware."""
         saved_watchdog = CircuitSetup._WATCHDOG
@@ -157,6 +160,7 @@ class CircuitSetup():
             if saved_watchdog == current_watchdog:
                 raise WatchdogTimer(f"Lost connection to {self._name}")
             saved_watchdog = current_watchdog
+
 
     async def scheduler(self, queues):
         """Task to schedule actions at regular intervals."""
@@ -175,12 +179,14 @@ class CircuitSetup():
 
             await asyncio.sleep(SLEEP)
 
+
     async def task_fast(self, queue):
         """Work done at a fast sample rate."""
         while True:
             timestamp = await queue.get()
             queue.task_done()
             _LOGGER.debug(f"task_fast(queue)")
+
 
     async def task_medium(self, queue):
         """Work done at a medium sample rate."""
@@ -201,12 +207,14 @@ class CircuitSetup():
             except Exception as e:
                 _LOGGER.info(f"{e}")
 
+
     async def task_slow(self, queue):
         """Work done at a slow sample rate."""
         while True:
             timestamp = await queue.get()
             queue.task_done()
             _LOGGER.debug(f"task_slow(queue)")
+
 
     async def posting_task(self, queue):
         """Process the subscribed data."""

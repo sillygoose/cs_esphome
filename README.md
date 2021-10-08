@@ -1,4 +1,8 @@
 ## What's new
+#### 0.1.5
+TBD
+-
+
 #### 0.1.4
 ESPHOME_DEBUG environment variable!
 - ignores debug options in YAML file when not defined
@@ -116,9 +120,9 @@ If you happen to make errors and get locked out of your inverters (confirm by be
 #
 ## Thanks
 Thanks for the following packages used to build this software:
-- ESPHome API
+- ESPHome Python API
     - https://github.com/esphome/aioesphomeapi
-- InfluxDB2 API
+- InfluxDB2 Python API
     - https://influxdb-client.readthedocs.io/en/stable/api.html
 - YAML configuration file support
     - https://python-configuration.readthedocs.io
