@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  multisma2:
+  esphome:
     container_name: esphome
     image: esphome:latest
     restart: always

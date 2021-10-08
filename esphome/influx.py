@@ -3,7 +3,7 @@
 # InfluxDB Line Protocol Reference
 # https://docs.influxdata.com/influxdb/v2.0/reference/syntax/line-protocol/
 
-from os import name
+import os
 import time
 import logging
 
@@ -63,11 +63,12 @@ class InfluxDB:
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
             self._query_api = self._client.query_api()
 
-            if debug_options.get('delete_bucket', None) and self.delete_bucket():
+            esphome_debug = os.getenv('ESPHOME_DEBUG', 'False').lower() in ('true', '1', 't')
+            if esphome_debug and debug_options.get('delete_bucket', None) and self.delete_bucket():
                 _LOGGER.info(f"Deleted bucket '{self._bucket}' at '{self._url}'")
 
-            if not self.connect_bucket():
-                FailedInitialization(f"unable to access bucket '{self._bucket}' at '{self._url}'")
+            if not self.connect_bucket(esphome_debug and debug_options.get('create_bucket', None)):
+                raise FailedInitialization(f"unable to access bucket '{self._bucket}' at '{self._url}'")
             _LOGGER.info(f"Connected to InfluxDB2: '{self._url}', bucket '{self._bucket}'")
             result = True
 
@@ -136,7 +137,7 @@ class InfluxDB:
         if measurement is None or device is None:
             raise InfluxDBFormatError(f"'measurement' and/or 'device' are required")
 
-        v = round(state, precision) if (precision and isinstance(state, float)) else state
+        v = round(state, precision) if ((precision != None) and isinstance(state, float)) else state
         if location and len(location):
             point = Point(f"{measurement}").tag("_location", f"{location}").field(f"{device}", v).time(ts, write_precision=WritePrecision.S)
         else:
@@ -159,13 +160,14 @@ class InfluxDB:
                 return True
         return False
 
-    def connect_bucket(self):
+    def connect_bucket(self, create_bucket=False):
         buckets_api = self._client.buckets_api()
         bucket = buckets_api.find_bucket_by_name(self._bucket)
         if bucket:
             return True
-        bucket = buckets_api.create_bucket(bucket_name=self._bucket, org_id=self._org, retention_rules=None, org=None)
-        if bucket:
-            _LOGGER.info(f"Created bucket '{self._bucket}' at {self._url}")
-            return True
+        if create_bucket:
+            bucket = buckets_api.create_bucket(bucket_name=self._bucket, org_id=self._org, retention_rules=None, org=None)
+            if bucket:
+                _LOGGER.info(f"Created bucket '{self._bucket}' at {self._url}")
+                return True
         return False
