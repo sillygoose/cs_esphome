@@ -48,7 +48,7 @@ esphome:
   settings:
     sampling:
       fast:     10
-      medium:   30
+      medium:   10
       slow:     60
 
   # Sensor setup
@@ -66,53 +66,53 @@ esphome:
         display_name:   'Line Voltage'
         measurement:    'voltage'
         device:         'line'
-        location:       'panel'
+        location:       ''
     - sensor:
         enable:         True
         sensor_name:    'cs24_volts_ph1'
         display_name:   'Phase 1 Voltage'
         measurement:    'voltage'
         device:         'line_1'
-        location:       'panel'
+        location:       ''
     - sensor:
         enable:         True
         sensor_name:    'cs24_volts_ph2'
         display_name:   'Phase 2 Voltage'
         measurement:    'voltage'
         device:         'line_2'
-        location:       'panel'
+        location:       ''
     - sensor:
         enable:         False
         sensor_name:    'cs24_frequency'
         display_name:   'Line Frequency'
         measurement:    'frequency'
         device:         'frequency'
-        location:       'panel'
+        location:       ''
     - sensor:
         sensor_name:    'cs24_pf1'
         display_name:   'Power Factor'
         measurement:    'power_factor'
         device:         'pf'
-        location:       'panel'
+        location:       ''
     - sensor:
         sensor_name:    'cs24_w'
         display_name:   'Total demand'
         measurement:    'power'
         device:         'total_w'
-        location:       'panel'
+        location:       ''
         integrate:      True
     - sensor:
         sensor_name:    'cs24_load'
         display_name:   'Total Load'
         measurement:    'current'
         device:         'total'
-        location:       'panel'
+        location:       ''
     - sensor:
         sensor_name:    'cs24_mia'
         display_name:   'Missing load'
         measurement:    'current'
         device:         'missing'
-        location:       'panel'
+        location:       ''
 
     # Individual CTs
     - sensor:
@@ -120,13 +120,13 @@ esphome:
         display_name:   'Phase 1 Power'
         measurement:    'power'
         device:         'line_1'
-        location:       'panel'
+        location:       ''
     - sensor:
         sensor_name:    'cs24_ct12_w'
         display_name:   'Phase 2 Power'
         measurement:    'power'
         device:         'line_2'
-        location:       'panel'
+        location:       ''
     - sensor:
         sensor_name:    'cs24_ct13_w'
         display_name:   'Tesla HPWC'

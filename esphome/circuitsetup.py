@@ -37,10 +37,10 @@ class CircuitSetup():
         self._task_gather = None
         self._esphome = None
         self._name = None
-        self._sensors_by_name = None
-        self._sensors_by_key = None
-        self._sensors_integrate = None
-        self._sensors_locations = None
+        self._sensor_by_name = None
+        self._sensor_by_key = None
+        self._sensor_integrate = None
+        self._sensor_locations = None
         self._sampling_fast = CircuitSetup._DEFAULT_FAST
         self._sampling_medium = CircuitSetup._DEFAULT_MEDIUM
         self._sampling_slow = CircuitSetup._DEFAULT_SLOW
@@ -97,9 +97,9 @@ class CircuitSetup():
             _LOGGER.error(f"Unexpected exception accessing '{self._name}' list_entities_services(): {e}")
             return False
 
-        self._sensors_by_name, self._sensors_by_key = sensors.parse_sensors(yaml=config.sensors, entities=entities)
-        self._sensors_locations = sensors.parse_by_location(self._sensors_by_name)
-        self._sensors_integrate = sensors.parse_by_integration(self._sensors_by_name)
+        self._sensor_by_name, self._sensor_by_key = sensors.parse_sensors(yaml=config.sensors, entities=entities)
+        self._sensor_locations = sensors.parse_by_location(self._sensor_by_name)
+        self._sensor_integrate = sensors.parse_by_integration(self._sensor_by_name)
         return True
 
     async def run(self):
@@ -198,11 +198,16 @@ class CircuitSetup():
             query_api = CircuitSetup._INFLUX.query_api()
             bucket = CircuitSetup._INFLUX.bucket()
             try:
-                today = query.integrate_today(query_api, bucket, self._sensors_integrate)
+                today = query.integrate_location(query_api, bucket, self._sensor_locations, 'today')
+                today += query.integrate_sensor(query_api, bucket, self._sensor_integrate, 'today')
                 CircuitSetup._INFLUX.write_points(today)
-                month = query.integrate_month(query_api, bucket, self._sensors_integrate)
+
+                month = query.integrate_location(query_api, bucket, self._sensor_locations, 'month')
+                month += query.integrate_sensor(query_api, bucket, self._sensor_integrate, 'month')
                 CircuitSetup._INFLUX.write_points(month)
-                year = query.integrate_year(query_api, bucket, self._sensors_integrate)
+
+                year = query.integrate_location(query_api, bucket, self._sensor_locations, 'year')
+                year += query.integrate_sensor(query_api, bucket, self._sensor_integrate, 'year')
                 CircuitSetup._INFLUX.write_points(year)
             except Exception as e:
                 _LOGGER.info(f"{e}")
@@ -214,6 +219,7 @@ class CircuitSetup():
             timestamp = await queue.get()
             queue.task_done()
             _LOGGER.debug(f"task_slow(queue)")
+
 
 
     async def posting_task(self, queue):
@@ -230,12 +236,13 @@ class CircuitSetup():
                 except Exception as e:
                     _LOGGER.warning(f"{e}")
 
+
     async def task_sampler(self, queue):
         """Post the subscribed data."""
         def sensor_callback(state):
             CircuitSetup._WATCHDOG += 1
             if type(state) == aioesphomeapi.SensorState:
-                sensor = self._sensors_by_key.get(state.key, None)
+                sensor = self._sensor_by_key.get(state.key, None)
                 queue.put_nowait({'sensor': sensor, 'state': state.state, 'ts': int(time.time())})
 
         await self._esphome.subscribe_states(sensor_callback)

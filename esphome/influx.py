@@ -145,8 +145,9 @@ class InfluxDB:
         if measurement is None or device is None:
             raise InfluxDBFormatError(f"'measurement' and/or 'device' are required")
 
+        location_tag = '' if not location or not len(location) else f',_location={location}'
         value = round(state, precision) if ((precision != None) and isinstance(state, float)) else state
-        lp = f'{measurement},_location={location} {device}={value} {timestamp}'
+        lp = f'{measurement}{location_tag} {device}={value} {timestamp}'
 
         try:
             self._write_api.write(bucket=self._bucket, record=lp, write_precision=WritePrecision.S)

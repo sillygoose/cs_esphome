@@ -10,16 +10,21 @@ def parse_by_location(sensors):
     location_directory = {}
     for sensor in sensors.values():
         location = sensor.get('location', None)
-        if location:
+        integrate = sensor.get('integrate', None)
+        if location == None or integrate == None:
+            continue
+        if location and integrate:
+            device = sensor.get('device', None)
             locations = location_directory.get(location, None)
             if not locations:
-                location_directory[location] = [sensor]
+                location_directory[location] = [device]
             else:
                 entry = location_directory[location]
-                entry.append(sensor)
+                entry.append(device)
                 location_directory[location] = entry
 
     return location_directory
+
 
 def parse_by_integration(sensors):
     integratable = []
@@ -27,6 +32,7 @@ def parse_by_integration(sensors):
         if sensor.get('integrate'):
             integratable.append(sensor)
     return integratable
+
 
 def parse_sensors(yaml, entities):
     sensors_by_name = {}
