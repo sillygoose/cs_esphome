@@ -12,7 +12,7 @@ RUN apt-get install -y python3 python3-pip
 
 # clone the repo into the docker container
 WORKDIR /sillygoose
-RUN git clone -b dev https://github.com/sillygoose/cs_esphome.git
+RUN git clone https://github.com/sillygoose/cs_esphome.git
 
 # install required python packages
 WORKDIR /sillygoose/cs_esphome
