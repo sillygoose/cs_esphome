@@ -128,7 +128,7 @@ class CircuitSetup():
         if self._esphome:
             await self._esphome.disconnect()
             self._esphome = None
-            await asyncio.sleep(0.25)
+            await asyncio.sleep(0.5)
         if CircuitSetup._INFLUX:
             CircuitSetup._INFLUX.stop()
             CircuitSetup._INFLUX = None
