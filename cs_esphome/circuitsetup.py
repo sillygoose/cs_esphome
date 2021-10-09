@@ -100,7 +100,7 @@ class CircuitSetup():
 
     async def run(self):
         try:
-            _LOGGER.info(f"CS/ESPHome starting up, integrations running every {self._sampling_integrations} seconds, deletions running every every {self._sampling_deletions} seconds")
+            _LOGGER.info(f"CS/ESPHome starting up, integrations running every {self._sampling_integrations} seconds, deletions running every {self._sampling_deletions} seconds")
             queues = {
                 'sampler': asyncio.Queue(),
                 'integrations': asyncio.Queue(),
