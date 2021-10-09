@@ -43,11 +43,11 @@ esphome:
   # Allows some settings to be modified without editing the code
   # settings.sampling defines how often the various processing loops run
   #   settings.sampling.integrations    sets period (in seconds) for updating integrations (int)
-  #   settings.sampling.deletions       sets  period (in seconds) for database deletions (int)
+  #   settings.sampling.deletions       sets period (in seconds) for database deletions (int)
   settings:
     sampling:
       integrations: 10
-      deletions:    600
+      deletions:    3600
 
   # Sensor setup
   # Sensors are a list of one or more sensors in the ESPHome subscription.

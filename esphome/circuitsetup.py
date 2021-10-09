@@ -141,8 +141,6 @@ class CircuitSetup():
             tomorrow = now + datetime.timedelta(days=1)
             midnight = datetime.datetime.combine(tomorrow, datetime.time(0, 1))
             await asyncio.sleep((midnight - now).total_seconds())
-
-            # Update internal sun info and the daily production
             _LOGGER.info(f"esphome energy collection utility {version.get_version()}, PID is {os.getpid()}")
 
 
@@ -203,7 +201,7 @@ class CircuitSetup():
         while True:
             timestamp = await queue.get()
             queue.task_done()
-            _LOGGER.debug(f"task_deletions(queue)")
+            _LOGGER.info(f"task_deletions(queue)")
 
 
 
