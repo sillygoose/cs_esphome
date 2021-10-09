@@ -41,15 +41,13 @@ esphome:
 
   # esphome settings
   # Allows some settings to be modified without editing the code
-  # settings.sampling defines how often the event loops run
-  #   settings.sampling.fast      sets fast loop sample period (in seconds) (int)
-  #   settings.sampling.medium    sets medium loop sample period (in seconds) (int)
-  #   settings.sampling.slow      sets slow loop sample period (in seconds) (int)
+  # settings.sampling defines how often the various processing loops run
+  #   settings.sampling.integrations    sets period (in seconds) for updating integrations (int)
+  #   settings.sampling.deletions       sets  period (in seconds) for database deletions (int)
   settings:
     sampling:
-      fast:     10
-      medium:   10
-      slow:     60
+      integrations: 10
+      deletions:    600
 
   # Sensor setup
   # Sensors are a list of one or more sensors in the ESPHome subscription.

@@ -27,9 +27,8 @@ class CircuitSetup():
     _DEFAULT_ESPHOME_API_PASSWORD = ''
     _WATCHDOG = 0
 
-    _DEFAULT_FAST = 30
-    _DEFAULT_MEDIUM = 60
-    _DEFAULT_SLOW = 120
+    _DEFAULT_INTEGRATIONS = 30
+    _DEFAULT_DELETIONS = 60 * 60 * 24
 
     def __init__(self, config):
         """Create a new CircuitSetup object."""
@@ -41,18 +40,16 @@ class CircuitSetup():
         self._sensor_by_key = None
         self._sensor_integrate = None
         self._sensor_locations = None
-        self._sampling_fast = CircuitSetup._DEFAULT_FAST
-        self._sampling_medium = CircuitSetup._DEFAULT_MEDIUM
-        self._sampling_slow = CircuitSetup._DEFAULT_SLOW
+        self._sampling_integrations = CircuitSetup._DEFAULT_INTEGRATIONS
+        self._sampling_deletions = CircuitSetup._DEFAULT_DELETIONS
 
     async def start(self):
         """Initialize the CS ESPHome API."""
         config = self._config
 
         if 'settings' in config.keys() and 'sampling' in config.settings.keys():
-            self._sampling_fast = config.settings.sampling.get('fast', CircuitSetup._DEFAULT_FAST)
-            self._sampling_medium = config.settings.sampling.get('medium', CircuitSetup._DEFAULT_MEDIUM)
-            self._sampling_slow = config.settings.sampling.get('slow', CircuitSetup._DEFAULT_SLOW)
+            self._sampling_integrations = config.settings.sampling.get('integrations', CircuitSetup._DEFAULT_INTEGRATIONS)
+            self._sampling_deletions = config.settings.sampling.get('deletions', CircuitSetup._DEFAULT_DELETIONS)
 
         if 'influxdb2' in config.keys():
             CircuitSetup._INFLUX = InfluxDB(config)
@@ -106,17 +103,15 @@ class CircuitSetup():
         try:
             queues = {
                 'sampler': asyncio.Queue(),
-                'fast': asyncio.Queue(),
-                'medium': asyncio.Queue(),
-                'slow': asyncio.Queue(),
+                'integrations': asyncio.Queue(),
+                'deletions': asyncio.Queue(),
             }
             self._task_gather = asyncio.gather(
                 self.midnight(),
                 self.watchdog(),
                 self.scheduler(queues),
-                self.task_fast(queues.get('fast')),
-                self.task_medium(queues.get('medium')),
-                self.task_slow(queues.get('slow')),
+                self.task_integrations(queues.get('integrations')),
+                self.task_deletions(queues.get('deletions')),
                 self.task_sampler(queues.get('sampler')),
                 self.posting_task(queues.get('sampler')),
             )
@@ -170,55 +165,45 @@ class CircuitSetup():
             tick = time.time_ns() // 1000000000
             if tick != last_tick:
                 last_tick = tick
-                if tick % self._sampling_fast == 0:
-                    queues.get('fast').put_nowait(tick)
-                if tick % self._sampling_medium == 0:
-                    queues.get('medium').put_nowait(tick)
-                if tick % self._sampling_slow == 0:
-                    queues.get('slow').put_nowait(tick)
-
+                if tick % self._sampling_integrations == 0:
+                    queues.get('integrations').put_nowait(tick)
+                if tick % self._sampling_deletions == 0:
+                    queues.get('deletions').put_nowait(tick)
             await asyncio.sleep(SLEEP)
 
 
-    async def task_fast(self, queue):
-        """Work done at a fast sample rate."""
+    async def task_integrations(self, queue):
+        """Task that processes the device and location integrations."""
+        query_api = CircuitSetup._INFLUX.query_api()
+        bucket = CircuitSetup._INFLUX.bucket()
         while True:
             timestamp = await queue.get()
             queue.task_done()
-            _LOGGER.debug(f"task_fast(queue)")
-
-
-    async def task_medium(self, queue):
-        """Work done at a medium sample rate."""
-        while True:
-            timestamp = await queue.get()
-            queue.task_done()
-            _LOGGER.debug(f"task_medium(queue)")
-
-            query_api = CircuitSetup._INFLUX.query_api()
-            bucket = CircuitSetup._INFLUX.bucket()
+            _LOGGER.debug(f"task_integrations(queue)")
             try:
-                today = query.integrate_location(query_api, bucket, self._sensor_locations, 'today')
-                today += query.integrate_sensor(query_api, bucket, self._sensor_integrate, 'today')
+                today = query.integrate_locations(query_api, bucket, self._sensor_locations, 'today')
+                today += query.integrate_devices(query_api, bucket, self._sensor_integrate, 'today')
                 CircuitSetup._INFLUX.write_points(today)
 
-                month = query.integrate_location(query_api, bucket, self._sensor_locations, 'month')
-                month += query.integrate_sensor(query_api, bucket, self._sensor_integrate, 'month')
+                month = query.integrate_locations(query_api, bucket, self._sensor_locations, 'month')
+                month += query.integrate_devices(query_api, bucket, self._sensor_integrate, 'month')
                 CircuitSetup._INFLUX.write_points(month)
 
-                year = query.integrate_location(query_api, bucket, self._sensor_locations, 'year')
-                year += query.integrate_sensor(query_api, bucket, self._sensor_integrate, 'year')
+                year = query.integrate_locations(query_api, bucket, self._sensor_locations, 'year')
+                year += query.integrate_devices(query_api, bucket, self._sensor_integrate, 'year')
                 CircuitSetup._INFLUX.write_points(year)
             except Exception as e:
                 _LOGGER.info(f"{e}")
 
 
-    async def task_slow(self, queue):
+    async def task_deletions(self, queue):
         """Work done at a slow sample rate."""
+        delete_api = CircuitSetup._INFLUX.delete_api()
+        bucket = CircuitSetup._INFLUX.bucket()
         while True:
             timestamp = await queue.get()
             queue.task_done()
-            _LOGGER.debug(f"task_slow(queue)")
+            _LOGGER.debug(f"task_deletions(queue)")
 
 
 

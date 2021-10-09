@@ -31,5 +31,9 @@ class InfluxDBInitializationError(Exception):
     """InfluxDB is not properly initialized."""
 
 
+class InternalError(Exception):
+    """Unexpected/inconsistant state."""
+
+
 class TerminateSignal(Exception):
     """SIGTERM."""
