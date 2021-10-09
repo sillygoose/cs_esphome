@@ -60,6 +60,7 @@ Coming together but still a prototype.
 
     `python3 cs_esphome/cs_esphome.py`
 
+    Run the InfluxDB dashbaord and confirm that the database is being ppoulated with records.
 #
 ### Docker setup
 Once you have the working `cs_esphome.yaml` and `cs_esphome_secrets.yaml` files you can build a Docker container that runs **CS/ESPHome**:
