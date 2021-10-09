@@ -81,52 +81,35 @@ As an example, suppose you download the current **esphome** build of 1.0.0.  The
 ## InfluxDB2 Schemas
 Data is organized in InfluxDB2 using the following schemas, refer to the Flux queries for examples of pulling data from InfluxDB2 for dashboard or other use.
 
-    Power factor measurements:
+    Power:
+        _measurement    power
+        _location       location (used to group devices by location such as 'kitchen' for all kitchen circuits)
+        _field          device(s) (W), line (W), l1 (W), l2 (W)
+
+    Energy:
+        _measurement    energy
+        _device         device(s), location(s) with a leading underscore
+        _field          today (Wh), month (Wh), year (Wh)
+
+    Voltage:
+        _measurement    voltage
+        _field          line (V), l1 (V), l2 (V)
+
+    Frequency:
+        _measurement    frequency
+        _field          frequency (Hz)
+
+    Power factor:
         _measurement    power_factor
         _field          pf
 
-    Voltage measurements:
-        _measurement    voltage
-        _field          iine (V), line_1 (V), line_2 (V)
-
-    Current measurements:
+    Current:
         _measurement    current
         _field          total (A), missing (A)
-
-    Power measurements:
-        _measurement    power
-        _location       location (used to group devices by location such as 'kitchen' for all kitchen devices)
-        _field          device(s) (W), total_w (W)
-
-    Energy measurements:
-        _measurement    energy
-        _energy         device(s), location(s)
-        _field          today (Wh), month (Wh), year (Wh)
 
 #
 ## Example Dashboards
 To be provided
-
-### InfluxDB2
-All InfluxDB2 queries are done in Flux.
-
-### Grafana
-Grafana dashboards
-
-This dashboard uses the following Grafana panel plug-ins:
-```
-    grafana-cli plugins install flant-statusmap-panel
-    grafana-cli plugins install mxswat-separator-panel
-```
-
-## Errors
-If you happen to make errors and get locked out of your inverters (confirm by being unable to log into an inverter using the WebConnect browser interface), the Sunny Boy inverters can be reset by
-
-- disconnect grid power from inverters (usually one or more breakers)
-- disconnect DC power from the panels to the inverters (rotary switch on each inverter)
-- wait 2 minutes
-- restore DC power via each rotary switch
-- restore grid power via breakers
 
 #
 ## Thanks

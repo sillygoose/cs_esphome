@@ -72,14 +72,14 @@ esphome:
         sensor_name:    'cs24_volts_ph1'
         display_name:   'Phase 1 Voltage'
         measurement:    'voltage'
-        device:         'line_1'
+        device:         'l1'
         location:       ''
     - sensor:
         enable:         True
         sensor_name:    'cs24_volts_ph2'
         display_name:   'Phase 2 Voltage'
         measurement:    'voltage'
-        device:         'line_2'
+        device:         'l2'
         location:       ''
     - sensor:
         enable:         False
@@ -96,9 +96,9 @@ esphome:
         location:       ''
     - sensor:
         sensor_name:    'cs24_w'
-        display_name:   'Total demand'
+        display_name:   'Total load'
         measurement:    'power'
-        device:         'total_w'
+        device:         'line'
         location:       ''
         integrate:      True
     - sensor:
@@ -117,22 +117,22 @@ esphome:
     # Individual CTs
     - sensor:
         sensor_name:    'cs24_ct11_w'
-        display_name:   'Phase 1 Power'
+        display_name:   'L1 Power'
         measurement:    'power'
-        device:         'line_1'
+        device:         'l1'
         location:       ''
     - sensor:
         sensor_name:    'cs24_ct12_w'
-        display_name:   'Phase 2 Power'
+        display_name:   'L2 Power'
         measurement:    'power'
-        device:         'line_2'
+        device:         'l2'
         location:       ''
     - sensor:
         sensor_name:    'cs24_ct13_w'
         display_name:   'Tesla HPWC'
         measurement:    'power'
         device:         'tesla'
-        location:       'cars'
+        location:       'vehicles'
         integrate:      True
     - sensor:
         sensor_name:    'cs24_ct14_w'
@@ -140,42 +140,48 @@ esphome:
         measurement:    'power'
         device:         'datacenter'
         location:       'basement'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct15_w'
         display_name:   'Basement East'
         measurement:    'power'
         device:         'east_basement'
         location:       'basement'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct16_w'
         display_name:   'Dryer'
         measurement:    'power'
         device:         'dryer'
         location:       'laundry'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct21_w'
         display_name:   'Heat pump'
         measurement:    'power'
         device:         'heatpump'
         location:       'hvac'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct22_w'
         display_name:   'Washer'
         measurement:    'power'
         device:         'washer'
         location:       'laundry'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct23_w'
         display_name:   'Hot water'
         measurement:    'power'
         device:         'hot_water'
         location:       'hvac'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct24_w'
         display_name:   'JuiceBox'
         measurement:    'power'
         device:         'juicebox'
-        location:       'cars'
+        location:       'vehicles'
         integrate:      True
     - sensor:
         sensor_name:    'cs24_ct25_w'
@@ -197,12 +203,14 @@ esphome:
         measurement:    'power'
         device:         'sump'
         location:       'basement'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct32_w'
         display_name:   'Main Bedroom'
         measurement:    'power'
         device:         'main'
         location:       'bedroom'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct33_w'
         display_name:   'Refrigerator'
@@ -237,24 +245,28 @@ esphome:
         measurement:    'power'
         device:         'guest'
         location:       'bedroom'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct42_w'
         display_name:   'Living room'
         measurement:    'power'
         device:         'living_room'
         location:       'main_floor'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct43_w'
         display_name:   'Foyer/bath'
         measurement:    'power'
         device:         'foyer'
         location:       'main_floor'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct44_w'
         display_name:   'Refrigerator'
         measurement:    'power'
         device:         'refrigerator'
         location:       'basement'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct45_w'
         display_name:   'Garage/Freezer'
@@ -267,3 +279,4 @@ esphome:
         measurement:    'power'
         device:         'west_basement'
         location:       'basement'
+        integrate:      True
