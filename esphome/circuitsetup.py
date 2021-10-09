@@ -1,4 +1,4 @@
-"""Code to interface with the CircuitSetup 6-channel energy monitor."""
+"""Code to interface with the CircuitSetup 6-channel energy monitor using ESPHome."""
 
 import os
 import time
@@ -14,9 +14,9 @@ import sensors
 import query
 
 from influx import InfluxDB
-from exceptions import FailedInitialization, WatchdogTimer
+from exceptions import WatchdogTimer, InfluxDBFormatError
 
-_LOGGER = logging.getLogger('esphome')
+_LOGGER = logging.getLogger('cs_esp')
 
 
 class CircuitSetup():
@@ -82,8 +82,7 @@ class CircuitSetup():
 
             device_info = await self._esphome.device_info()
             self._name = device_info.name
-            _LOGGER.info(f"Name: '{device_info.name}', model is {device_info.model}")
-            _LOGGER.info(f"ESPHome version: {device_info.esphome_version} built on {device_info.compilation_time}")
+            _LOGGER.info(f"Name: '{device_info.name}', model is {device_info.model}, version {device_info.esphome_version} built on {device_info.compilation_time}")
         except Exception as e:
             _LOGGER.error(f"Unexpected exception accessing version and/or device_info: {e}")
             return False
@@ -101,6 +100,7 @@ class CircuitSetup():
 
     async def run(self):
         try:
+            _LOGGER.info(f"CS/ESPHome starting up, integrations running every {self._sampling_integrations} seconds, deletions running every every {self._sampling_deletions} seconds")
             queues = {
                 'sampler': asyncio.Queue(),
                 'integrations': asyncio.Queue(),
@@ -141,7 +141,7 @@ class CircuitSetup():
             tomorrow = now + datetime.timedelta(days=1)
             midnight = datetime.datetime.combine(tomorrow, datetime.time(0, 1))
             await asyncio.sleep((midnight - now).total_seconds())
-            _LOGGER.info(f"esphome energy collection utility {version.get_version()}, PID is {os.getpid()}")
+            _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
 
 
     async def watchdog(self):
@@ -216,7 +216,7 @@ class CircuitSetup():
                 ts = packet.get('ts', None)
                 try:
                     CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state, timestamp=ts)
-                except Exception as e:
+                except InfluxDBFormatError as e:
                     _LOGGER.warning(f"{e}")
 
 

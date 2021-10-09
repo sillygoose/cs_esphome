@@ -7,39 +7,18 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 
-_LOGGER = logging.getLogger('esphome')
+_LOGGER = logging.getLogger('cs_esp')
 
-_DEFAULT_LOG_FILE = 'esphome'
+_DEFAULT_LOG_FILE = 'cs_esp'
 _DEFAULT_LOG_FORMAT = '[%(asctime)s] [%(module)s] [%(levelname)s] %(message)s'
 _DEFAULT_LOG_LEVEL = 'INFO'
 
 
-def check_config(options):
-    """Check that the the proper log option but don't check the keys."""
-    if 'esphome' not in options.keys():
-        return None
-    if 'log' not in options.esphome.keys():
-        return None
-    return dict(options.esphome.log)
-
-
-def start(config):
+def start():
     """Create the application log."""
-    log_options = check_config(config)
-    if not log_options:
-        log_file = _DEFAULT_LOG_FILE
-        log_format = _DEFAULT_LOG_FORMAT
-        log_level = _DEFAULT_LOG_LEVEL
-    else:
-        log_file = log_options.get('file', None)
-        if not log_file:
-            log_file = _DEFAULT_LOG_FILE
-        log_format = log_options.get('format', None)
-        if not log_format:
-            log_format = _DEFAULT_LOG_FORMAT
-        log_level = log_options.get('level', None)
-        if not log_level:
-            log_level = _DEFAULT_LOG_LEVEL
+    log_file = _DEFAULT_LOG_FILE
+    log_format = _DEFAULT_LOG_FORMAT
+    log_level = _DEFAULT_LOG_LEVEL
 
     now = datetime.now()
     filename = os.path.expanduser(log_file + "_" + now.strftime("%Y-%m-%d") + ".log")

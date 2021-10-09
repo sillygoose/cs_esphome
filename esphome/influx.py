@@ -1,4 +1,4 @@
-# Interface to InfluxDB esphome/cs24 database
+# Interface CS/ESPHome to the InfluxDB database
 #
 # InfluxDB Line Protocol Reference
 # https://docs.influxdata.com/influxdb/v2.0/reference/syntax/line-protocol/
@@ -17,7 +17,7 @@ from exceptions import FailedInitialization, InfluxDBWriteError, InfluxDBFormatE
 from urllib3.exceptions import NewConnectionError
 
 
-_LOGGER = logging.getLogger('esphome')
+_LOGGER = logging.getLogger('cs_esp')
 
 _INFLUXDB2_OPTIONS = {
     'url': {'type': str, 'required': True},
@@ -66,11 +66,11 @@ class InfluxDB:
             self._query_api = self._client.query_api()
             self._delete_api = self._client.delete_api()
 
-            esphome_debug = os.getenv('ESPHOME_DEBUG', 'False').lower() in ('true', '1', 't')
-            if esphome_debug and debug_options.get('delete_bucket', None) and self.delete_bucket():
+            cs_esp_debug = os.getenv('CS_ESP_DEBUG', 'False').lower() in ('true', '1', 't')
+            if cs_esp_debug and debug_options.get('delete_bucket', None) and self.delete_bucket():
                 _LOGGER.info(f"Deleted bucket '{self._bucket}' at '{self._url}'")
 
-            if not self.connect_bucket(esphome_debug and debug_options.get('create_bucket', None)):
+            if not self.connect_bucket(cs_esp_debug and debug_options.get('create_bucket', None)):
                 raise FailedInitialization(f"unable to access bucket '{self._bucket}' at '{self._url}'")
             _LOGGER.info(f"Connected to InfluxDB2: '{self._url}', bucket '{self._bucket}'")
             result = True

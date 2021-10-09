@@ -4,7 +4,7 @@ import datetime
 from exceptions import InternalError
 
 
-_LOGGER = logging.getLogger('esphome')
+_LOGGER = logging.getLogger('cs_esp')
 
 
 def create_point(measurement, tags, device, value, timestamp):

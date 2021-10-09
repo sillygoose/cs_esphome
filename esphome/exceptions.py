@@ -1,4 +1,4 @@
-"""Exceptions used in esphome."""
+"""Exceptions used in CS/ESPHome."""
 
 from enum import Enum, auto
 
@@ -12,7 +12,7 @@ class AbnormalCompletion(Exception):
 
 
 class FailedInitialization(Exception):
-    """esphome initialization failed."""
+    """CS/ESPHome initialization failed."""
 
 
 class WatchdogTimer(Exception):

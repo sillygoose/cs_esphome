@@ -16,17 +16,17 @@ from typing import Dict, List, TextIO, TypeVar, Union
 from exceptions import FailedInitialization
 
 
-CONFIG_YAML = "esphome.yaml"
-SECRET_YAML = ".esphome_secrets.yaml"
+CONFIG_YAML = "cs_esp.yaml"
+SECRET_YAML = "cs_esp_secrets.yaml"
 
 JSON_TYPE = Union[List, Dict, str]  # pylint: disable=invalid-name
 DICT_T = TypeVar("DICT_T", bound=Dict)  # pylint: disable=invalid-name
 
-_LOGGER = logging.getLogger('esphome')
+_LOGGER = logging.getLogger('cs_esp')
 _SECRET_CACHE: Dict[str, JSON_TYPE] = {}
 
 
-def buildYAMLExceptionString(exception, file='esphome'):
+def buildYAMLExceptionString(exception, file='cs_esp'):
     e = exception
     try:
         type = ''
@@ -252,13 +252,8 @@ def check_config(config):
 
     required_keys = [
         {
-            'esphome': {'required': True, 'keys':
+            'cs_esp': {'required': True, 'keys':
                           [
-                              {'log': {'required': True, 'keys': [
-                                  {'file': {'required': True, 'keys': [], 'type': str}},
-                                  {'format': {'required': True, 'keys': [], 'type': str}},
-                                  {'level': {'required': True, 'keys': [], 'type': str}},
-                              ]}},
                               {'circuitsetup': {'required': True, 'keys': [
                                   {'url': {'required': True, 'keys': [], 'type': str}},
                                   {'port': {'required': False, 'keys': [], 'type': int}},
@@ -315,8 +310,8 @@ def read_config(checking=False):
         if config and checking:
             config = check_config(config)
 
-    except FailedInitialization:
-        raise
+    except ConfigError as e:
+        raise FailedInitialization(f"{e}")
     except Exception as e:
         error_message = buildYAMLExceptionString(exception=e, file=yaml_file)
         raise FailedInitialization(Exception(f"{error_message}"))

@@ -1,13 +1,13 @@
 version: '3.8'
 services:
-  esphome:
-    container_name: esphome
-    image: esphome:latest
+  cs_esp:
+    container_name: cs_esp
+    image: cs_esp:latest
     restart: always
     environment:
       - TZ=America/New_York
     volumes:
-      - ./volumes/esphome/log:/esphome/log
+      - ./volumes/cs_esp/log:/cs_esp/log
 
 networks:
   default:

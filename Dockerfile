@@ -12,16 +12,16 @@ RUN apt-get install -y python3 python3-pip
 
 # clone the repo into the docker container
 WORKDIR /sillygoose
-RUN git clone https://github.com/sillygoose/esphome.git
+RUN git clone https://github.com/sillygoose/cs_esp.git
 
 # install required python packages
-WORKDIR /sillygoose/esphome
+WORKDIR /sillygoose/cs_esp
 RUN pip3 install -e .
 
 # add the site-specific configuration/secrets file
-WORKDIR /sillygoose/esphome/esphome
-ADD .esphome_secrets.yaml .
+WORKDIR /sillygoose/cs_esp/cs_esp
+ADD cs_esp_secrets.yaml .
 
-# run esphome
+# run cs_esp
 WORKDIR /sillygoose
-CMD ["python3", "esphome/esphome/esphome.py"]
+CMD ["python3", "cs_esp/cs_esp/cs_esp.py"]

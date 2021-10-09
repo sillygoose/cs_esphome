@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-"""esphome-cs24 setup."""
+"""CS/ESPHome setup."""
 from pathlib import Path
 from setuptools import setup
 
-VERSION = "0.1.5"
-URL = "https://github.com/sillygoose/esphome.git"
+VERSION = "0.1.6"
+URL = "https://github.com/sillygoose/cs_esp.git"
 
 setup(
-    name="esphome-cs24",
+    name="CS/ESPHome",
     version=VERSION,
-    description="CircuitSetup/ESPHome home energy data collection utility",
+    description="CircuitSetup/ESPHome energy data collection utility",
     long_description=Path("README.md").read_text(),
     long_description_content_type="text/markdown",
     url=URL,

@@ -1,9 +1,15 @@
+# **CS/ESPHome**
+Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 Energy Meter using the ESPHome API writing sensor data and integrations to an InfluxDB2 database.
+
 ## What's new
+#### 0.1.6
+Renaming of files and repos to avoid using `esphome`
+
 #### 0.1.5
 New database schema supports reporting sensor and location values and integration (today, month, and year totals).
 
 #### 0.1.4
-ESPHOME_DEBUG environment variable
+CS_ESP_DEBUG environment variable
 - ignores debug options in YAML file when not defined
 
 #### 0.1.3
@@ -22,10 +28,6 @@ Coming together but still a prototype.
 - YAML file configuration support
 
 #
-## esphome
-Python data collection utility for CircuitSetup Expandable 6 Channel ESP32 Energy Meter
-
-#
 ### Requirements
 - Python 3.8 or later (currently using 3.9.5 from an Ubuntu Hirsute Docker container)
 - Python packages used include (but the list in the `setup.py` file is the definitive list of packages)
@@ -36,45 +38,45 @@ Python data collection utility for CircuitSetup Expandable 6 Channel ESP32 Energ
     - python-configuration
     - pyyaml
 
-- CircuitSetup Expandable 6 Channel ESP32 Energy Meter hardware using 24 channel version)
+- CircuitSetup Expandable 6 Channel ESP32 Energy Meter hardware (developed using a 24 channel version)
 - Docker (a Dockerfile is supplied to allow running in a Docker container, I run this on a Raspberry Pi4 with 8GB memory that also has containers running instances of Portainer, InfluxDB2, Telegraf, Grafana, and other useful applications)
 
 ## Installation
-1.  Clone the **esphome** repository and install the Python packages:
+1.  Clone the **CS/ESPHome** repository and install the Python packages:
 
 ```
-    git clone https://github.com/sillygoose/esphome.git
-    cd esphome
+    git clone https://github.com/sillygoose/cs_esp.git
+    cd cs_esp
     pip3 install -e .
 ```
 
-2.  Rename the `example.secrets.yaml` file to `.esphome_secrets.yaml`, if you plan on using secrets.  The `.esphome_secrets.yaml` file is tagged in the `.gitignore` file and will not be included in the repository but if you wish you can put `.esphome_secrets.yaml` in any parent directory as **esphome** will start in the current directory and look in each parent directory up to your home directory for it (or just the current directory if you are not running in a user profile).
+2.  Rename the `example.secrets.yaml` file to `cs_esp_secrets.yaml`, if you plan on using secrets.  The `cs_esp_secrets.yaml` file is tagged in the `.gitignore` file and will not be included in your repository but if you wish you can put `cs_esp_secrets.yaml` in any parent directory as **CS/ESPHome** will start in the current directory and look in each parent directory up to your home directory for it (or just the current directory if you are not running in a user profile).
 
-    Edit `esphome.yaml` and `.esphome_secrets.yaml` to match your CircuitSetup hardware, you will need the URL, port, and password for the CircuitSetup ESPHome API.  If interfacing to InfluxDB you need the host URL,  site name, bucket, and login credentials.
+    Edit `cs_esp.yaml` and `cs_esp_secrets.yaml` to match your CircuitSetup hardware, you will need the URL, port, and password for the CircuitSetup ESPHome API.  If interfacing to InfluxDB you need the host URL,  site name, bucket, and login credentials.
 
     There are some other fields to configure for the log files, time zone, etc, these should be easy to figure out.
 
-3.  Test that **esphome** connects to your CircuitSetup hardware and the InfluxDB database:
+3.  Test that **CS/ESPHome** connects to your CircuitSetup hardware and the InfluxDB database:
 
-    `python3 esphome/esphome.py`
+    `python3 cs_esp/cs_esp.py`
 
 #
 ### Docker setup
-Once you have a working `esphome.yaml` file you can build a Docker container that runs **esphome**:
+Once you have the working `cs_esp.yaml` and `cs_esp_secrets.yaml` files you can build a Docker container that runs **CS/ESPHome**:
 
 ```
-    sudo docker build --no-cache -t esphome:your-tag .
-    sudo docker image tag esphome:your-tag esphome:latest
+    sudo docker build --no-cache -t cs_esp:your-tag .
+    sudo docker image tag cs_esp:your-tag cs_esp:latest
     sudo docker-compose up -d
 ```
 
-where `your-tag` is a string of your choosing (the `--no-cache` option will force Docker to pull the latest version of **esphome** from GitHub).  The `docker-compose.yaml` file assumes the image to be `esphome:latest`, the second command adds this tag so you can use the docker-compose file to start the new instance and keep the old image as a backup until the new version checks out.
+where `your-tag` is a string of your choosing (the `--no-cache` option will force Docker to pull the latest version of **CS/ESPHome** from GitHub).  The `docker-compose.yaml` file assumes the image to be `cs_esp:latest`, the second command adds this tag so you can use the docker-compose file to start the new instance and keep the old image as a backup until the new version checks out.
 
-As an example, suppose you download the current **esphome** build of 1.0.0.  Then to create and run the Docker container you would use
+As an example, suppose you download the current **CS/ESPHome** build of 1.0.0.  Then to create and run the Docker container you would use
 
 ```
-    sudo docker build --no-cache -t esphome:1.0.0 .
-    sudo docker image tag esphome:1.0.0 esphome:latest
+    sudo docker build --no-cache -t cs_esp:1.0.0 .
+    sudo docker image tag cs_esp:1.0.0 cs_esp:latest
     sudo docker-compose up -d
 ```
 #

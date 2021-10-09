@@ -19,16 +19,16 @@ import logfiles
 from exceptions import TerminateSignal, NormalCompletion, AbnormalCompletion, FailedInitialization, WatchdogTimer
 
 
-_LOGGER = logging.getLogger('esphome')
+_LOGGER = logging.getLogger('cs_esp')
 
 
-class ESPHome():
+class CS24():
 
     def __init__(self, config):
         """Initialize the ESPHome instance."""
         self._config = config
         self._loop = asyncio.new_event_loop()
-        self._cs24 = None
+        self._cs_esp = None
         signal.signal(signal.SIGTERM, self.catch)
         signal.siginterrupt(signal.SIGTERM, False)
 
@@ -74,26 +74,26 @@ class ESPHome():
                 _LOGGER.critical("Received KeyboardInterrupt during shutdown")
             finally:
                 if delay > 0:
-                    _LOGGER.info(f"esphome is delaying restart for {delay} seconds (Docker will restart esphome, otherwise exits)")
+                    _LOGGER.info(f"CS/ESPHome is delaying restart for {delay} seconds (Docker will restart CS/ESPHome, otherwise exits)")
                     time.sleep(delay)
 
     async def _astart(self):
         """Asynchronous initialization code."""
-        config = self._config.esphome
-        self._cs24 = CircuitSetup(config=config)
-        result = await self._cs24.start()
+        config = self._config.cs_esp
+        self._cs_esp = CircuitSetup(config=config)
+        result = await self._cs_esp.start()
         if not result:
             raise FailedInitialization
 
     async def _arun(self):
         """Asynchronous run code."""
-        await self._cs24.run()
+        await self._cs_esp.run()
 
     async def _astop(self):
         """Asynchronous closing code."""
-        _LOGGER.info("Closing esphome application")
-        if self._cs24:
-            await self._cs24.stop()
+        _LOGGER.info("Closing CS/ESPHome application")
+        if self._cs_esp:
+            await self._cs_esp.stop()
 
     def _start(self):
         """Initialize everything prior to running."""
@@ -109,22 +109,15 @@ class ESPHome():
 
 
 def main():
-    """Set up and start esphome."""
-
-    try:
-        config = read_config(checking=False)
-    except FailedInitialization as e:
-        print(f"{e}")
-        return
-
-    logfiles.start(config)
+    """Set up and start CS/ESPHome application."""
+    logfiles.start()
     _LOGGER.info(f"CircuitSetup/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
 
     try:
         config = read_config(checking=True)
         if config:
-            esphome = ESPHome(config)
-            esphome.run()
+            cs_esp = CS24(config)
+            cs_esp.run()
     except FailedInitialization as e:
         _LOGGER.error(f"{e}")
     except Exception as e:
@@ -132,7 +125,7 @@ def main():
 
 
 if __name__ == "__main__":
-    # make sure we can run esphome
+    # make sure we can run cs_esp
     if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
         main()
     else:
