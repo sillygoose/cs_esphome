@@ -45,38 +45,38 @@ Coming together but still a prototype.
 1.  Clone the **CS/ESPHome** repository and install the Python packages:
 
 ```
-    git clone https://github.com/sillygoose/cs_esp.git
-    cd cs_esp
+    git clone https://github.com/sillygoose/cs_esphome.git
+    cd cs_esphome
     pip3 install -e .
 ```
 
-2.  Rename the `example.secrets.yaml` file to `cs_esp_secrets.yaml`, if you plan on using secrets.  The `cs_esp_secrets.yaml` file is tagged in the `.gitignore` file and will not be included in your repository but if you wish you can put `cs_esp_secrets.yaml` in any parent directory as **CS/ESPHome** will start in the current directory and look in each parent directory up to your home directory for it (or just the current directory if you are not running in a user profile).
+2.  Rename the `example.secrets.yaml` file to `cs_esphome_secrets.yaml`, if you plan on using secrets.  The `cs_esphome_secrets.yaml` file is tagged in the `.gitignore` file and will not be included in your repository but if you wish you can put `cs_esphome_secrets.yaml` in any parent directory as **CS/ESPHome** will start in the current directory and look in each parent directory up to your home directory for it (or just the current directory if you are not running in a user profile).
 
-    Edit `cs_esp.yaml` and `cs_esp_secrets.yaml` to match your CircuitSetup hardware, you will need the URL, port, and password for the CircuitSetup ESPHome API.  If interfacing to InfluxDB you need the host URL,  site name, bucket, and login credentials.
+    Edit `cs_esphome.yaml` and `cs_esphome_secrets.yaml` to match your CircuitSetup hardware, you will need the URL, port, and password for the CircuitSetup ESPHome API.  If interfacing to InfluxDB you need the host URL,  site name, bucket, and login credentials.
 
     There are some other fields to configure for the log files, time zone, etc, these should be easy to figure out.
 
 3.  Test that **CS/ESPHome** connects to your CircuitSetup hardware and the InfluxDB database:
 
-    `python3 cs_esp/cs_esp.py`
+    `python3 cs_esphome/cs_esphome.py`
 
 #
 ### Docker setup
-Once you have the working `cs_esp.yaml` and `cs_esp_secrets.yaml` files you can build a Docker container that runs **CS/ESPHome**:
+Once you have the working `cs_esphome.yaml` and `cs_esphome_secrets.yaml` files you can build a Docker container that runs **CS/ESPHome**:
 
 ```
-    sudo docker build --no-cache -t cs_esp:your-tag .
-    sudo docker image tag cs_esp:your-tag cs_esp:latest
+    sudo docker build --no-cache -t cs_esphome:your-tag .
+    sudo docker image tag cs_esphome:your-tag cs_esphome:latest
     sudo docker-compose up -d
 ```
 
-where `your-tag` is a string of your choosing (the `--no-cache` option will force Docker to pull the latest version of **CS/ESPHome** from GitHub).  The `docker-compose.yaml` file assumes the image to be `cs_esp:latest`, the second command adds this tag so you can use the docker-compose file to start the new instance and keep the old image as a backup until the new version checks out.
+where `your-tag` is a string of your choosing (the `--no-cache` option will force Docker to pull the latest version of **CS/ESPHome** from GitHub).  The `docker-compose.yaml` file assumes the image to be `cs_esphome:latest`, the second command adds this tag so you can use the docker-compose file to start the new instance and keep the old image as a backup until the new version checks out.
 
 As an example, suppose you download the current **CS/ESPHome** build of 1.0.0.  Then to create and run the Docker container you would use
 
 ```
-    sudo docker build --no-cache -t cs_esp:1.0.0 .
-    sudo docker image tag cs_esp:1.0.0 cs_esp:latest
+    sudo docker build --no-cache -t cs_esphome:1.0.0 .
+    sudo docker image tag cs_esphome:1.0.0 cs_esphome:latest
     sudo docker-compose up -d
 ```
 #

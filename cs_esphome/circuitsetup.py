@@ -16,7 +16,7 @@ import query
 from influx import InfluxDB
 from exceptions import WatchdogTimer, InfluxDBFormatError
 
-_LOGGER = logging.getLogger('cs_esp')
+_LOGGER = logging.getLogger('cs_esphome')
 
 
 class CircuitSetup():

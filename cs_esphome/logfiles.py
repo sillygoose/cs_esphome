@@ -7,9 +7,9 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 
-_LOGGER = logging.getLogger('cs_esp')
+_LOGGER = logging.getLogger('cs_esphome')
 
-_DEFAULT_LOG_FILE = 'cs_esp'
+_DEFAULT_LOG_FILE = 'cs_esphome'
 _DEFAULT_LOG_FORMAT = '[%(asctime)s] [%(module)s] [%(levelname)s] %(message)s'
 _DEFAULT_LOG_LEVEL = 'INFO'
 

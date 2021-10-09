@@ -3,7 +3,7 @@
 import logging
 
 
-_LOGGER = logging.getLogger('cs_esp')
+_LOGGER = logging.getLogger('cs_esphome')
 
 
 def parse_by_location(sensors):

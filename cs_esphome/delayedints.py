@@ -8,7 +8,7 @@ import signal
 import logging
 
 
-logger = logging.getLogger('cs_esp')
+logger = logging.getLogger('cs_esphome')
 
 
 __all__ = [

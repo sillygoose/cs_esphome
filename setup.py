@@ -5,7 +5,7 @@ from pathlib import Path
 from setuptools import setup
 
 VERSION = "0.1.6"
-URL = "https://github.com/sillygoose/cs_esp.git"
+URL = "https://github.com/sillygoose/cs_esphome.git"
 
 setup(
     name="CS/ESPHome",

@@ -19,16 +19,16 @@ import logfiles
 from exceptions import TerminateSignal, NormalCompletion, AbnormalCompletion, FailedInitialization, WatchdogTimer
 
 
-_LOGGER = logging.getLogger('cs_esp')
+_LOGGER = logging.getLogger('cs_esphome')
 
 
-class CS24():
-
+class CS_ESPHome():
+    """Class to encapsulate the ESPHome Api and a CircuitSetup energy monitor."""
     def __init__(self, config):
         """Initialize the ESPHome instance."""
         self._config = config
         self._loop = asyncio.new_event_loop()
-        self._cs_esp = None
+        self._cs_esphome = None
         signal.signal(signal.SIGTERM, self.catch)
         signal.siginterrupt(signal.SIGTERM, False)
 
@@ -79,21 +79,21 @@ class CS24():
 
     async def _astart(self):
         """Asynchronous initialization code."""
-        config = self._config.cs_esp
-        self._cs_esp = CircuitSetup(config=config)
-        result = await self._cs_esp.start()
+        config = self._config.cs_esphome
+        self._cs_esphome = CircuitSetup(config=config)
+        result = await self._cs_esphome.start()
         if not result:
             raise FailedInitialization
 
     async def _arun(self):
         """Asynchronous run code."""
-        await self._cs_esp.run()
+        await self._cs_esphome.run()
 
     async def _astop(self):
         """Asynchronous closing code."""
         _LOGGER.info("Closing CS/ESPHome application")
-        if self._cs_esp:
-            await self._cs_esp.stop()
+        if self._cs_esphome:
+            await self._cs_esphome.stop()
 
     def _start(self):
         """Initialize everything prior to running."""
@@ -116,8 +116,8 @@ def main():
     try:
         config = read_config(checking=True)
         if config:
-            cs_esp = CS24(config)
-            cs_esp.run()
+            cs_esphome = CS_ESPHome(config)
+            cs_esphome.run()
     except FailedInitialization as e:
         _LOGGER.error(f"{e}")
     except Exception as e:
@@ -125,7 +125,7 @@ def main():
 
 
 if __name__ == "__main__":
-    # make sure we can run cs_esp
+    # make sure we can run CS/ESPHome
     if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
         main()
     else:

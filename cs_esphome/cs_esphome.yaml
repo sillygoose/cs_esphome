@@ -1,7 +1,7 @@
 # YAML configuration file for configuring the application to connect to the
 # ESPHome API and subscribe to energy sensor updates from the CircuitSetup hardware.
-cs_esp:
-  # debug fields (requires CS_ESP_DEBUG to be set to True or 1 to be in effect)
+cs_esphome:
+  # debug fields (requires CS_ESPHOME_DEBUG to be set to True or 1 to be in effect)
   #  debug.create_bucket    creates the InfluxDB2 bucket if it does not exist
   #  debug.delete_bucket    deletes the bucket if it exists
   debug:
