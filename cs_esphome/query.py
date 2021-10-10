@@ -2,6 +2,7 @@ import logging
 import datetime
 
 from exceptions import InternalError
+from influxdb_client.rest import ApiException
 
 
 _LOGGER = logging.getLogger('cs_esphome')
@@ -46,7 +47,7 @@ def integrate_locations(query_api, bucket, locations, period):
             f' |> filter(fn: (r) => r._field == "year")' \
             f' |> pivot(rowKey:["_field"], columnKey: ["_device"], valueColumn: "_value")'
         else:
-            raise InternalError(f"Internal error detected, expected 'today'. 'month', or 'year'")
+            raise InternalError(f"expected 'today'. 'month', or 'year'")
 
         tables = query_api.query(query)
         for table in tables:
@@ -101,7 +102,7 @@ def integrate_devices(query_api, bucket, sensors, period):
             f' |> filter(fn: (r) => r._device == "{device}")' \
             f' |> sum(column: "_value")'
         else:
-            raise InternalError(f"Internal error detected, expected 'today'. 'month', or 'year' for the period")
+            raise InternalError(f"expected 'today'. 'month', or 'year' for the period")
 
         tables = query_api.query(query)
         for table in tables:
@@ -113,3 +114,14 @@ def integrate_devices(query_api, bucket, sensors, period):
                 point = create_point(measurement='energy', tags=tags, device=f'{period}', value=value, timestamp=ts)
                 points.append(point)
     return points
+
+
+def execute_query(query_api, query):
+    tables = []
+    try:
+        tables = query_api.query(query)
+    except ApiException as e:
+        _LOGGER.error(f"InfluxDB2 query error: {e.reason}")
+    except Exception as e:
+        raise InternalError(f"{e}")
+    return tables

@@ -5,6 +5,7 @@ import time
 import asyncio
 import logging
 import datetime
+from dateutil.relativedelta import relativedelta
 
 import aioesphomeapi
 from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
@@ -12,9 +13,10 @@ from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
 import version
 import sensors
 import query
+from readconfig import retrieve_options
 
 from influx import InfluxDB
-from exceptions import WatchdogTimer, InfluxDBFormatError
+from exceptions import WatchdogTimer, InfluxDBFormatError, InfluxDBWriteError, InternalError
 
 _LOGGER = logging.getLogger('cs_esphome')
 
@@ -109,6 +111,7 @@ class CircuitSetup():
             self._task_gather = asyncio.gather(
                 self.midnight(),
                 self.watchdog(),
+                self.filldata(),
                 self.scheduler(queues),
                 self.task_integrations(queues.get('integrations')),
                 self.task_deletions(queues.get('deletions')),
@@ -132,6 +135,51 @@ class CircuitSetup():
         if CircuitSetup._INFLUX:
             CircuitSetup._INFLUX.stop()
             CircuitSetup._INFLUX = None
+
+
+    async def filldata(self) -> None:
+        """Task to fill in missing data for Grafana."""
+        _DEBUG_ENV_VAR = 'CS_ESPHOME_DEBUG'
+        _DEBUG_OPTIONS = {
+            'fill_data': {'type': bool, 'required': False},
+        }
+        debug_options = retrieve_options(self._config, 'debug', _DEBUG_OPTIONS)
+        cs_esphome_debug = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
+        if cs_esphome_debug == False or debug_options.get('fill_data', False) == False:
+            return
+
+        start = datetime.datetime.combine(datetime.datetime.now().replace(year=2020, month=1, day=1), datetime.time(0, 0))
+        stop = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
+
+        query_api = CircuitSetup._INFLUX.query_api()
+        bucket = CircuitSetup._INFLUX.bucket()
+        check_query = f'from(bucket: "{bucket}")' \
+            f' |> range(start: {int(start.timestamp())})' \
+            f' |> filter(fn: (r) => r._measurement == "energy")' \
+            f' |> filter(fn: (r) => r._device == "line")' \
+            f' |> filter(fn: (r) => r._field == "today")' \
+            f' |> first()'
+        tables = query.execute_query(query_api, check_query)
+        for table in tables:
+            for row in table.records:
+                stop = row.values.get('_time')
+
+        current = start
+        while int(current.timestamp()) < int(stop.timestamp()):
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'today', 0.0, int(current.timestamp()))
+            current += relativedelta(days=1)
+
+        current = start
+        while int(current.timestamp()) < int(stop.timestamp()):
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'month', 0.0, int(current.timestamp()))
+            current += relativedelta(months=1)
+
+        current = start
+        while int(current.timestamp()) < int(stop.timestamp()):
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'year', 0.0, int(current.timestamp()))
+            current += relativedelta(years=1)
+
+        _LOGGER.info(f"CS/ESPHome missing data fill: {start.date()} to {stop.date()}")
 
 
     async def midnight(self) -> None:
@@ -190,8 +238,12 @@ class CircuitSetup():
                 year = query.integrate_locations(query_api, bucket, self._sensor_locations, 'year')
                 year += query.integrate_devices(query_api, bucket, self._sensor_integrate, 'year')
                 CircuitSetup._INFLUX.write_points(year)
+            except InfluxDBWriteError as e:
+                _LOGGER.warning(f"{e}")
+            except InternalError as e:
+                _LOGGER.error(f"Internal error detected, {e}")
             except Exception as e:
-                _LOGGER.info(f"{e}")
+                _LOGGER.error(f"Unexpected exception: {e}")
 
 
     async def task_deletions(self, queue):
@@ -201,7 +253,7 @@ class CircuitSetup():
         while True:
             timestamp = await queue.get()
             queue.task_done()
-            _LOGGER.info(f"task_deletions(queue)")
+            _LOGGER.debug(f"task_deletions(queue)")
 
 
 

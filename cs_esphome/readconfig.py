@@ -268,6 +268,7 @@ def check_config(config):
                               {'debug': {'required': False, 'keys': [
                                   {'create_bucket': {'required': False, 'keys': [], 'type': bool}},
                                   {'delete_bucket': {'required': False, 'keys': [], 'type': bool}},
+                                  {'fill_data': {'required': False, 'keys': [], 'type': bool}},
                               ]}},
                               {'sensors': {'required': True, 'keys': [
                                   {'sensor': {'required': True, 'keys': [

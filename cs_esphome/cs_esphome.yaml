@@ -4,9 +4,11 @@ cs_esphome:
   # debug fields (requires CS_ESPHOME_DEBUG to be set to True or 1 to be in effect)
   #  debug.create_bucket    creates the InfluxDB2 bucket if it does not exist
   #  debug.delete_bucket    deletes the bucket if it exists
+  #  debug.fill_data        fills in today/month fields to 0 (for Grafana)
   debug:
     create_bucket:  True
     delete_bucket:  True
+    fill_data:      True
 
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.
