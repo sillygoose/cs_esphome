@@ -4,11 +4,16 @@ cs_esphome:
   # debug fields (requires CS_ESPHOME_DEBUG to be set to True or 1 to be in effect)
   #  debug.create_bucket    creates the InfluxDB2 bucket if it does not exist
   #  debug.delete_bucket    deletes the bucket if it exists
-  #  debug.fill_data        fills in today/month fields to 0 (for Grafana)
+  #
+  #  This option can fill in the today/month/year energy records to make your long-term
+  #  Grafana graphs filled.  Use a smart fill in queries the database for the first entry
+  #  so not to overwrite any existing entries.  Will fill in a 13 months worth of data.
+  #  .
+  #  debug.fill_data        fills in today/month/year energy fields to 0
   debug:
-    create_bucket:  True
-    delete_bucket:  True
-    fill_data:      True
+    create_bucket:  False
+    delete_bucket:  False
+    fill_data:      False
 
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.

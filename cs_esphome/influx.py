@@ -103,6 +103,10 @@ class InfluxDB:
         return self._bucket
 
 
+    def org(self):
+        return self._org
+
+
     def write_api(self):
         return self._write_api
 

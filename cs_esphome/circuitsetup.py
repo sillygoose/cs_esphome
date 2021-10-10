@@ -5,7 +5,10 @@ import time
 import asyncio
 import logging
 import datetime
+
 from dateutil.relativedelta import relativedelta
+from dateutil import tz
+import pytz
 
 import aioesphomeapi
 from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
@@ -148,13 +151,15 @@ class CircuitSetup():
         if cs_esphome_debug == False or debug_options.get('fill_data', False) == False:
             return
 
-        start = datetime.datetime.combine(datetime.datetime.now().replace(year=2020, month=1, day=1), datetime.time(0, 0))
-        stop = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
+        local_start = datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)) - relativedelta(months=13)
+        local_stop = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
+        utc_start = pytz.utc.localize(local_start)
+        utc_stop = pytz.utc.localize(local_stop)
 
         query_api = CircuitSetup._INFLUX.query_api()
         bucket = CircuitSetup._INFLUX.bucket()
         check_query = f'from(bucket: "{bucket}")' \
-            f' |> range(start: {int(start.timestamp())})' \
+            f' |> range(start: 0)' \
             f' |> filter(fn: (r) => r._measurement == "energy")' \
             f' |> filter(fn: (r) => r._device == "line")' \
             f' |> filter(fn: (r) => r._field == "today")' \
@@ -164,22 +169,28 @@ class CircuitSetup():
             for row in table.records:
                 stop = row.values.get('_time')
 
-        current = start
-        while int(current.timestamp()) < int(stop.timestamp()):
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'today', 0.0, int(current.timestamp()))
-            current += relativedelta(days=1)
+        utc_current = utc_start
+        local_current = local_start
+        while utc_current < utc_stop:
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'today', 0.0, int(local_current.timestamp()))
+            utc_current += relativedelta(days=1)
+            local_current += relativedelta(days=1)
 
-        current = start
-        while int(current.timestamp()) < int(stop.timestamp()):
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'month', 0.0, int(current.timestamp()))
-            current += relativedelta(months=1)
+        utc_current = utc_start
+        local_current = local_start
+        while utc_current < utc_stop:
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'month', 0.0, int(local_current.timestamp()))
+            utc_current += relativedelta(months=1)
+            local_current += relativedelta(months=1)
 
-        current = start
-        while int(current.timestamp()) < int(stop.timestamp()):
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'year', 0.0, int(current.timestamp()))
-            current += relativedelta(years=1)
+        utc_current = utc_start
+        local_current = local_start
+        while utc_current < utc_stop:
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'year', 0.0, int(local_current.timestamp()))
+            utc_current += relativedelta(years=1)
+            local_current += relativedelta(years=1)
 
-        _LOGGER.info(f"CS/ESPHome missing data fill: {start.date()} to {stop.date()}")
+        _LOGGER.info(f"CS/ESPHome missing data fill: {local_start.date()} to {local_stop.date()}")
 
 
     async def midnight(self) -> None:
@@ -250,6 +261,7 @@ class CircuitSetup():
         """Work done at a slow sample rate."""
         delete_api = CircuitSetup._INFLUX.delete_api()
         bucket = CircuitSetup._INFLUX.bucket()
+        org = CircuitSetup._INFLUX.org()
         while True:
             timestamp = await queue.get()
             queue.task_done()
