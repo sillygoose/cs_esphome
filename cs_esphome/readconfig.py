@@ -284,7 +284,6 @@ def check_config(config):
                               {'settings': {'required': False, 'keys': [
                                   {'sampling': {'required': False, 'keys': [
                                       {'integrations': {'required': False, 'keys': [], 'type': int}},
-                                      {'deletions': {'required': False, 'keys': [], 'type': int}},
                                   ]}},
                               ]}},
                           ],

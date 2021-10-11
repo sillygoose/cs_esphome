@@ -7,8 +7,7 @@ import logging
 import datetime
 
 from dateutil.relativedelta import relativedelta
-from dateutil import tz
-import pytz
+import dateutil
 
 import aioesphomeapi
 from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
@@ -19,7 +18,7 @@ import query
 from readconfig import retrieve_options
 
 from influx import InfluxDB
-from exceptions import WatchdogTimer, InfluxDBFormatError, InfluxDBWriteError, InternalError
+from exceptions import WatchdogTimer, InfluxDBFormatError, InfluxDBWriteError, InternalError, FailedInitialization
 
 _LOGGER = logging.getLogger('cs_esphome')
 
@@ -46,7 +45,6 @@ class CircuitSetup():
         self._sensor_integrate = None
         self._sensor_locations = None
         self._sampling_integrations = CircuitSetup._DEFAULT_INTEGRATIONS
-        self._sampling_deletions = CircuitSetup._DEFAULT_DELETIONS
 
     async def start(self):
         """Initialize the CS ESPHome API."""
@@ -54,7 +52,6 @@ class CircuitSetup():
 
         if 'settings' in config.keys() and 'sampling' in config.settings.keys():
             self._sampling_integrations = config.settings.sampling.get('integrations', CircuitSetup._DEFAULT_INTEGRATIONS)
-            self._sampling_deletions = config.settings.sampling.get('deletions', CircuitSetup._DEFAULT_DELETIONS)
 
         if 'influxdb2' in config.keys():
             CircuitSetup._INFLUX = InfluxDB(config)
@@ -105,7 +102,7 @@ class CircuitSetup():
 
     async def run(self):
         try:
-            _LOGGER.info(f"CS/ESPHome starting up, integrations running every {self._sampling_integrations} seconds, deletions running every {self._sampling_deletions} seconds")
+            _LOGGER.info(f"CS/ESPHome starting up, ESPHome sensors processed every {self._sampling_integrations} seconds")
             queues = {
                 'sampler': asyncio.Queue(),
                 'integrations': asyncio.Queue(),
@@ -122,6 +119,8 @@ class CircuitSetup():
                 self.posting_task(queues.get('sampler')),
             )
             await self._task_gather
+        except FailedInitialization as e:
+            _LOGGER.error(f"{e}")
         except Exception as e:
             _LOGGER.error(f"something else: {e}")
 
@@ -130,6 +129,7 @@ class CircuitSetup():
         """Shutdown."""
         if self._task_gather:
             self._task_gather.cancel()
+            await asyncio.sleep(0.5)
 
         if self._esphome:
             await self._esphome.disconnect()
@@ -151,10 +151,8 @@ class CircuitSetup():
         if cs_esphome_debug == False or debug_options.get('fill_data', False) == False:
             return
 
-        local_start = datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)) - relativedelta(months=13)
-        local_stop = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
-        utc_start = pytz.utc.localize(local_start)
-        utc_stop = pytz.utc.localize(local_stop)
+        start = datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)) - relativedelta(months=13)
+        stop = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
 
         query_api = CircuitSetup._INFLUX.query_api()
         bucket = CircuitSetup._INFLUX.bucket()
@@ -167,30 +165,25 @@ class CircuitSetup():
         tables = query.execute_query(query_api, check_query)
         for table in tables:
             for row in table.records:
-                stop = row.values.get('_time')
+                utc = row.values.get('_time')
+                stop = datetime.datetime(year=utc.year, month=utc.month, day=utc.day)
 
-        utc_current = utc_start
-        local_current = local_start
-        while utc_current < utc_stop:
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'today', 0.0, int(local_current.timestamp()))
-            utc_current += relativedelta(days=1)
-            local_current += relativedelta(days=1)
+        current = start.replace(month=1, day=1)
+        while current < stop:
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'year', 0.0, int(current.timestamp()))
+            current += relativedelta(years=1)
 
-        utc_current = utc_start
-        local_current = local_start
-        while utc_current < utc_stop:
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'month', 0.0, int(local_current.timestamp()))
-            utc_current += relativedelta(months=1)
-            local_current += relativedelta(months=1)
+        current = start.replace(day=1)
+        while current < stop:
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'month', 0.0, int(current.timestamp()))
+            current += relativedelta(months=1)
 
-        utc_current = utc_start
-        local_current = local_start
-        while utc_current < utc_stop:
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'year', 0.0, int(local_current.timestamp()))
-            utc_current += relativedelta(years=1)
-            local_current += relativedelta(years=1)
+        current = start
+        while current < stop:
+            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'today', 0.0, int(current.timestamp()))
+            current += relativedelta(days=1)
 
-        _LOGGER.info(f"CS/ESPHome missing data fill: {local_start.date()} to {local_stop.date()}")
+        _LOGGER.info(f"CS/ESPHome missing data fill: {start.date()} to {stop.date()}")
 
 
     async def midnight(self) -> None:
@@ -224,8 +217,6 @@ class CircuitSetup():
                 last_tick = tick
                 if tick % self._sampling_integrations == 0:
                     queues.get('integrations').put_nowait(tick)
-                if tick % self._sampling_deletions == 0:
-                    queues.get('deletions').put_nowait(tick)
             await asyncio.sleep(SLEEP)
 
 
@@ -262,10 +253,15 @@ class CircuitSetup():
         delete_api = CircuitSetup._INFLUX.delete_api()
         bucket = CircuitSetup._INFLUX.bucket()
         org = CircuitSetup._INFLUX.org()
+        #start = datetime.datetime.combine(datetime.datetime.now().replace(month=8, day=1), datetime.time(0, 0))
+        #stop = datetime.datetime.combine(datetime.datetime.now().replace(month=9, day=3), datetime.time(0, 0))
+        #start = "2020-01-01T00:00:00Z"
+        #stop = "2021-10-03T00:00:00Z"
+        #delete_api.delete(start, stop, '_measurement="energy"', bucket=bucket, org=org)
         while True:
-            timestamp = await queue.get()
+            request = await queue.get()
             queue.task_done()
-            _LOGGER.debug(f"task_deletions(queue)")
+            _LOGGER.debug(f"task_deletions(queue): {request}")
 
 
 
