@@ -40,10 +40,12 @@ cs_esphome:
   # CS/ESPHome settings
   # Allows some settings to be modified without editing the code
   # settings.sampling defines how often the various processing loops run
-  #   settings.sampling.integrations    sets period (in seconds) for updating integrations (int)
+  #   settings.sampling.integrations    period (seconds) for updating integrations (int)
+  #   settings.watchdog                 override the default watchdog timer timeout (int)
   settings:
     sampling:
       integrations: 10
+    watchdog:   30
 
   # Sensor setup
   # Sensors are a list of one or more sensors in the ESPHome subscription.
@@ -96,17 +98,12 @@ cs_esphome:
         location:       ''
         integrate:      True
     - sensor:
-        sensor_name:    'cs24_load'
-        display_name:   'Total Load'
-        measurement:    'current'
-        device:         'total'
+        sensor_name:    'cs24_w_metered'
+        display_name:   'Metered circuits watts'
+        measurement:    'power'
+        device:         'metered'
         location:       ''
-    - sensor:
-        sensor_name:    'cs24_mia'
-        display_name:   'Missing load'
-        measurement:    'current'
-        device:         'missing'
-        location:       ''
+        integrate:      True
 
     # Individual CTs
     - sensor:
@@ -154,7 +151,7 @@ cs_esphome:
         display_name:   'Heat pump'
         measurement:    'power'
         device:         'heatpump'
-        location:       'hvac'
+        location:       ''
         integrate:      True
     - sensor:
         sensor_name:    'cs24_ct22_w'
@@ -168,7 +165,7 @@ cs_esphome:
         display_name:   'Hot water'
         measurement:    'power'
         device:         'hot_water'
-        location:       'hvac'
+        location:       ''
         integrate:      True
     - sensor:
         sensor_name:    'cs24_ct24_w'

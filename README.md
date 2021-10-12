@@ -5,7 +5,8 @@ Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 E
 #### 0.1.7
 Help make Grafana dashboards graphs look good
 - debug.fill_data will backfill the database with 13 months of energy entries, up to the first existing entry
-- deletion task accepts deletion requests
+- improved watchdog code with YAML file override of watchdog period
+- settings option to override the default integration task period
 
 #### 0.1.6
 Renaming of files and repos to avoid using `esphome` to avoid any confusion

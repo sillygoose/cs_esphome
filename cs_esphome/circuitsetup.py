@@ -29,10 +29,11 @@ class CircuitSetup():
     _INFLUX = None
     _DEFAULT_ESPHOME_API_PORT = 6053
     _DEFAULT_ESPHOME_API_PASSWORD = ''
+
+    _DEFAULT_WATCHDOG = 60
     _WATCHDOG = 0
 
     _DEFAULT_INTEGRATIONS = 30
-    _DEFAULT_DELETIONS = 60 * 60 * 24
 
     def __init__(self, config):
         """Create a new CircuitSetup object."""
@@ -45,13 +46,17 @@ class CircuitSetup():
         self._sensor_integrate = None
         self._sensor_locations = None
         self._sampling_integrations = CircuitSetup._DEFAULT_INTEGRATIONS
+        self._watchdog = CircuitSetup._DEFAULT_WATCHDOG
 
     async def start(self):
-        """Initialize the CS ESPHome API."""
+        """Initialize the CS/ESPHome API."""
         config = self._config
 
-        if 'settings' in config.keys() and 'sampling' in config.settings.keys():
-            self._sampling_integrations = config.settings.sampling.get('integrations', CircuitSetup._DEFAULT_INTEGRATIONS)
+        if 'settings' in config.keys():
+            if 'sampling' in config.settings.keys():
+                self._sampling_integrations = config.settings.sampling.get('integrations', CircuitSetup._DEFAULT_INTEGRATIONS)
+            if 'watchdog' in config.settings.keys():
+                self._watchdog = config.settings.get('watchdog', CircuitSetup._DEFAULT_WATCHDOG)
 
         if 'influxdb2' in config.keys():
             CircuitSetup._INFLUX = InfluxDB(config)
@@ -121,8 +126,10 @@ class CircuitSetup():
             await self._task_gather
         except FailedInitialization as e:
             _LOGGER.error(f"{e}")
+        except WatchdogTimer as e:
+            _LOGGER.error(f"{e}")
         except Exception as e:
-            _LOGGER.error(f"something else: {e}")
+            _LOGGER.error(f"Unexpected exception in run(): {e}")
 
 
     async def stop(self):
@@ -200,7 +207,7 @@ class CircuitSetup():
         """Check that we are connected to the CircuitSetup hardware."""
         saved_watchdog = CircuitSetup._WATCHDOG
         while True:
-            await asyncio.sleep(60)
+            await asyncio.sleep(self._watchdog)
             current_watchdog = CircuitSetup._WATCHDOG
             if saved_watchdog == current_watchdog:
                 raise WatchdogTimer(f"Lost connection to {self._name}")
