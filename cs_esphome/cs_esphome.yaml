@@ -98,8 +98,8 @@ cs_esphome:
         location:       ''
         integrate:      True
     - sensor:
-        sensor_name:    'cs24_w_metered'
-        display_name:   'Metered circuits watts'
+        sensor_name:    'cs24_metered_w'
+        display_name:   'Metered circuits'
         measurement:    'power'
         device:         'metered'
         location:       ''

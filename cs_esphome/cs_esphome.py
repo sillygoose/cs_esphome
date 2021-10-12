@@ -114,7 +114,7 @@ def main():
     _LOGGER.info(f"CircuitSetup/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
 
     try:
-        config = read_config(checking=True)
+        config = read_config()
         if config:
             cs_esphome = CS_ESPHome(config)
             cs_esphome.run()

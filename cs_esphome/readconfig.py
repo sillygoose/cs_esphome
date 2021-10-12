@@ -284,8 +284,8 @@ def check_config(config):
                               {'settings': {'required': False, 'keys': [
                                   {'sampling': {'required': False, 'keys': [
                                       {'integrations': {'required': False, 'keys': [], 'type': int}},
-                                  {'watchdog': {'required': False, 'keys': [], 'type': int}},
                                   ]}},
+                                  {'watchdog': {'required': False, 'keys': [], 'type': int}},
                               ]}},
                           ],
                           },
@@ -301,14 +301,13 @@ def check_config(config):
         raise FailedInitialization(Exception(f"Unexpected exception: {e}"))
     return config if result else None
 
-def read_config(checking=False):
+def read_config():
     """Open the YAML configuration file and optionally check the contents"""
     try:
         yaml.FullLoader.add_constructor('!secret', secret_yaml)
         yaml_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_YAML)
         config = config_from_yaml(data=yaml_file, read_from_file=True)
-
-        if config and checking:
+        if config:
             config = check_config(config)
 
     except ConfigError as e:

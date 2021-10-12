@@ -93,7 +93,7 @@ Data is organized in InfluxDB2 using the following schemas, refer to the Flux qu
     Power:
         _measurement    power
         _location       location (used to group devices by location such as 'kitchen' for all kitchen circuits)
-        _field          device(s) (W), line (W), l1 (W), l2 (W)
+        _field          device(s) (W), line (W), l1 (W), l2 (W), metered (W)
 
     Energy:
         _measurement    energy
@@ -112,9 +112,6 @@ Data is organized in InfluxDB2 using the following schemas, refer to the Flux qu
         _measurement    power_factor
         _field          pf
 
-    Current:
-        _measurement    current
-        _field          total (A), missing (A)
 
 #
 ## Example Dashboards
