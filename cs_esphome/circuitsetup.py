@@ -292,7 +292,8 @@ class CircuitSetup():
         def sensor_callback(state):
             CircuitSetup._WATCHDOG += 1
             if type(state) == aioesphomeapi.SensorState:
+                ts = (int(time.time()) // 10) * 10
                 sensor = self._sensor_by_key.get(state.key, None)
-                queue.put_nowait({'sensor': sensor, 'state': state.state, 'ts': int(time.time())})
+                queue.put_nowait({'sensor': sensor, 'state': state.state, 'ts': ts})
 
         await self._esphome.subscribe_states(sensor_callback)

@@ -148,7 +148,7 @@ class InfluxDB:
 
     def write_sensor(self, sensor, state, timestamp=None):
         """Write a sensor to the database."""
-        ts = timestamp if timestamp is not None else int(time.time())
+        timestamp = timestamp if timestamp is not None else int(time.time())
 
         measurement = sensor.get('measurement', None)
         device = sensor.get('device', None)
