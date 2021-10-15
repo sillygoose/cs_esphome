@@ -2,6 +2,9 @@
 Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 Energy Meter using the ESPHome API writing sensor data and integrations to an InfluxDB2 database.
 
 ## What's new
+#### 0.1.8
+Sensor timestamps are grouped by tens of seconds, makes for easier Flux queries
+
 #### 0.1.7
 Help make Grafana dashboards graphs look good
 - debug.fill_data will backfill the database with 13 months of energy entries, up to the first existing entry
