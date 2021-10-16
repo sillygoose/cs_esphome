@@ -202,7 +202,6 @@ class CircuitSetup():
                     _LOGGER.error(f"ApiException during task creation: {body_dict.get('message', '???')}")
                 except Exception as e:
                     _LOGGER.error(f"Unexpected exception during task creation: {e}")
-        _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
 
 
     async def filldata(self) -> None:
