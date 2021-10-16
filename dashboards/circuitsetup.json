@@ -1163,7 +1163,22 @@
                             {
                                 "id": "color",
                                 "value": {
-                                    "fixedColor": "dark-orange",
+                                    "fixedColor": "light-red",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Previous"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "dark-red",
                                     "mode": "fixed"
                                 }
                             }
@@ -1251,7 +1266,7 @@
                     "custom": {
                         "axisLabel": "",
                         "axisPlacement": "auto",
-                        "axisSoftMax": 6000,
+                        "axisSoftMax": 2000,
                         "barAlignment": 0,
                         "drawStyle": "line",
                         "fillOpacity": 0,
@@ -1293,24 +1308,60 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "heatpump"
+                            "options": "dishwasher kitchen"
                         },
                         "properties": [
                             {
                                 "id": "displayName",
-                                "value": "Heat Pump"
+                                "value": "Dishwasher"
                             }
                         ]
                     },
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "hot_water"
+                            "options": "microwave kitchen"
                         },
                         "properties": [
                             {
                                 "id": "displayName",
-                                "value": "Hot Water"
+                                "value": "Microwave"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "range kitchen"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Range"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "refrigerator kitchen"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Refrigerator "
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "Outlets"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Outlets"
                             }
                         ]
                     }
@@ -1322,7 +1373,7 @@
                 "x": 7,
                 "y": 16
             },
-            "id": 5,
+            "id": 6,
             "options": {
                 "legend": {
                     "calcs": [],
@@ -1335,16 +1386,16 @@
             },
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"hot_water\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"hot_water\")",
-                    "refId": "Hot Water"
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field != \"outlets_1\" and r._field != \"outlets_2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"the_rest\")",
+                    "refId": "TheRest"
                 },
                 {
                     "hide": false,
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"heatpump\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"heatpump\")",
-                    "refId": "Heat Pump"
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"outlets_1\" or r._field == \"outlets_2\")\n  |> truncateTimeColumn(unit: 10s)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: r.outlets_1 + r.outlets_2 }))\n  |> drop(columns: [\"outlets_1\", \"outlets_2\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"outlets\")\n",
+                    "refId": "Outlets"
                 }
             ],
-            "title": "Heatpump & Hot Water",
+            "title": "Kitchen",
             "type": "timeseries"
         },
         {
@@ -1682,7 +1733,7 @@
                             {
                                 "id": "color",
                                 "value": {
-                                    "fixedColor": "orange",
+                                    "fixedColor": "light-orange",
                                     "mode": "fixed"
                                 }
                             },
@@ -1717,7 +1768,22 @@
                             {
                                 "id": "color",
                                 "value": {
-                                    "fixedColor": "orange",
+                                    "fixedColor": "light-red",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Previous"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "dark-red",
                                     "mode": "fixed"
                                 }
                             }
@@ -1840,7 +1906,7 @@
                     "custom": {
                         "axisLabel": "",
                         "axisPlacement": "auto",
-                        "axisSoftMax": 2000,
+                        "axisSoftMax": 6000,
                         "barAlignment": 0,
                         "drawStyle": "line",
                         "fillOpacity": 0,
@@ -1882,60 +1948,24 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "dishwasher kitchen"
+                            "options": "heatpump"
                         },
                         "properties": [
                             {
                                 "id": "displayName",
-                                "value": "Dishwasher"
+                                "value": "Heat Pump"
                             }
                         ]
                     },
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "microwave kitchen"
+                            "options": "hot_water"
                         },
                         "properties": [
                             {
                                 "id": "displayName",
-                                "value": "Microwave"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "range kitchen"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Range"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "refrigerator kitchen"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Refrigerator "
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byFrameRefID",
-                            "options": "Outlets"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Outlets"
+                                "value": "Hot Water"
                             }
                         ]
                     }
@@ -1947,7 +1977,7 @@
                 "x": 7,
                 "y": 24
             },
-            "id": 6,
+            "id": 5,
             "options": {
                 "legend": {
                     "calcs": [],
@@ -1960,16 +1990,16 @@
             },
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field != \"outlets_1\" and r._field != \"outlets_2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"the_rest\")",
-                    "refId": "TheRest"
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"hot_water\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"hot_water\")",
+                    "refId": "Hot Water"
                 },
                 {
                     "hide": false,
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"outlets_1\" or r._field == \"outlets_2\")\n  |> truncateTimeColumn(unit: 10s)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: r.outlets_1 + r.outlets_2 }))\n  |> drop(columns: [\"outlets_1\", \"outlets_2\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"outlets\")\n",
-                    "refId": "Outlets"
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"heatpump\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"heatpump\")",
+                    "refId": "Heat Pump"
                 }
             ],
-            "title": "Kitchen",
+            "title": "Heatpump & Hot Water",
             "type": "timeseries"
         },
         {
@@ -2420,7 +2450,7 @@
     },
     "timepicker": {},
     "timezone": "",
-    "title": "CircuitSetup",
+    "title": "Power Monitoring",
     "uid": "_-Qzs-Dwx",
-    "version": 10
+    "version": 11
 }
