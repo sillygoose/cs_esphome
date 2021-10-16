@@ -40,6 +40,8 @@ class InfluxDB:
         self._write_api = None
         self._query_api = None
         self._delete_api = None
+        self._tasks_api = None
+        self._organizations_api = None
         self._token = None
         self._org = None
         self._url = None
@@ -67,6 +69,8 @@ class InfluxDB:
             self._write_api = self._client.write_api(write_options=SYNCHRONOUS)
             self._query_api = self._client.query_api()
             self._delete_api = self._client.delete_api()
+            self._tasks_api = self._client.tasks_api()
+            self._organizations_api = self._client.organizations_api()
 
             cs_esphome_debug = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
             if cs_esphome_debug and debug_options.get('delete_bucket', None) and self.delete_bucket():
@@ -117,6 +121,14 @@ class InfluxDB:
 
     def delete_api(self):
         return self._delete_api
+
+
+    def tasks_api(self):
+        return self._tasks_api
+
+
+    def organizations_api(self):
+        return self._organizations_api
 
 
     def write_point(self, measurement, tags, device, value, timestamp=None):

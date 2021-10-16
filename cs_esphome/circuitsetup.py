@@ -5,9 +5,9 @@ import time
 import asyncio
 import logging
 import datetime
+import json
 
 from dateutil.relativedelta import relativedelta
-import dateutil
 
 import aioesphomeapi
 from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
@@ -18,6 +18,7 @@ import query
 from readconfig import retrieve_options
 
 from influx import InfluxDB
+from influxdb_client.rest import ApiException
 from exceptions import WatchdogTimer, InfluxDBFormatError, InfluxDBWriteError, InternalError, FailedInitialization
 
 _LOGGER = logging.getLogger('cs_esphome')
@@ -117,6 +118,7 @@ class CircuitSetup():
                 self.midnight(),
                 self.watchdog(),
                 self.filldata(),
+                self.influx_tasks(),
                 self.scheduler(queues),
                 self.task_integrations(queues.get('integrations')),
                 self.task_deletions(queues.get('deletions')),
@@ -147,7 +149,73 @@ class CircuitSetup():
             CircuitSetup._INFLUX = None
 
 
+    async def influx_tasks(self) -> None:
+        tasks_api = CircuitSetup._INFLUX.tasks_api()
+        organizations_api = CircuitSetup._INFLUX.organizations_api()
+
+        task_organization = CircuitSetup._INFLUX.org()
+        try:
+            organizations = organizations_api.find_organizations(org=task_organization)
+        except ApiException as e:
+            body_dict = json.loads(e.body)
+            _LOGGER.info(f"Can't access InfluxDB organization: {body_dict.get('message', '???')}")
+            return
+        except Exception as e:
+            _LOGGER.info(f"Can't create InfluxDB task: unexpected exception: {e}")
+            return
+
+        task_base_name = 'net_meter'
+        task_measurement = 'energy'
+        task_device = 'delta_wh'
+
+        periods = {'today': '-1d', 'month': '-1mo', 'year': '-1y'}
+        for period, range in periods.items():
+            task_name = task_base_name + '_' + period
+            tasks = tasks_api.find_tasks(name=task_name)
+            if tasks is None or len(tasks) == 0:
+                _LOGGER.info(f"InfluxDB task '{task_name}' was not found, creating...")
+                flux =  '\n' \
+                        f'production_{period} = from(bucket: "multisma2")\n' \
+                        f'  |> range(start: {range})\n' \
+                        f'  |> filter(fn: (r) => r._measurement == "production" and r._field == "{period}" and r._inverter == "site")\n' \
+                        f'  |> map(fn: (r) => ({{ r with _value: r._value * 1000.0 }}))\n' \
+                        f'  |> rename(columns: {{_inverter: "_device"}})\n' \
+                        f'  |> drop(columns: ["_start", "_stop", "_field", "_measurement"])\n' \
+                        f'  |> yield(name: "production_{period}")\n' \
+                        f'\n' \
+                        f'consumption_{period} = from(bucket: "cs24")\n' \
+                        f'  |> range(start: {range})\n' \
+                        f'  |> filter(fn: (r) => r._measurement == "energy" and r._device == "line" and r._field == "{period}")\n' \
+                        f'  |> drop(columns: ["_start", "_stop", "_field", "_measurement"])\n' \
+                        f'  |> yield(name: "consumption_{period}")\n' \
+                        f'\n' \
+                        f'union(tables: [production_{period}, consumption_{period}])\n' \
+                        f'  |> pivot(rowKey:["_time"], columnKey: ["_device"], valueColumn: "_value")\n' \
+                        f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "{task_measurement}", _device: "{task_device}", _field: "{period}", _value: r.line - r.site }}))\n' \
+                        f'  |> to(bucket: "cs24", org: "{task_organization}")\n' \
+                        f'  |> yield(name: "delta_wh_{period}")\n'
+                try:
+                    tasks_api.create_task_every(name=task_name, flux=flux, every='5m', organization=organizations[0])
+                    _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
+                except ApiException as e:
+                    body_dict = json.loads(e.body)
+                    _LOGGER.error(f"ApiException during task creation: {body_dict.get('message', '???')}")
+                except Exception as e:
+                    _LOGGER.error(f"Unexpected exception during task creation: {e}")
+        _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
+
+
     async def filldata(self) -> None:
+        """Task to fill in missing data for Grafana."""
+        _DEBUG_ENV_VAR = 'CS_ESPHOME_DEBUG'
+        _DEBUG_OPTIONS = {
+            'fill_data': {'type': bool, 'required': False},
+        }
+        debug_options = retrieve_options(self._config, 'debug', _DEBUG_OPTIONS)
+        cs_esphome_debug = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
+        if cs_esphome_debug == False or debug_options.get('fill_data', False) == False:
+            return
+
         """Task to fill in missing data for Grafana."""
         _DEBUG_ENV_VAR = 'CS_ESPHOME_DEBUG'
         _DEBUG_OPTIONS = {
