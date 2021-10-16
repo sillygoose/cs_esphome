@@ -69,7 +69,7 @@ class CircuitSetup():
             url = config.circuitsetup.url
             port = config.circuitsetup.get('port', CircuitSetup._DEFAULT_ESPHOME_API_PORT)
             password = config.circuitsetup.get('password', CircuitSetup._DEFAULT_ESPHOME_API_PASSWORD)
-            self._esphome = aioesphomeapi.APIClient(eventloop=asyncio.get_running_loop(), address=url, port=port, password=password)
+            self._esphome = aioesphomeapi.APIClient(address=url, port=port, password=password)
             await self._esphome.connect(login=True)
             success = True
         except SocketAPIError as e:
@@ -269,7 +269,6 @@ class CircuitSetup():
             request = await queue.get()
             queue.task_done()
             _LOGGER.debug(f"task_deletions(queue): {request}")
-
 
 
     async def posting_task(self, queue):

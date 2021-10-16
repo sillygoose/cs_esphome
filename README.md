@@ -3,9 +3,8 @@ Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 E
 
 ## What's new
 #### 0.1.8
-Nothing
-Sensor timestamps are grouped by tens of seconds, makes for easier Flux queries since you will have results with the same timestamps
-
+- Sensor timestamps are grouped by tens of seconds, makes for easier Flux queries since you will have results with the same timestamps
+- requires aioesphomeapi to be at least version 10.0.0 due to changes in the ESPHome API
 #### 0.1.7
 Help make Grafana dashboards graphs look good
 - debug.fill_data will backfill the database with 13 months of energy entries, up to the first existing entry
