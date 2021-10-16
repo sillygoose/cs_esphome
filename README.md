@@ -3,7 +3,8 @@ Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 E
 
 ## What's new
 #### 0.1.8
-Sensor timestamps are grouped by tens of seconds, makes for easier Flux queries
+Nothing
+Sensor timestamps are grouped by tens of seconds, makes for easier Flux queries since you will have results with the same timestamps
 
 #### 0.1.7
 Help make Grafana dashboards graphs look good
