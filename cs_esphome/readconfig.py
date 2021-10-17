@@ -270,6 +270,10 @@ def check_config(config):
                                   {'delete_bucket': {'required': False, 'keys': [], 'type': bool}},
                                   {'fill_data': {'required': False, 'keys': [], 'type': bool}},
                               ]}},
+                              {'meter': {'required': False, 'keys': [
+                                  {'enable_setting': {'required': False, 'keys': [], 'type': bool}},
+                                  {'value': {'required': False, 'keys': [], 'type': int}},
+                              ]}},
                               {'sensors': {'required': True, 'keys': [
                                   {'sensor': {'required': True, 'keys': [
                                       {'enable': {'required': False, 'keys': [], 'type': bool}},

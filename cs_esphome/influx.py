@@ -131,14 +131,15 @@ class InfluxDB:
         return self._organizations_api
 
 
-    def write_point(self, measurement, tags, device, value, timestamp=None):
+    def write_point(self, measurement, tags, field, value, timestamp=None):
         """Write a single sensor to the database."""
+        timestamp = timestamp if timestamp is not None else int(time.time())
         lp_tags = ''
         separator = ''
         for tag in tags:
             lp_tags += f"{separator}{tag.get('t')}={tag.get('v')}"
             separator = ','
-        lp = f"{measurement}," + lp_tags + f" {device}={value} {timestamp}"
+        lp = f"{measurement}," + lp_tags + f" {field}={value} {timestamp}"
 
         try:
             self._write_api.write(bucket=self._bucket, record=lp, write_precision=WritePrecision.S)

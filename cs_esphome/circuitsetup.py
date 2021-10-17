@@ -101,6 +101,17 @@ class CircuitSetup():
             _LOGGER.error(f"Unexpected exception accessing '{self._name}' list_entities_services(): {e}")
             return False
 
+        if 'meter' in config.keys():
+            if 'enable_setting' in config.meter.keys():
+                enable_setting = config.meter.get('enable_setting', None)
+                if enable_setting:
+                    if 'value' in config.meter.keys():
+                        value = config.meter.get('value', None)
+                        right_now = datetime.datetime.now()
+                        midnight = datetime.datetime.combine(right_now, datetime.time(0, 0))
+                        CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'meter_reading'}], field='today', value=value, timestamp=int(midnight.timestamp()))
+
+
         self._sensor_by_name, self._sensor_by_key = sensors.parse_sensors(yaml=config.sensors, entities=entities)
         self._sensor_locations = sensors.parse_by_location(self._sensor_by_name)
         self._sensor_integrate = sensors.parse_by_integration(self._sensor_by_name)
@@ -149,22 +160,8 @@ class CircuitSetup():
             CircuitSetup._INFLUX = None
 
 
-    async def influx_tasks(self) -> None:
-        tasks_api = CircuitSetup._INFLUX.tasks_api()
-        organizations_api = CircuitSetup._INFLUX.organizations_api()
-
-        task_organization = CircuitSetup._INFLUX.org()
-        try:
-            organizations = organizations_api.find_organizations(org=task_organization)
-        except ApiException as e:
-            body_dict = json.loads(e.body)
-            _LOGGER.info(f"Can't access InfluxDB organization: {body_dict.get('message', '???')}")
-            return
-        except Exception as e:
-            _LOGGER.info(f"Can't create InfluxDB task: unexpected exception: {e}")
-            return
-
-        task_base_name = 'net_meter'
+    def influx_delta_wh_tasks(self, tasks_api, organization) -> None:
+        task_base_name = 'delta_kwh'
         task_measurement = 'energy'
         task_device = 'delta_wh'
 
@@ -174,6 +171,7 @@ class CircuitSetup():
             tasks = tasks_api.find_tasks(name=task_name)
             if tasks is None or len(tasks) == 0:
                 _LOGGER.info(f"InfluxDB task '{task_name}' was not found, creating...")
+                task_organization = organization.name
                 flux =  '\n' \
                         f'production_{period} = from(bucket: "multisma2")\n' \
                         f'  |> range(start: {range})\n' \
@@ -195,13 +193,63 @@ class CircuitSetup():
                         f'  |> to(bucket: "cs24", org: "{task_organization}")\n' \
                         f'  |> yield(name: "delta_wh_{period}")\n'
                 try:
-                    tasks_api.create_task_every(name=task_name, flux=flux, every='5m', organization=organizations[0])
+                    tasks_api.create_task_every(name=task_name, flux=flux, every='5m', organization=organization)
                     _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
                 except ApiException as e:
                     body_dict = json.loads(e.body)
                     _LOGGER.error(f"ApiException during task creation: {body_dict.get('message', '???')}")
                 except Exception as e:
                     _LOGGER.error(f"Unexpected exception during task creation: {e}")
+
+
+    ###
+    def influx_meter_tasks(self, tasks_api, organization) -> None:
+        task_name = 'net_meter'
+        task_measurement = 'energy'
+        task_device = 'meter_reading'
+
+        tasks = tasks_api.find_tasks(name=task_name)
+        if tasks is None or len(tasks) == 0:
+            _LOGGER.info(f"InfluxDB task '{task_name}' was not found, creating...")
+            flux =  '\n' \
+                    f'from(bucket: "cs24")\n' \
+                    f'  |> range(start: -1d)\n' \
+                    f'  |> filter(fn: (r) => r._measurement == "energy" and r._field == "today")\n' \
+                    f'  |> filter(fn: (r) => r._device == "meter_reading" or r._device == "delta_wh")\n' \
+                    f'  |> drop(columns: ["_start", "_stop"])\n' \
+                    f'  |> pivot(rowKey:["_time"], columnKey: ["_device"], valueColumn: "_value")\n' \
+                    f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "{task_measurement}", _device: "{task_device}", _field: "today", _value: (r.delta_wh * 0.001) + r.meter_reading }}))\n' \
+                    f'  |> yield(name: "meter_reading")\n'
+
+            try:
+                tasks_api.create_task_every(name=task_name, flux=flux, every='5m', organization=organization)
+                _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
+            except ApiException as e:
+                body_dict = json.loads(e.body)
+                _LOGGER.error(f"ApiException during task creation: {body_dict.get('message', '???')}")
+            except Exception as e:
+                _LOGGER.error(f"Unexpected exception during task creation: {e}")
+        return
+    ###
+
+
+    async def influx_tasks(self) -> None:
+        tasks_api = CircuitSetup._INFLUX.tasks_api()
+        organizations_api = CircuitSetup._INFLUX.organizations_api()
+
+        task_organization = CircuitSetup._INFLUX.org()
+        try:
+            organizations = organizations_api.find_organizations(org=task_organization)
+        except ApiException as e:
+            body_dict = json.loads(e.body)
+            _LOGGER.info(f"Can't access InfluxDB organization: {body_dict.get('message', '???')}")
+            return
+        except Exception as e:
+            _LOGGER.info(f"Can't create InfluxDB task: unexpected exception: {e}")
+            return
+
+        self.influx_delta_wh_tasks(tasks_api=tasks_api, organization=organizations[0])
+        # self.influx_meter_tasks(tasks_api=tasks_api, organization=organizations[0])
 
 
     async def filldata(self) -> None:
@@ -244,17 +292,17 @@ class CircuitSetup():
 
         current = start.replace(month=1, day=1)
         while current < stop:
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'year', 0.0, int(current.timestamp()))
+            CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='year', value=0.0, timestamp=int(current.timestamp()))
             current += relativedelta(years=1)
 
         current = start.replace(day=1)
         while current < stop:
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'month', 0.0, int(current.timestamp()))
+            CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='month', value=0.0, timestamp=int(current.timestamp()))
             current += relativedelta(months=1)
 
         current = start
         while current < stop:
-            CircuitSetup._INFLUX.write_point('energy', [{'t': '_device', 'v': 'line'}], 'today', 0.0, int(current.timestamp()))
+            CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='today', value=0.0, timestamp=int(current.timestamp()))
             current += relativedelta(days=1)
 
         _LOGGER.info(f"CS/ESPHome missing data fill: {start.date()} to {stop.date()}")
@@ -263,11 +311,55 @@ class CircuitSetup():
     async def midnight(self) -> None:
         """Task to wake up after midnight and update the solar data for the new day."""
         while True:
-            now = datetime.datetime.now()
-            tomorrow = now + datetime.timedelta(days=1)
-            midnight = datetime.datetime.combine(tomorrow, datetime.time(0, 1))
-            await asyncio.sleep((midnight - now).total_seconds())
+            right_now = datetime.datetime.now()
+            tomorrow = right_now + datetime.timedelta(days=1)
+            midnight = datetime.datetime.combine(tomorrow, datetime.time(0, 0))
+            await asyncio.sleep((midnight - right_now).total_seconds())
+
             _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
+
+            query_api = CircuitSetup._INFLUX.query_api()
+            bucket = CircuitSetup._INFLUX.bucket()
+            read_query = f'from(bucket: "{bucket}")' \
+                f' |> range(start: -25h)' \
+                f' |> filter(fn: (r) => r._measurement == "energy")' \
+                f' |> filter(fn: (r) => r._device == "meter_reading" or r._device == "delta_wh")' \
+                f' |> filter(fn: (r) => r._field == "today")' \
+                f' |> first()'
+
+            try:
+                tables = query.execute_query(query_api, read_query)
+            except ApiException as e:
+                body_dict = json.loads(e.body)
+                _LOGGER.error(f"Problem with query: {body_dict.get('message', '???')}")
+            except Exception as e:
+                _LOGGER.error(f"Unexpected exception during task creation: {e}")
+
+            delta_wh = None
+            meter_reading = None
+            for table in tables:
+                for row in table.records:
+                    device = row.values.get('_device', None)
+                    if device == 'meter_reading':
+                        meter_reading = row.values.get('_value', None)
+                    elif device == 'delta_wh':
+                        delta_wh = row.values.get('_value', None)
+                    else:
+                        _LOGGER.error(f"Unexpected device: {device}")
+
+            if meter_reading is not None and delta_wh is not None:
+                delta_kwh = delta_wh * 0.001
+                final_meter_reading = meter_reading + delta_kwh
+
+                midnight_today = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
+                midnight_yesterday = midnight_today - datetime.timedelta(days=1)
+                _LOGGER.info(f"Final meter reading for {midnight_yesterday}: {final_meter_reading}")
+
+                try:
+                    CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'meter_reading'}], field='today', value=final_meter_reading, timestamp=int(midnight_yesterday.timestamp()))
+                    CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'meter_reading'}], field='today', value=final_meter_reading, timestamp=int(midnight_today.timestamp()))
+                except InfluxDBWriteError as e:
+                    _LOGGER.warning(f"{e}")
 
 
     async def watchdog(self):

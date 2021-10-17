@@ -2,6 +2,9 @@
 Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 Energy Meter using the ESPHome API writing sensor data and integrations to an InfluxDB2 database.
 
 ## What's new
+#### 0.2.0
+- Needed to add the meter state to the database so the deltas can be properly applied
+
 #### 0.1.9
 - used the InfluxDB task API to create InfluxDB tasks to track the differences in production and consumption by day, month, and year.  The goal is to model my electric meter which runs forward when I pull power from the grid and runs in reverse when I push excess solar power to the grid.
 
@@ -104,7 +107,15 @@ Data is organized in InfluxDB2 using the following schemas, refer to the Flux qu
 
     Energy:
         _measurement    energy
-        _device         device(s), location(s) with a leading underscore, delta_wh
+        _device         device(s)
+        _field          today (Wh), month (Wh), year (Wh)
+
+        _measurement    energy
+        _device         location(s) with a leading underscore
+        _field          today (Wh), month (Wh), year (Wh)
+
+        _measurement    energy
+        _device         delta_wh, meter_reading
         _field          today (Wh), month (Wh), year (Wh)
 
     Voltage:
