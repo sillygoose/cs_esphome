@@ -17,7 +17,7 @@ cs_esphome:
   # This option is used the current meter reading
   meter:
     enable_setting: False
-    value:          -4580
+    value:          -4557
 
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.

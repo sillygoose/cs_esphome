@@ -23,7 +23,7 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": 13,
-    "iteration": 1634348348985,
+    "iteration": 1634484070429,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -189,7 +189,7 @@
                 "content": "",
                 "mode": "markdown"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "title": "${period} (kWh)",
             "type": "text"
         },
@@ -339,7 +339,7 @@
                     "refId": "Unmetered"
                 }
             ],
-            "title": "${period} Usage",
+            "title": "${period}",
             "type": "piechart"
         },
         {
@@ -380,13 +380,13 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"consumption\")\n",
@@ -434,13 +434,13 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_kitchen\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"consumption\")\n",
@@ -488,13 +488,13 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"heatpump\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"consumption\")\n",
@@ -836,7 +836,7 @@
                     "placement": "bottom"
                 },
                 "tooltip": {
-                    "mode": "single"
+                    "mode": "multi"
                 }
             },
             "targets": [
@@ -941,7 +941,7 @@
                 "showUnfilled": false,
                 "text": {}
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "repeatDirection": "h",
             "targets": [
                 {
@@ -1030,13 +1030,13 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"hot_water\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"hot_water\")\n",
@@ -1084,13 +1084,13 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_vehicles\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"_vehicles\")\n",
@@ -1436,13 +1436,13 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_bedroom\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"_bedroom\")\n",
@@ -1558,7 +1558,7 @@
             },
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"heatpump\" or\n                       r._device == \"hot_water\" or\n                       r._device == \"_kitchen\" or\n                       r._device == \"_laundry\" or\n                       r._device == \"_bedroom\" or\n                       r._device == \"_basement\" or\n                       r._device == \"_main_floor\" or\n                       r._device == \"_vehicles\"\n                    )\n  |> map(fn: (r) => ({ _value: r._device, _kwh: r._value * 0.001 }))\n  |> toString()\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_field\"])\n  |> yield(name: \"results\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"heatpump\" or\n                       r._device == \"hot_water\" or\n                       r._device == \"_kitchen\" or\n                       r._device == \"_laundry\" or\n                       r._device == \"_bedroom\" or\n                       r._device == \"_basement\" or\n                       r._device == \"_main_floor\" or\n                       r._device == \"_vehicles\"\n                    )\n  |> map(fn: (r) => ({ _value: r._device, kWh: r._value * 0.001 }))\n  |> toString()\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_field\"])\n  |> yield(name: \"use_by_location\")\n",
                     "refId": "A"
                 }
             ],
@@ -1603,13 +1603,13 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_basement\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"_basement\")\n",
@@ -1657,13 +1657,13 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_laundry\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"laundry\")\n",
@@ -2047,7 +2047,7 @@
                 },
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\")\n  |> filter(fn: (r) => r[\"_field\"] == \"line\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
@@ -2064,7 +2064,7 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "decimals": 1,
+                    "decimals": 0,
                     "mappings": [],
                     "max": 20000,
                     "min": -20000,
@@ -2109,7 +2109,7 @@
                 "showThresholdMarkers": true,
                 "text": {}
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "production = from(bucket: \"multisma2\")\n  |> range(start: -10m)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> drop(columns: [\"_inverter\", \"_measurement\", \"_start\", \"_stop\"])\n  |> last()\n  |> yield(name: \"production\")\n  \nconsumption = from(bucket: \"cs24\")\n  |> range(start: -10m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"line\")\n  |> map(fn: (r) => ({ r with _time: r._time, _value: r._value * -1.0 }))\n  |> drop(columns: [\"_measurement\", \"_start\", \"_stop\"])\n  |> last()\n  |> yield(name: \"consumption\")\n\nunion(tables: [production, consumption])\n  |> truncateTimeColumn(unit: 10m)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with Delta: float(v: r.power) + r.line }))\n  |> yield(name: \"union\")\n",
@@ -2157,21 +2157,178 @@
                     "calcs": [
                         "lastNotNull"
                     ],
-                    "fields": "",
+                    "fields": "/^Value$/",
                     "values": false
                 },
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.0",
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_main_floor\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"_main_floor\")\n",
                     "refId": "A"
                 }
             ],
-            "title": "Living Room",
+            "title": "Main Floor",
             "type": "stat"
+        },
+        {
+            "datasource": "${datasource}",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "decimals": 0,
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 2,
+                "x": 14,
+                "y": 28
+            },
+            "id": 69,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "/^Value$/",
+                    "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.2.1",
+            "targets": [
+                {
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"metered\" or r._device == \"line\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, _value: (r.line - r.metered) * 0.001}))\n  |> yield(name: \"unmetered\")\n",
+                    "refId": "A"
+                }
+            ],
+            "title": "Unmetered",
+            "type": "stat"
+        },
+        {
+            "datasource": "${datasource}",
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "axisSoftMax": 10000,
+                        "axisSoftMin": 0,
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "watt"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "juicebox vehicles"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Juicebox"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "tesla vehicles"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Tesla HPWC"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 7,
+                "x": 0,
+                "y": 32
+            },
+            "id": 4,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single"
+                }
+            },
+            "targets": [
+                {
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\")\n  |> filter(fn: (r) => r[\"_location\"] == \"vehicles\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"vehicles\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "EV Charging",
+            "type": "timeseries"
         },
         {
             "datasource": "${datasource}",
@@ -2281,38 +2438,10 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "palette-classic"
+                        "fixedColor": "blue",
+                        "mode": "fixed"
                     },
-                    "custom": {
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "axisSoftMax": 10000,
-                        "axisSoftMin": 0,
-                        "barAlignment": 0,
-                        "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "auto",
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
+                    "decimals": 0,
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -2323,60 +2452,97 @@
                             }
                         ]
                     },
-                    "unit": "watt"
+                    "unit": "none"
                 },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "juicebox vehicles"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Juicebox"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "tesla vehicles"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Tesla HPWC"
-                            }
-                        ]
-                    }
-                ]
+                "overrides": []
             },
             "gridPos": {
-                "h": 8,
-                "w": 7,
-                "x": 7,
-                "y": 40
+                "h": 6,
+                "w": 8,
+                "x": 16,
+                "y": 32
             },
-            "id": 4,
+            "id": 67,
             "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom"
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
                 },
-                "tooltip": {
-                    "mode": "single"
-                }
+                "text": {},
+                "textMode": "auto"
             },
+            "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\")\n  |> filter(fn: (r) => r[\"_location\"] == \"vehicles\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"vehicles\")",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"delta_wh\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ r with _value: r._value * 0.001 }))\n  |> yield(name: \"delta_wh\")\n",
                     "refId": "A"
                 }
             ],
-            "title": "EV Charging",
-            "type": "timeseries"
+            "title": "Electric Meter Change: ${period}",
+            "type": "stat"
+        },
+        {
+            "datasource": "${datasource}",
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "fixedColor": "blue",
+                        "mode": "fixed"
+                    },
+                    "decimals": 0,
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 6,
+                "w": 8,
+                "x": 16,
+                "y": 38
+            },
+            "id": 68,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "/^_value$/",
+                    "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.2.1",
+            "targets": [
+                {
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"today\")\n  |> filter(fn: (r) => r._device == \"meter_reading\" or r._device == \"delta_wh\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: (r.delta_wh * 0.001) + r.meter_reading }))\n  |> drop(columns: [\"_start\", \"_stop\", \"delta_wh\", \"meter_reading\"])\n  |> map(fn: (r) => ({ _value: if r._value < 0 then 100000.0 + r._value else r._value } ))\n  |> yield(name: \"meter_reading\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "Electric Meter",
+            "type": "stat"
         }
     ],
     "refresh": "",
@@ -2441,6 +2607,16 @@
                 "queryValue": "",
                 "skipUrlSync": false,
                 "type": "custom"
+            },
+            {
+                "description": null,
+                "error": null,
+                "hide": 2,
+                "label": "Electric Meter",
+                "name": "electric_meter",
+                "query": "-4580",
+                "skipUrlSync": false,
+                "type": "constant"
             }
         ]
     },
@@ -2450,7 +2626,7 @@
     },
     "timepicker": {},
     "timezone": "",
-    "title": "Power Monitoring",
-    "uid": "_-Qzs-Dwx",
-    "version": 11
+    "title": "CircuitSetup",
+    "uid": "_-Qzs-Dnx",
+    "version": 30
 }
