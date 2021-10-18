@@ -9,17 +9,18 @@ import json
 
 from dateutil.relativedelta import relativedelta
 
-import aioesphomeapi
-from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
+from aioesphomeapi import SensorState
 
 import version
-import sensors
 import query
+import tasks
+import esphome
 from readconfig import retrieve_options
 
 from influx import InfluxDB
 from influxdb_client.rest import ApiException
 from exceptions import WatchdogTimer, InfluxDBFormatError, InfluxDBWriteError, InternalError, FailedInitialization
+
 
 _LOGGER = logging.getLogger('cs_esphome')
 
@@ -28,136 +29,108 @@ class CircuitSetup():
     """Class to describe the CircuitSetup ESPHome API."""
 
     _INFLUX = None
-    _DEFAULT_ESPHOME_API_PORT = 6053
-    _DEFAULT_ESPHOME_API_PASSWORD = ''
 
     _DEFAULT_WATCHDOG = 60
     _WATCHDOG = 0
 
-    _DEFAULT_INTEGRATIONS = 30
-
     def __init__(self, config):
         """Create a new CircuitSetup object."""
         self._config = config
+        self._task_manager = None
         self._task_gather = None
-        self._esphome = None
+        self._esphome_api = None
         self._name = None
-        self._sensor_by_name = None
-        self._sensor_by_key = None
-        self._sensor_integrate = None
-        self._sensor_locations = None
-        self._sampling_integrations = CircuitSetup._DEFAULT_INTEGRATIONS
         self._watchdog = CircuitSetup._DEFAULT_WATCHDOG
+
 
     async def start(self):
         """Initialize the CS/ESPHome API."""
-        config = self._config
 
+        def _start_influxdb(config) -> bool:
+            success = False
+            if 'influxdb2' in config.keys():
+                CircuitSetup._INFLUX = InfluxDB(config)
+                success = CircuitSetup._INFLUX.start()
+                if not success:
+                    CircuitSetup._INFLUX = None
+            return success
+
+        def _check_for_meter_update(config) -> None:
+            if 'meter' in config.keys():
+                if 'enable_setting' in config.meter.keys():
+                    enable_setting = config.meter.get('enable_setting', None)
+                    if enable_setting:
+                        if 'value' in config.meter.keys():
+                            value = config.meter.get('value', None)
+                            right_now = datetime.datetime.now()
+                            midnight = datetime.datetime.combine(right_now, datetime.time(0, 0))
+                            CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'meter_reading'}], field='today', value=value, timestamp=int(midnight.timestamp()))
+                        else:
+                            _LOGGER.warning("Expected meter value in YAML file, no action taken")
+
+        config = self._config
         if 'settings' in config.keys():
-            if 'sampling' in config.settings.keys():
-                self._sampling_integrations = config.settings.sampling.get('integrations', CircuitSetup._DEFAULT_INTEGRATIONS)
             if 'watchdog' in config.settings.keys():
                 self._watchdog = config.settings.get('watchdog', CircuitSetup._DEFAULT_WATCHDOG)
 
-        if 'influxdb2' in config.keys():
-            CircuitSetup._INFLUX = InfluxDB(config)
-            if not CircuitSetup._INFLUX.start():
-                CircuitSetup._INFLUX = None
-                return False
-
-        try:
-            success = False
-            url = config.circuitsetup.url
-            port = config.circuitsetup.get('port', CircuitSetup._DEFAULT_ESPHOME_API_PORT)
-            password = config.circuitsetup.get('password', CircuitSetup._DEFAULT_ESPHOME_API_PASSWORD)
-            self._esphome = aioesphomeapi.APIClient(address=url, port=port, password=password)
-            await self._esphome.connect(login=True)
-            success = True
-        except SocketAPIError as e:
-            _LOGGER.error(f"{e}")
-        except InvalidAuthAPIError as e:
-            _LOGGER.error(f"ESPHome login failed: {e}")
-        except Exception as e:
-            _LOGGER.error(f"Unexpected exception connecting to ESPHome: {e}")
-        finally:
-            if not success:
-                self._esphome = None
-                return False
-
-        try:
-            api_version = self._esphome.api_version
-            _LOGGER.info(f"ESPHome API version {api_version.major}.{api_version.minor}")
-
-            device_info = await self._esphome.device_info()
-            self._name = device_info.name
-            _LOGGER.info(f"Name: '{device_info.name}', model is {device_info.model}, version {device_info.esphome_version} built on {device_info.compilation_time}")
-        except Exception as e:
-            _LOGGER.error(f"Unexpected exception accessing version and/or device_info: {e}")
+        if not _start_influxdb(config):
             return False
 
-        try:
-            entities, services = await self._esphome.list_entities_services()
-        except Exception as e:
-            _LOGGER.error(f"Unexpected exception accessing '{self._name}' list_entities_services(): {e}")
+        self._esphome_api = esphome.ESPHomeApi(config)
+        if not await self._esphome_api.start(config):
             return False
 
-        if 'meter' in config.keys():
-            if 'enable_setting' in config.meter.keys():
-                enable_setting = config.meter.get('enable_setting', None)
-                if enable_setting:
-                    if 'value' in config.meter.keys():
-                        value = config.meter.get('value', None)
-                        right_now = datetime.datetime.now()
-                        midnight = datetime.datetime.combine(right_now, datetime.time(0, 0))
-                        CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'meter_reading'}], field='today', value=value, timestamp=int(midnight.timestamp()))
+        self._task_manager = tasks.TaskManager(config, CircuitSetup._INFLUX)
+        if not await self._task_manager.start(by_location=self._esphome_api.sensors_by_location(), by_integration=self._esphome_api.sensors_by_integration()):
+            return False
 
-
-        self._sensor_by_name, self._sensor_by_key = sensors.parse_sensors(yaml=config.sensors, entities=entities)
-        self._sensor_locations = sensors.parse_by_location(self._sensor_by_name)
-        self._sensor_integrate = sensors.parse_by_integration(self._sensor_by_name)
+        _check_for_meter_update(config)
         return True
+
 
     async def run(self):
         try:
-            _LOGGER.info(f"CS/ESPHome starting up, ESPHome sensors processed every {self._sampling_integrations} seconds")
             queues = {
                 'sampler': asyncio.Queue(),
-                'integrations': asyncio.Queue(),
                 'deletions': asyncio.Queue(),
             }
             self._task_gather = asyncio.gather(
+                self._task_manager.run(),
                 self.midnight(),
                 self.watchdog(),
                 self.filldata(),
                 self.influx_tasks(),
-                self.scheduler(queues),
-                self.task_integrations(queues.get('integrations')),
                 self.task_deletions(queues.get('deletions')),
                 self.task_sampler(queues.get('sampler')),
                 self.posting_task(queues.get('sampler')),
             )
             await self._task_gather
         except FailedInitialization as e:
-            _LOGGER.error(f"{e}")
+            _LOGGER.error(f"run(): {e}")
         except WatchdogTimer as e:
-            _LOGGER.error(f"{e}")
+            _LOGGER.error(f"run(): {e}")
         except Exception as e:
             _LOGGER.error(f"Unexpected exception in run(): {e}")
 
 
     async def stop(self):
         """Shutdown."""
-        if self._task_gather:
-            self._task_gather.cancel()
-            await asyncio.sleep(0.5)
+        if self._task_manager:
+            await self._task_manager.stop()
+            self._task_manager = None
 
-        if self._esphome:
-            await self._esphome.disconnect()
-            self._esphome = None
-            await asyncio.sleep(0.5)
+        if self._esphome_api:
+            await self._esphome_api.disconnect()
+            self._esphome_api = None
+            # await asyncio.sleep(0.5)
+
         if CircuitSetup._INFLUX:
             CircuitSetup._INFLUX.stop()
             CircuitSetup._INFLUX = None
+
+        if self._task_gather:
+            self._task_gather.cancel()
+            await asyncio.sleep(0.5)
 
 
     def influx_delta_wh_tasks(self, tasks_api, organization) -> None:
@@ -202,37 +175,6 @@ class CircuitSetup():
                     _LOGGER.error(f"Unexpected exception during task creation: {e}")
 
 
-    ###
-    def influx_meter_tasks(self, tasks_api, organization) -> None:
-        task_name = 'net_meter'
-        task_measurement = 'energy'
-        task_device = 'meter_reading'
-
-        tasks = tasks_api.find_tasks(name=task_name)
-        if tasks is None or len(tasks) == 0:
-            _LOGGER.info(f"InfluxDB task '{task_name}' was not found, creating...")
-            flux =  '\n' \
-                    f'from(bucket: "cs24")\n' \
-                    f'  |> range(start: -1d)\n' \
-                    f'  |> filter(fn: (r) => r._measurement == "energy" and r._field == "today")\n' \
-                    f'  |> filter(fn: (r) => r._device == "meter_reading" or r._device == "delta_wh")\n' \
-                    f'  |> drop(columns: ["_start", "_stop"])\n' \
-                    f'  |> pivot(rowKey:["_time"], columnKey: ["_device"], valueColumn: "_value")\n' \
-                    f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "{task_measurement}", _device: "{task_device}", _field: "today", _value: (r.delta_wh * 0.001) + r.meter_reading }}))\n' \
-                    f'  |> yield(name: "meter_reading")\n'
-
-            try:
-                tasks_api.create_task_every(name=task_name, flux=flux, every='5m', organization=organization)
-                _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
-            except ApiException as e:
-                body_dict = json.loads(e.body)
-                _LOGGER.error(f"ApiException during task creation: {body_dict.get('message', '???')}")
-            except Exception as e:
-                _LOGGER.error(f"Unexpected exception during task creation: {e}")
-        return
-    ###
-
-
     async def influx_tasks(self) -> None:
         tasks_api = CircuitSetup._INFLUX.tasks_api()
         organizations_api = CircuitSetup._INFLUX.organizations_api()
@@ -242,14 +184,13 @@ class CircuitSetup():
             organizations = organizations_api.find_organizations(org=task_organization)
         except ApiException as e:
             body_dict = json.loads(e.body)
-            _LOGGER.info(f"Can't access InfluxDB organization: {body_dict.get('message', '???')}")
+            _LOGGER.error(f"influx_tasks() can't access the InfluxDB organization: {body_dict.get('message', '???')}")
             return
         except Exception as e:
-            _LOGGER.info(f"Can't create InfluxDB task: unexpected exception: {e}")
+            _LOGGER.error(f"influx_tasks() can't create an InfluxDB task: unexpected exception: {e}")
             return
 
         self.influx_delta_wh_tasks(tasks_api=tasks_api, organization=organizations[0])
-        # self.influx_meter_tasks(tasks_api=tasks_api, organization=organizations[0])
 
 
     async def filldata(self) -> None:
@@ -331,9 +272,9 @@ class CircuitSetup():
                 tables = query.execute_query(query_api, read_query)
             except ApiException as e:
                 body_dict = json.loads(e.body)
-                _LOGGER.error(f"Problem with query: {body_dict.get('message', '???')}")
+                _LOGGER.error(f"midnight() has a problem with the query: {body_dict.get('message', '???')}")
             except Exception as e:
-                _LOGGER.error(f"Unexpected exception during task creation: {e}")
+                _LOGGER.error(f"Unexpected exception in midnight(): {e}")
 
             delta_wh = None
             meter_reading = None
@@ -364,94 +305,66 @@ class CircuitSetup():
 
     async def watchdog(self):
         """Check that we are connected to the CircuitSetup hardware."""
-        saved_watchdog = CircuitSetup._WATCHDOG
-        while True:
-            await asyncio.sleep(self._watchdog)
-            current_watchdog = CircuitSetup._WATCHDOG
-            if saved_watchdog == current_watchdog:
-                raise WatchdogTimer(f"Lost connection to {self._name}")
-            saved_watchdog = current_watchdog
-
-
-    async def scheduler(self, queues):
-        """Task to schedule actions at regular intervals."""
-        SLEEP = 0.5
-        last_tick = time.time_ns() // 1000000000
-        while True:
-            tick = time.time_ns() // 1000000000
-            if tick != last_tick:
-                last_tick = tick
-                if tick % self._sampling_integrations == 0:
-                    queues.get('integrations').put_nowait(tick)
-            await asyncio.sleep(SLEEP)
-
-
-    async def task_integrations(self, queue):
-        """Task that processes the device and location integrations."""
-        query_api = CircuitSetup._INFLUX.query_api()
-        bucket = CircuitSetup._INFLUX.bucket()
-        while True:
-            timestamp = await queue.get()
-            queue.task_done()
-            _LOGGER.debug(f"task_integrations(queue)")
-            try:
-                today = query.integrate_locations(query_api, bucket, self._sensor_locations, 'today')
-                today += query.integrate_devices(query_api, bucket, self._sensor_integrate, 'today')
-                CircuitSetup._INFLUX.write_points(today)
-
-                month = query.integrate_locations(query_api, bucket, self._sensor_locations, 'month')
-                month += query.integrate_devices(query_api, bucket, self._sensor_integrate, 'month')
-                CircuitSetup._INFLUX.write_points(month)
-
-                year = query.integrate_locations(query_api, bucket, self._sensor_locations, 'year')
-                year += query.integrate_devices(query_api, bucket, self._sensor_integrate, 'year')
-                CircuitSetup._INFLUX.write_points(year)
-            except InfluxDBWriteError as e:
-                _LOGGER.warning(f"{e}")
-            except InternalError as e:
-                _LOGGER.error(f"Internal error detected, {e}")
-            except Exception as e:
-                _LOGGER.error(f"Unexpected exception: {e}")
+        try:
+            saved_watchdog = CircuitSetup._WATCHDOG
+            while True:
+                await asyncio.sleep(self._watchdog)
+                current_watchdog = CircuitSetup._WATCHDOG
+                if saved_watchdog == current_watchdog:
+                    raise WatchdogTimer(f"Lost connection to {self._name}")
+                saved_watchdog = current_watchdog
+        except Exception as e:
+            _LOGGER.debug(f"watchdog(): {e}")
 
 
     async def task_deletions(self, queue):
         """Work done at a slow sample rate."""
-        delete_api = CircuitSetup._INFLUX.delete_api()
-        bucket = CircuitSetup._INFLUX.bucket()
-        org = CircuitSetup._INFLUX.org()
-        #start = datetime.datetime.combine(datetime.datetime.now().replace(month=8, day=1), datetime.time(0, 0))
-        #stop = datetime.datetime.combine(datetime.datetime.now().replace(month=9, day=3), datetime.time(0, 0))
-        #start = "2020-01-01T00:00:00Z"
-        #stop = "2021-10-03T00:00:00Z"
-        #delete_api.delete(start, stop, '_measurement="energy"', bucket=bucket, org=org)
-        while True:
-            request = await queue.get()
-            queue.task_done()
-            _LOGGER.debug(f"task_deletions(queue): {request}")
+        try:
+            delete_api = CircuitSetup._INFLUX.delete_api()
+            bucket = CircuitSetup._INFLUX.bucket()
+            org = CircuitSetup._INFLUX.org()
+            #start = datetime.datetime.combine(datetime.datetime.now().replace(month=8, day=1), datetime.time(0, 0))
+            #stop = datetime.datetime.combine(datetime.datetime.now().replace(month=9, day=3), datetime.time(0, 0))
+            #start = "2020-01-01T00:00:00Z"
+            #stop = "2021-10-03T00:00:00Z"
+            #delete_api.delete(start, stop, '_measurement="energy"', bucket=bucket, org=org)
+            while True:
+                request = await queue.get()
+                queue.task_done()
+                _LOGGER.debug(f"task_deletions(queue): {request}")
+        except Exception as e:
+            _LOGGER.debug(f"task_deletions(): {e}")
 
 
     async def posting_task(self, queue):
         """Process the subscribed data."""
-        while True:
-            packet = await queue.get()
-            sensor = packet.get('sensor', None)
-            state = packet.get('state', None)
-            queue.task_done()
-            if sensor and state and CircuitSetup._INFLUX:
-                ts = packet.get('ts', None)
-                try:
-                    CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state, timestamp=ts)
-                except InfluxDBFormatError as e:
-                    _LOGGER.warning(f"{e}")
+        try:
+            while True:
+                    packet = await queue.get()
+                    sensor = packet.get('sensor', None)
+                    state = packet.get('state', None)
+                    queue.task_done()
+                    if sensor and state and CircuitSetup._INFLUX:
+                        ts = packet.get('ts', None)
+                        try:
+                            CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state, timestamp=ts)
+                        except InfluxDBFormatError as e:
+                            _LOGGER.warning(f"{e}")
+        except Exception as e:
+            _LOGGER.debug(f"posting_task(): {e}")
 
 
     async def task_sampler(self, queue):
         """Post the subscribed data."""
         def sensor_callback(state):
             CircuitSetup._WATCHDOG += 1
-            if type(state) == aioesphomeapi.SensorState:
+            if type(state) == SensorState:
                 ts = (int(time.time()) // 10) * 10
-                sensor = self._sensor_by_key.get(state.key, None)
+                sensor = self._esphome_api.sensors_by_key().get(state.key, None)
                 queue.put_nowait({'sensor': sensor, 'state': state.state, 'ts': ts})
 
-        await self._esphome.subscribe_states(sensor_callback)
+        try:
+            await self._esphome_api.subscribe_states(sensor_callback)
+        except Exception as e:
+            _LOGGER.debug(f"task_sampler(): {e}")
+

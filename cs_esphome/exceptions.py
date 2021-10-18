@@ -20,11 +20,19 @@ class WatchdogTimer(Exception):
 
 
 class InfluxDBWriteError(Exception):
-    """Watchdog timer tripped."""
+    """InfluxDB write error."""
+
+
+class InfluxDBQueryError(Exception):
+    """InfluxDB query error."""
+
+
+class InfluxDBBucketError(Exception):
+    """InfluxDB bucket error."""
 
 
 class InfluxDBFormatError(Exception):
-    """Illegal or unsupport database output format."""
+    """Illegal or unsupported database output format."""
 
 
 class InfluxDBInitializationError(Exception):

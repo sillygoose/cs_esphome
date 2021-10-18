@@ -45,24 +45,26 @@ def parse_sensors(yaml, entities):
     keys_by_name = dict((sensor.name, sensor.key) for sensor in entities)
     units_by_name = dict((sensor.name, sensor.unit_of_measurement) for sensor in entities)
     decimals_by_name = dict((sensor.name, sensor.accuracy_decimals) for sensor in entities)
-    for entry in yaml:
-        for details in entry.values():
-            enable = details.get('enable', True)
-            sensor_name = details.get('sensor_name', None)
-            key = keys_by_name.get(sensor_name, None)
-            if key and enable:
-                data = {
-                    'sensor_name': details.get('sensor_name', None),
-                    'display_name': details.get('display_name', None),
-                    'unit': units_by_name.get(sensor_name, None),
-                    'key': keys_by_name.get(sensor_name, None),
-                    'precision': decimals_by_name.get(sensor_name, None),
-                    'measurement': details.get('measurement', None),
-                    'device': details.get('device', None),
-                    'location': details.get('location', None),
-                    'integrate': details.get('integrate', False),
-                }
-                sensors_by_name[sensor_name] = data
-                sensors_by_key[key] = data
-
+    try:
+        for entry in yaml:
+            for details in entry.values():
+                enable = details.get('enable', True)
+                sensor_name = details.get('sensor_name', None)
+                key = keys_by_name.get(sensor_name, None)
+                if key and enable:
+                    data = {
+                        'sensor_name': details.get('sensor_name', None),
+                        'display_name': details.get('display_name', None),
+                        'unit': units_by_name.get(sensor_name, None),
+                        'key': keys_by_name.get(sensor_name, None),
+                        'precision': decimals_by_name.get(sensor_name, None),
+                        'measurement': details.get('measurement', None),
+                        'device': details.get('device', None),
+                        'location': details.get('location', None),
+                        'integrate': details.get('integrate', False),
+                    }
+                    sensors_by_name[sensor_name] = data
+                    sensors_by_key[key] = data
+    except Exception as e:
+        _LOGGER.error(f"Unexpected exception in parse_sensors(): {e}")
     return sensors_by_name, sensors_by_key

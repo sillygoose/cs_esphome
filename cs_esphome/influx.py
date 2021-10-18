@@ -13,7 +13,9 @@ from influxdb_client.rest import ApiException
 
 from readconfig import retrieve_options
 
-from exceptions import FailedInitialization, InfluxDBWriteError, InfluxDBFormatError, InfluxDBInitializationError
+from exceptions import FailedInitialization
+from exceptions import InfluxDBWriteError, InfluxDBFormatError, InfluxDBInitializationError, InfluxDBBucketError
+
 from urllib3.exceptions import NewConnectionError
 
 
@@ -184,9 +186,9 @@ class InfluxDB:
 
     def delete_bucket(self):
         buckets_api = self._client.buckets_api()
-        bucket = buckets_api.find_bucket_by_name(self._bucket)
-        if bucket:
-            buckets_api.delete_bucket(bucket)
+        found_bucket = buckets_api.find_bucket_by_name(self._bucket)
+        if found_bucket:
+            buckets_api.delete_bucket(found_bucket)
             bucket = buckets_api.find_bucket_by_name(self._bucket)
             if not bucket:
                 return True

@@ -269,6 +269,7 @@ cs_esphome:
         measurement:    'power'
         device:         'garage'
         location:       'garage'
+        integrate:      True
     - sensor:
         sensor_name:    'cs24_ct46_w'
         display_name:   'Basement'
