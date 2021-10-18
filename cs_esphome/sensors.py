@@ -32,11 +32,12 @@ def parse_by_location(sensors):
 
 
 def parse_by_integration(sensors):
-    integratable = []
+    can_integrate = []
     for sensor in sensors.values():
         if sensor.get('integrate'):
-            integratable.append(sensor)
-    return integratable
+            can_integrate.append(sensor)
+            break ###
+    return can_integrate
 
 
 def parse_sensors(yaml, entities):

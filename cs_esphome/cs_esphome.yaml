@@ -49,7 +49,7 @@ cs_esphome:
   #   settings.watchdog                 override the default watchdog timer timeout (int)
   settings:
     sampling:
-      integrations: 10
+      integrations: 30
     watchdog:   30
 
   # Sensor setup

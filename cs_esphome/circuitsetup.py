@@ -89,6 +89,7 @@ class CircuitSetup():
 
 
     async def run(self):
+        _LOGGER.info(f"CS/ESPHome core starting up")
         try:
             queues = {
                 'sampler': asyncio.Queue(),
@@ -99,7 +100,6 @@ class CircuitSetup():
                 self.midnight(),
                 self.watchdog(),
                 self.filldata(),
-                self.influx_tasks(),
                 self.task_deletions(queues.get('deletions')),
                 self.task_sampler(queues.get('sampler')),
                 self.posting_task(queues.get('sampler')),
@@ -131,66 +131,6 @@ class CircuitSetup():
         if self._task_gather:
             self._task_gather.cancel()
             await asyncio.sleep(0.5)
-
-
-    def influx_delta_wh_tasks(self, tasks_api, organization) -> None:
-        task_base_name = 'delta_kwh'
-        task_measurement = 'energy'
-        task_device = 'delta_wh'
-
-        periods = {'today': '-1d', 'month': '-1mo', 'year': '-1y'}
-        for period, range in periods.items():
-            task_name = task_base_name + '_' + period
-            tasks = tasks_api.find_tasks(name=task_name)
-            if tasks is None or len(tasks) == 0:
-                _LOGGER.info(f"InfluxDB task '{task_name}' was not found, creating...")
-                task_organization = organization.name
-                flux =  '\n' \
-                        f'production_{period} = from(bucket: "multisma2")\n' \
-                        f'  |> range(start: {range})\n' \
-                        f'  |> filter(fn: (r) => r._measurement == "production" and r._field == "{period}" and r._inverter == "site")\n' \
-                        f'  |> map(fn: (r) => ({{ r with _value: r._value * 1000.0 }}))\n' \
-                        f'  |> rename(columns: {{_inverter: "_device"}})\n' \
-                        f'  |> drop(columns: ["_start", "_stop", "_field", "_measurement"])\n' \
-                        f'  |> yield(name: "production_{period}")\n' \
-                        f'\n' \
-                        f'consumption_{period} = from(bucket: "cs24")\n' \
-                        f'  |> range(start: {range})\n' \
-                        f'  |> filter(fn: (r) => r._measurement == "energy" and r._device == "line" and r._field == "{period}")\n' \
-                        f'  |> drop(columns: ["_start", "_stop", "_field", "_measurement"])\n' \
-                        f'  |> yield(name: "consumption_{period}")\n' \
-                        f'\n' \
-                        f'union(tables: [production_{period}, consumption_{period}])\n' \
-                        f'  |> pivot(rowKey:["_time"], columnKey: ["_device"], valueColumn: "_value")\n' \
-                        f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "{task_measurement}", _device: "{task_device}", _field: "{period}", _value: r.line - r.site }}))\n' \
-                        f'  |> to(bucket: "cs24", org: "{task_organization}")\n' \
-                        f'  |> yield(name: "delta_wh_{period}")\n'
-                try:
-                    tasks_api.create_task_every(name=task_name, flux=flux, every='5m', organization=organization)
-                    _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
-                except ApiException as e:
-                    body_dict = json.loads(e.body)
-                    _LOGGER.error(f"ApiException during task creation: {body_dict.get('message', '???')}")
-                except Exception as e:
-                    _LOGGER.error(f"Unexpected exception during task creation: {e}")
-
-
-    async def influx_tasks(self) -> None:
-        tasks_api = CircuitSetup._INFLUX.tasks_api()
-        organizations_api = CircuitSetup._INFLUX.organizations_api()
-
-        task_organization = CircuitSetup._INFLUX.org()
-        try:
-            organizations = organizations_api.find_organizations(org=task_organization)
-        except ApiException as e:
-            body_dict = json.loads(e.body)
-            _LOGGER.error(f"influx_tasks() can't access the InfluxDB organization: {body_dict.get('message', '???')}")
-            return
-        except Exception as e:
-            _LOGGER.error(f"influx_tasks() can't create an InfluxDB task: unexpected exception: {e}")
-            return
-
-        self.influx_delta_wh_tasks(tasks_api=tasks_api, organization=organizations[0])
 
 
     async def filldata(self) -> None:
