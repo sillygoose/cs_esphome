@@ -15,6 +15,7 @@ import version
 import query
 import tasks
 import esphome
+import filldata
 from readconfig import retrieve_options
 
 from influx import InfluxDB
@@ -89,18 +90,18 @@ class CircuitSetup():
 
 
     async def run(self):
-        _LOGGER.info(f"CS/ESPHome core starting up")
+        _LOGGER.info(f"CS/ESPHome core starting up...")
+        filldata.filldata(self._config, CircuitSetup._INFLUX)
         try:
             queues = {
                 'sampler': asyncio.Queue(),
-                'deletions': asyncio.Queue(),
+                'refresh': asyncio.Queue(),
             }
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
-                self.midnight(),
+                self.midnight(queues.get('refresh')),
                 self.watchdog(),
-                self.filldata(),
-                self.task_deletions(queues.get('deletions')),
+                self.task_refresh(queues.get('refresh')),
                 self.task_sampler(queues.get('sampler')),
                 self.posting_task(queues.get('sampler')),
             )
@@ -133,68 +134,11 @@ class CircuitSetup():
             await asyncio.sleep(0.5)
 
 
-    async def filldata(self) -> None:
-        """Task to fill in missing data for Grafana."""
-        _DEBUG_ENV_VAR = 'CS_ESPHOME_DEBUG'
-        _DEBUG_OPTIONS = {
-            'fill_data': {'type': bool, 'required': False},
-        }
-        debug_options = retrieve_options(self._config, 'debug', _DEBUG_OPTIONS)
-        cs_esphome_debug = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
-        if cs_esphome_debug == False or debug_options.get('fill_data', False) == False:
-            return
-
-        """Task to fill in missing data for Grafana."""
-        _DEBUG_ENV_VAR = 'CS_ESPHOME_DEBUG'
-        _DEBUG_OPTIONS = {
-            'fill_data': {'type': bool, 'required': False},
-        }
-        debug_options = retrieve_options(self._config, 'debug', _DEBUG_OPTIONS)
-        cs_esphome_debug = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
-        if cs_esphome_debug == False or debug_options.get('fill_data', False) == False:
-            return
-
-        start = datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)) - relativedelta(months=13)
-        stop = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
-
-        query_api = CircuitSetup._INFLUX.query_api()
-        bucket = CircuitSetup._INFLUX.bucket()
-        check_query = f'from(bucket: "{bucket}")' \
-            f' |> range(start: 0)' \
-            f' |> filter(fn: (r) => r._measurement == "energy")' \
-            f' |> filter(fn: (r) => r._device == "line")' \
-            f' |> filter(fn: (r) => r._field == "today")' \
-            f' |> first()'
-        tables = query.execute_query(query_api, check_query)
-        for table in tables:
-            for row in table.records:
-                utc = row.values.get('_time')
-                stop = datetime.datetime(year=utc.year, month=utc.month, day=utc.day)
-
-        current = start.replace(month=1, day=1)
-        while current < stop:
-            CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='year', value=0.0, timestamp=int(current.timestamp()))
-            current += relativedelta(years=1)
-
-        current = start.replace(day=1)
-        while current < stop:
-            CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='month', value=0.0, timestamp=int(current.timestamp()))
-            current += relativedelta(months=1)
-
-        current = start
-        while current < stop:
-            CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='today', value=0.0, timestamp=int(current.timestamp()))
-            current += relativedelta(days=1)
-
-        _LOGGER.info(f"CS/ESPHome missing data fill: {start.date()} to {stop.date()}")
-
-
-    async def midnight(self) -> None:
+    async def midnight(self, queue) -> None:
         """Task to wake up after midnight and update the solar data for the new day."""
         while True:
             right_now = datetime.datetime.now()
-            tomorrow = right_now + datetime.timedelta(days=1)
-            midnight = datetime.datetime.combine(tomorrow, datetime.time(0, 0))
+            midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
             await asyncio.sleep((midnight - right_now).total_seconds())
 
             _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
@@ -257,23 +201,16 @@ class CircuitSetup():
             _LOGGER.debug(f"watchdog(): {e}")
 
 
-    async def task_deletions(self, queue):
-        """Work done at a slow sample rate."""
+    async def task_refresh(self, queue):
+        """Remove old tasks and replace with new ones."""
         try:
-            delete_api = CircuitSetup._INFLUX.delete_api()
-            bucket = CircuitSetup._INFLUX.bucket()
-            org = CircuitSetup._INFLUX.org()
-            #start = datetime.datetime.combine(datetime.datetime.now().replace(month=8, day=1), datetime.time(0, 0))
-            #stop = datetime.datetime.combine(datetime.datetime.now().replace(month=9, day=3), datetime.time(0, 0))
-            #start = "2020-01-01T00:00:00Z"
-            #stop = "2021-10-03T00:00:00Z"
-            #delete_api.delete(start, stop, '_measurement="energy"', bucket=bucket, org=org)
             while True:
-                request = await queue.get()
+                periods = await queue.get()
                 queue.task_done()
-                _LOGGER.debug(f"task_deletions(queue): {request}")
+                _LOGGER.info(f"task_refresh(queue): {periods}")
+                await self._task_manager.refresh_tasks(periods=periods)
         except Exception as e:
-            _LOGGER.debug(f"task_deletions(): {e}")
+            _LOGGER.debug(f"task_refresh(): {e}")
 
 
     async def posting_task(self, queue):
@@ -307,4 +244,3 @@ class CircuitSetup():
             await self._esphome_api.subscribe_states(sensor_callback)
         except Exception as e:
             _LOGGER.debug(f"task_sampler(): {e}")
-
