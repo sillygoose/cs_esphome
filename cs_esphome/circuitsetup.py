@@ -90,7 +90,6 @@ class CircuitSetup():
 
 
     async def run(self):
-        _LOGGER.info(f"CS/ESPHome core starting up...")
         filldata.filldata(self._config, CircuitSetup._INFLUX)
         try:
             queues = {
@@ -140,8 +139,16 @@ class CircuitSetup():
             right_now = datetime.datetime.now()
             midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
             await asyncio.sleep((midnight - right_now).total_seconds())
-
             _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
+
+            # restart today, month, and year tasks
+            periods = ['today']
+            right_now = datetime.datetime.now()
+            if right_now.day == 1:
+                periods.append('month')
+            if right_now.month == 1:
+                periods.append('year')
+            queue.put_nowait(periods)
 
             query_api = CircuitSetup._INFLUX.query_api()
             bucket = CircuitSetup._INFLUX.bucket()
@@ -222,6 +229,9 @@ class CircuitSetup():
                     state = packet.get('state', None)
                     queue.task_done()
                     if sensor and state and CircuitSetup._INFLUX:
+                        if sensor.get('sensor_name', '???') == 'cs24_sampling':
+                            _LOGGER.warning(f"{sensor}")
+                            continue
                         ts = packet.get('ts', None)
                         try:
                             CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state, timestamp=ts)

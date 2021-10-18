@@ -31,6 +31,7 @@ class ESPHomeApi():
 
 
     async def start(self, config):
+        """."""
         success = False
         try:
             url = config.circuitsetup.url
@@ -63,6 +64,15 @@ class ESPHomeApi():
 
         try:
             entities, services = await self._client.list_entities_services()
+            sample_period = None
+            extra = ''
+            for sensor in entities:
+                if sensor.name == 'cs24_sampling':
+                    sample_period = sensor.accuracy_decimals
+                    extra = f', ESPHome reports sampling sensors every {sample_period} seconds'
+                    break
+            _LOGGER.info(f"CS/ESPHome core started{extra}")
+
         except Exception as e:
             _LOGGER.error(f"Unexpected exception accessing '{self._name}' list_entities_services(): {e}")
             return False

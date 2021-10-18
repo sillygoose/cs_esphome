@@ -114,7 +114,7 @@ class TaskManager():
 
                     try:
                         tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_integrations }s', organization=organization)
-                        _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
+                        _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
                     except ApiException as e:
                         body_dict = json.loads(e.body)
                         _LOGGER.error(f"ApiException during task creation in influx_location_integration_tasks(): {body_dict.get('message', '???')}")
@@ -184,7 +184,7 @@ class TaskManager():
                                     f'  |> to(bucket: "{bucket}", org: "{task_organization}")\n'
                         try:
                             tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_integrations }s', organization=organization)
-                            _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
+                            _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
                         except ApiException as e:
                             body_dict = json.loads(e.body)
                             _LOGGER.error(f"ApiException during task creation in influx_integration_tasks(): {body_dict.get('message', '???')}")
@@ -239,7 +239,7 @@ class TaskManager():
                         f'  |> yield(name: "delta_wh_{period}")\n'
                 try:
                     tasks_api.create_task_every(name=task_name, flux=flux, every='5m', organization=organization)
-                    _LOGGER.info(f"InfluxDB task '{task_name}' was successfully created")
+                    _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
                 except ApiException as e:
                     body_dict = json.loads(e.body)
                     _LOGGER.error(f"ApiException during task creation in _delta_wh_worker(): {body_dict.get('message', '???')}")
@@ -301,7 +301,7 @@ class TaskManager():
             for task in tasks:
                 for period in periods:
                     if task.name.endswith(period):
-                        _LOGGER.info(f"'Deleting {task.name}")
+                        _LOGGER.debug(f"'Deleting {task.name}")
                         tasks_api.delete_task(task.id)
         except Exception as e:
             _LOGGER.error(f"delete_tasks(): unexpected exception: {e}")
