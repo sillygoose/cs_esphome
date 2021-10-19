@@ -16,6 +16,7 @@ import query
 import tasks
 import esphome
 import filldata
+import electricmeter
 from readconfig import retrieve_options
 
 from influx import InfluxDB
@@ -40,6 +41,7 @@ class CircuitSetup():
         self._task_manager = None
         self._task_gather = None
         self._esphome_api = None
+        self._electric_meter = None
         self._name = None
         self._watchdog = CircuitSetup._DEFAULT_WATCHDOG
 
@@ -56,36 +58,26 @@ class CircuitSetup():
                     CircuitSetup._INFLUX = None
             return success
 
-        def _check_for_meter_update(config) -> None:
-            if 'meter' in config.keys():
-                if 'enable_setting' in config.meter.keys():
-                    enable_setting = config.meter.get('enable_setting', None)
-                    if enable_setting:
-                        if 'value' in config.meter.keys():
-                            value = config.meter.get('value', None)
-                            right_now = datetime.datetime.now()
-                            midnight = datetime.datetime.combine(right_now, datetime.time(0, 0))
-                            CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'meter_reading'}], field='today', value=value, timestamp=int(midnight.timestamp()))
-                        else:
-                            _LOGGER.warning("Expected meter value in YAML file, no action taken")
-
         config = self._config
         if 'settings' in config.keys():
             if 'watchdog' in config.settings.keys():
                 self._watchdog = config.settings.get('watchdog', CircuitSetup._DEFAULT_WATCHDOG)
 
-        if not _start_influxdb(config):
+        if not _start_influxdb(config=config):
             return False
 
-        self._esphome_api = esphome.ESPHomeApi(config)
-        if not await self._esphome_api.start(config):
+        self._esphome_api = esphome.ESPHomeApi(config=config)
+        if not await self._esphome_api.start():
             return False
 
-        self._task_manager = tasks.TaskManager(config, CircuitSetup._INFLUX)
+        self._electric_meter = electricmeter.ElectricMeter(config=config, influxdb_client=CircuitSetup._INFLUX)
+        if not self._electric_meter.start():
+            return False
+
+        self._task_manager = tasks.TaskManager(config=config, influx_client=CircuitSetup._INFLUX)
         if not await self._task_manager.start(by_location=self._esphome_api.sensors_by_location(), by_integration=self._esphome_api.sensors_by_integration()):
             return False
 
-        _check_for_meter_update(config)
         return True
 
 
@@ -98,8 +90,8 @@ class CircuitSetup():
             }
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
-                self.midnight(queues.get('refresh')),
                 self.watchdog(),
+                self.midnight(queues.get('refresh')),
                 self.task_refresh(queues.get('refresh')),
                 self.task_sampler(queues.get('sampler')),
                 self.posting_task(queues.get('sampler')),
@@ -136,12 +128,12 @@ class CircuitSetup():
     async def midnight(self, queue) -> None:
         """Task to wake up after midnight and update the solar data for the new day."""
         while True:
+            _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
             right_now = datetime.datetime.now()
             midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
             await asyncio.sleep((midnight - right_now).total_seconds())
-            _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
 
-            # restart today, month, and year tasks
+            # Restart any InfluxDB today, month, and year tasks
             periods = ['today']
             right_now = datetime.datetime.now()
             if right_now.day == 1:
@@ -149,49 +141,6 @@ class CircuitSetup():
             if right_now.month == 1:
                 periods.append('year')
             queue.put_nowait(periods)
-
-            query_api = CircuitSetup._INFLUX.query_api()
-            bucket = CircuitSetup._INFLUX.bucket()
-            read_query = f'from(bucket: "{bucket}")' \
-                f' |> range(start: -25h)' \
-                f' |> filter(fn: (r) => r._measurement == "energy")' \
-                f' |> filter(fn: (r) => r._device == "meter_reading" or r._device == "delta_wh")' \
-                f' |> filter(fn: (r) => r._field == "today")' \
-                f' |> first()'
-
-            try:
-                tables = query.execute_query(query_api, read_query)
-            except ApiException as e:
-                body_dict = json.loads(e.body)
-                _LOGGER.error(f"midnight() has a problem with the query: {body_dict.get('message', '???')}")
-            except Exception as e:
-                _LOGGER.error(f"Unexpected exception in midnight(): {e}")
-
-            delta_wh = None
-            meter_reading = None
-            for table in tables:
-                for row in table.records:
-                    device = row.values.get('_device', None)
-                    if device == 'meter_reading':
-                        meter_reading = row.values.get('_value', None)
-                    elif device == 'delta_wh':
-                        delta_wh = row.values.get('_value', None)
-                    else:
-                        _LOGGER.error(f"Unexpected device: {device}")
-
-            if meter_reading is not None and delta_wh is not None:
-                delta_kwh = delta_wh * 0.001
-                final_meter_reading = meter_reading + delta_kwh
-
-                midnight_today = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
-                midnight_yesterday = midnight_today - datetime.timedelta(days=1)
-                _LOGGER.info(f"Final meter reading for {midnight_yesterday}: {final_meter_reading}")
-
-                try:
-                    CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'meter_reading'}], field='today', value=final_meter_reading, timestamp=int(midnight_yesterday.timestamp()))
-                    CircuitSetup._INFLUX.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'meter_reading'}], field='today', value=final_meter_reading, timestamp=int(midnight_today.timestamp()))
-                except InfluxDBWriteError as e:
-                    _LOGGER.warning(f"{e}")
 
 
     async def watchdog(self):

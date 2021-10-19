@@ -5,9 +5,6 @@ import logging
 import aioesphomeapi
 from aioesphomeapi.core import SocketAPIError, InvalidAuthAPIError
 
-from influxdb_client.rest import ApiException
-# from exceptions import WatchdogTimer, InfluxDBFormatError, InfluxDBWriteError, InternalError, FailedInitialization
-
 import sensors
 
 
@@ -30,9 +27,10 @@ class ESPHomeApi():
         self._sensor_locations = None
 
 
-    async def start(self, config):
+    async def start(self):
         """."""
         success = False
+        config = self._config
         try:
             url = config.circuitsetup.url
             port = config.circuitsetup.get('port', ESPHomeApi._DEFAULT_ESPHOME_API_PORT)

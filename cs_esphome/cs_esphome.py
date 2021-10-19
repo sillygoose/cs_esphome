@@ -111,8 +111,6 @@ class CS_ESPHome():
 def main():
     """Set up and start CS/ESPHome application."""
     logfiles.start()
-    _LOGGER.info(f"CircuitSetup/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
-
     try:
         config = read_config()
         if config:

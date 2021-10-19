@@ -58,13 +58,7 @@ class TaskManager():
     async def run(self):
         try:
             _LOGGER.info(f"CS/ESPHome starting up, ESPHome integration tasks run every {self._sampling_integrations} seconds")
-            queues = {
-                'integrations': asyncio.Queue(),
-            }
-            self._task_gather = asyncio.gather(
-                self.influx_tasks(),
-            )
-            await self._task_gather
+            await self.influx_tasks()
         except FailedInitialization as e:
             _LOGGER.error(f"run(): {e}")
         except Exception as e:
@@ -256,6 +250,66 @@ class TaskManager():
             _LOGGER.error(f"Unexpected exception during task creation in influx_integration_tasks(): {e}")
 
 
+    def influx_meter_tasks(self, organization) -> None:
+        """."""
+
+        def _meter_worker(organization, when, force=False) -> None:
+            """."""
+            tasks_api = self._tasks_api
+            bucket = self._bucket
+            task_base_name = 'cs_esphome.meter'
+            db_measurement = 'energy'
+            db_device = 'meter_reading'
+
+            task_name = task_base_name + '.reading'  + '.' + when + '.today'
+            tasks = tasks_api.find_tasks(name=task_name)
+            if tasks and len(tasks) and force:
+                for task in tasks:
+                    tasks_api.delete_task(task.id)
+                tasks = tasks_api.find_tasks(name=task_name)
+
+            if tasks is None or len(tasks) == 0:
+                _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
+                task_organization = organization.name
+                if when == 'previous':
+                    cron = '1 0 * * *'
+                    flux =  f'\n' \
+                            f'from(bucket: "{bucket}")\n' \
+                            f'  |> range(start: -25h)\n' \
+                            f'  |> filter(fn: (r) => r._measurement == "energy" and r._field == "today")\n' \
+                            f'  |> filter(fn: (r) => r._device == "meter_reading" or r._device == "delta_wh")\n' \
+                            f'  |> first()\n' \
+                            f'  |> pivot(rowKey:["_time"], columnKey: ["_device"], valueColumn: "_value")\n' \
+                            f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: {db_measurement}, _device: "meter_reading", _field: "today", _value: r.meter_reading + (r.delta_wh * 0.001) }}))\n' \
+                            f'  |> to(bucket: "{bucket}", org: "{task_organization}")\n' \
+                            f'  |> yield(name: "meter_reading_yesterday")\n'
+                elif when == 'current':
+                    midnight = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
+                    cron = '2 0 * * *'
+                    flux =  f'\n' \
+                            f'from(bucket: "{bucket}")\n' \
+                            f'  |> range(start: -25h)\n' \
+                            f'  |> filter(fn: (r) => r._measurement == "energy" and r._device == "meter_reading" and r._field == "today")\n' \
+                            f'  |> first()\n' \
+                            f'  |> map(fn: (r) => ({{ _time: {midnight}, _measurement: {db_measurement}, _device: "meter_reading", _field: "today", _value: r._value }}))\n' \
+                            f'  |> to(bucket: "{bucket}", org: "{task_organization}")\n' \
+                            f'  |> yield(name: "meter_reading_today")\n'
+                else:
+                    _LOGGER.error(f"Something bad happened")
+
+                try:
+                    tasks_api.create_task_cron(name=task_name, flux=flux, cron=cron, org_id=organization.id)
+                    _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                except ApiException as e:
+                    body_dict = json.loads(e.body)
+                    _LOGGER.error(f"ApiException during task creation in influx_meter_tasks(): {body_dict.get('message', '???')}")
+                except Exception as e:
+                    _LOGGER.error(f"Unexpected exception during task creation in influx_meter_tasks(): {e}")
+
+        _meter_worker(organization=organization, when='previous', force=True)
+        _meter_worker(organization=organization, when='current', force=True)
+
+
     async def influx_tasks(self, periods=None) -> None:
         influxdb_client = self._client
         tasks_api = influxdb_client.tasks_api()
@@ -272,6 +326,7 @@ class TaskManager():
             _LOGGER.error(f"influx_tasks() can't create an InfluxDB task: unexpected exception: {e}")
             return
 
+        self.influx_meter_tasks(organization=organizations[0])
         self.influx_delta_wh_tasks(organization=organizations[0], periods=periods)
         self.influx_location_integration_tasks(organization=organizations[0], locations=self._sensors_by_location, periods=periods)
         self.influx_device_integration_tasks(organization=organizations[0], sensors=self._sensors_by_integration, periods=periods)
@@ -305,4 +360,3 @@ class TaskManager():
                         tasks_api.delete_task(task.id)
         except Exception as e:
             _LOGGER.error(f"delete_tasks(): unexpected exception: {e}")
-        ###
