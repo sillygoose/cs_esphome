@@ -27,7 +27,6 @@ def parse_by_location(sensors):
                     return {}
                 entry.append({'device': device, 'measurement': measurement})
                 location_directory[location] = entry
-                break ### fixme!!!!!
     return location_directory
 
 

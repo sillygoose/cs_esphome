@@ -169,7 +169,7 @@ class CircuitSetup():
             deletion_queue.task_done()
             _LOGGER.info(f"task_deletions(queue): {predicate}")
 
-            await asyncio.sleep(52)  # 60 * 60 * 4
+            await asyncio.sleep(60 * 60 * 4)
             try:
                 for predicate in _PREDICATES:
                     keep_last = predicate.get('keep_last', 3)

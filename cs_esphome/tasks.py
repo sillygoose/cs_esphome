@@ -46,7 +46,7 @@ class TaskManager():
         self._query_api = client.query_api()
         self._bucket = client.bucket()
 
-        self._sampling_integrations = TaskManager._DEFAULT_INTEGRATIONS ###
+        self._sampling_integrations = TaskManager._DEFAULT_INTEGRATIONS
         config = self._config
         if 'settings' in config.keys():
             if 'sampling' in config.settings.keys():
@@ -79,7 +79,6 @@ class TaskManager():
             bucket = self._bucket
             task_base_name = 'cs_esphome.device.location'
             for location, sensors in locations.items():
-                location_query = '//' if len(location) == 0 else f' |> filter(fn: (r) => r._location == "{location}")\n'
                 task_name = task_base_name + '.' + location + '.' + period
                 tasks = tasks_api.find_tasks(name=task_name)
                 if tasks is None or len(tasks) == 0:
@@ -137,7 +136,7 @@ class TaskManager():
                     location = sensor.get('location')
                     device = sensor.get('device')
                     measurement = sensor.get('measurement')
-                    location_query = '//' if len(location) == 0 else f' |> filter(fn: (r) => r._location == "{location}")\n'
+                    location_query = '//' if len(location) == 0 else f'|> filter(fn: (r) => r._location == "{location}")'
 
                     task_name = task_base_name + '.' + device + '.' + period
                     tasks = tasks_api.find_tasks(name=task_name)
@@ -292,7 +291,7 @@ class TaskManager():
 
 
     async def influx_tasks(self, periods=None) -> None:
-        _LOGGER.info(f"influx_tasks({periods})")
+        _LOGGER.debug(f"influx_tasks({periods})")
         influxdb_client = self._client
 
         organizations_api = influxdb_client.organizations_api()
@@ -308,7 +307,7 @@ class TaskManager():
 
         self.influx_meter_tasks(organization=organizations[0])
         self.influx_delta_wh_tasks(organization=organizations[0], periods=periods)
-        self.influx_location_integration_tasks(organization=organizations[0], locations=self._sensors_by_location, periods=periods)
+        ### reaplce with queries self.influx_location_integration_tasks(organization=organizations[0], locations=self._sensors_by_location, periods=periods)
         self.influx_device_integration_tasks(organization=organizations[0], sensors=self._sensors_by_integration, periods=periods)
 
 
