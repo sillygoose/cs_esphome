@@ -10,6 +10,7 @@ import json
 from dateutil.relativedelta import relativedelta
 
 from aioesphomeapi import SensorState
+from influxdb_client.domain.bucket import Bucket
 
 import version
 import query
@@ -39,6 +40,7 @@ class CircuitSetup():
         """Create a new CircuitSetup object."""
         self._config = config
         self._task_manager = None
+        self._influxdb_client = None
         self._task_gather = None
         self._esphome_api = None
         self._electric_meter = None
@@ -53,6 +55,7 @@ class CircuitSetup():
             success = False
             if 'influxdb2' in config.keys():
                 CircuitSetup._INFLUX = InfluxDB(config)
+                self._influxdb_client = CircuitSetup._INFLUX
                 success = CircuitSetup._INFLUX.start()
                 if not success:
                     CircuitSetup._INFLUX = None
@@ -85,13 +88,15 @@ class CircuitSetup():
         filldata.filldata(self._config, CircuitSetup._INFLUX)
         try:
             queues = {
+                'deletions': asyncio.Queue(),
                 'sampler': asyncio.Queue(),
                 'refresh': asyncio.Queue(),
             }
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
                 self.watchdog(),
-                self.midnight(queues.get('refresh')),
+                self.midnight(queues.get('refresh'), queues.get('deletions')),
+                self.task_deletions(queues.get('deletions')),
                 self.task_refresh(queues.get('refresh')),
                 self.task_sampler(queues.get('sampler')),
                 self.posting_task(queues.get('sampler')),
@@ -125,7 +130,7 @@ class CircuitSetup():
             await asyncio.sleep(0.5)
 
 
-    async def midnight(self, queue) -> None:
+    async def midnight(self, refresh_queue, deletion_queue) -> None:
         """Task to wake up after midnight and update the solar data for the new day."""
         while True:
             _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
@@ -140,7 +145,41 @@ class CircuitSetup():
                 periods.append('month')
             if right_now.month == 1:
                 periods.append('year')
-            queue.put_nowait(periods)
+            refresh_queue.put_nowait(periods)
+            _LOGGER.info(f"Posted event to the refresh queue: {periods}")
+
+            deletion_queue.put_nowait(False)
+            _LOGGER.info(f"Posted event to the deletion queue: {False}")
+
+
+    async def task_deletions(self, deletion_queue) -> None:
+        """Task to remove old database entries."""
+
+        _PREDICATES = [
+            {'name': 'power_factor', 'predicate': '_measurement="power_factor"', 'keep_last': 1},
+            {'name': 'voltage', 'predicate': '_measurement="voltage"', 'keep_last': 3},
+        ]
+
+        delete_api = self._influxdb_client.delete_api()
+        bucket = self._influxdb_client.bucket()
+        org = self._influxdb_client.org()
+        start = datetime.datetime(1970, 1, 1).isoformat() + 'Z'
+        while True:
+            predicate = await deletion_queue.get()
+            deletion_queue.task_done()
+            _LOGGER.info(f"task_deletions(queue): {predicate}")
+
+            await asyncio.sleep(52)  # 60 * 60 * 4
+            try:
+                for predicate in _PREDICATES:
+                    keep_last = predicate.get('keep_last', 3)
+                    predicate = predicate.get('predicate', None)
+                    if predicate:
+                        stop = datetime.datetime.combine(datetime.datetime.now() - datetime.timedelta(days=keep_last), datetime.time(0, 0)).isoformat() + 'Z'
+                        delete_api.delete(start, stop, predicate, bucket=bucket, org=org)
+                        _LOGGER.info(f"Pruned database '{bucket}': {predicate}, kept last {keep_last} days")
+            except Exception as e:
+                _LOGGER.debug(f"Unexpected exception in task_deletions(): {e}")
 
 
     async def watchdog(self):
