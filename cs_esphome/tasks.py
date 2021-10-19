@@ -259,7 +259,6 @@ class TaskManager():
             bucket = self._bucket
             task_base_name = 'cs_esphome.meter'
             db_measurement = 'energy'
-            db_device = 'meter_reading'
 
             task_name = task_base_name + '.reading'  + '.' + when + '.today'
             tasks = tasks_api.find_tasks(name=task_name)
@@ -280,9 +279,9 @@ class TaskManager():
                             f'  |> filter(fn: (r) => r._device == "meter_reading" or r._device == "delta_wh")\n' \
                             f'  |> first()\n' \
                             f'  |> pivot(rowKey:["_time"], columnKey: ["_device"], valueColumn: "_value")\n' \
-                            f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: {db_measurement}, _device: "meter_reading", _field: "today", _value: r.meter_reading + (r.delta_wh * 0.001) }}))\n' \
+                            f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "energy", _device: "meter_reading", _field: "today", _value: r.meter_reading + (r.delta_wh * 0.001) }}))\n' \
                             f'  |> to(bucket: "{bucket}", org: "{task_organization}")\n' \
-                            f'  |> yield(name: "meter_reading_yesterday")\n'
+                            f'  |> yield(name: "meter_reading_yprevious")\n'
                 elif when == 'current':
                     midnight = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
                     cron = '2 0 * * *'
@@ -291,9 +290,9 @@ class TaskManager():
                             f'  |> range(start: -25h)\n' \
                             f'  |> filter(fn: (r) => r._measurement == "energy" and r._device == "meter_reading" and r._field == "today")\n' \
                             f'  |> first()\n' \
-                            f'  |> map(fn: (r) => ({{ _time: {midnight}, _measurement: {db_measurement}, _device: "meter_reading", _field: "today", _value: r._value }}))\n' \
+                            f'  |> map(fn: (r) => ({{ _time: {midnight}, _measurement: "energy", _device: "meter_reading", _field: "today", _value: r._value }}))\n' \
                             f'  |> to(bucket: "{bucket}", org: "{task_organization}")\n' \
-                            f'  |> yield(name: "meter_reading_today")\n'
+                            f'  |> yield(name: "meter_reading_current")\n'
                 else:
                     _LOGGER.error(f"Something bad happened")
 
