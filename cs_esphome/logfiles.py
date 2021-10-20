@@ -16,9 +16,12 @@ _DEFAULT_LOG_LEVEL = 'INFO'
 
 def start():
     """Create the application log."""
+    _DEBUG_ENV_VAR = 'CS_ESPHOME_DEBUG'
+    debug_mode = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
+
     log_file = _DEFAULT_LOG_FILE
     log_format = _DEFAULT_LOG_FORMAT
-    log_level = _DEFAULT_LOG_LEVEL
+    log_level = _DEFAULT_LOG_LEVEL if not debug_mode else 'DEBUG'
 
     now = datetime.now()
     filename = os.path.expanduser(log_file + "_" + now.strftime("%Y-%m-%d") + ".log")

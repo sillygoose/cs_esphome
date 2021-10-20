@@ -80,16 +80,16 @@ class InfluxDB:
 
             if not self.connect_bucket(cs_esphome_debug and debug_options.get('create_bucket', None)):
                 raise FailedInitialization(f"unable to access bucket '{self._bucket}' at '{self._url}'")
-            _LOGGER.info(f"Connected to InfluxDB2: '{self._url}', bucket '{self._bucket}'")
+            _LOGGER.info(f"Connected to InfluxDB: '{self._url}', bucket '{self._bucket}'")
             result = True
 
         except FailedInitialization as e:
-            _LOGGER.error(f"InfluxDB2 client {e}")
+            _LOGGER.error(f" client {e}")
             self._client = None
         except NewConnectionError:
-            _LOGGER.error(f"InfluxDB2 client unable to connect to host at {self._url}")
+            _LOGGER.error(f"InfluxDB client unable to connect to host at {self._url}")
         except ApiException as e:
-            _LOGGER.error(f"InfluxDB2 client unable to access bucket '{self._bucket}' at {self._url}: {e.reason}")
+            _LOGGER.error(f"InfluxDB client unable to access bucket '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             _LOGGER.error(f"Unexpected exception: {e}")
         finally:
@@ -146,7 +146,7 @@ class InfluxDB:
         try:
             self._write_api.write(bucket=self._bucket, record=lp, write_precision=WritePrecision.S)
         except ApiException as e:
-            raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
+            raise InfluxDBWriteError(f"InfluxDB client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
 
@@ -156,7 +156,7 @@ class InfluxDB:
         try:
             self._write_api.write(bucket=self._bucket, record=points, write_precision=WritePrecision.S)
         except ApiException as e:
-            raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
+            raise InfluxDBWriteError(f"InfluxDB client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
 
@@ -173,36 +173,47 @@ class InfluxDB:
             raise InfluxDBFormatError(f"'measurement' and/or 'device' are required")
 
         location_tag = '' if not location or not len(location) else f',_location={location}'
+        device_tag = f',_device={device}'
         value = round(state, precision) if ((precision != None) and isinstance(state, float)) else state
-        lp = f'{measurement}{location_tag} {device}={value} {timestamp}'
+        lp = f'{measurement}{device_tag}{location_tag} sample={value} {timestamp}'
 
         try:
             self._write_api.write(bucket=self._bucket, record=lp, write_precision=WritePrecision.S)
         except ApiException as e:
-            raise InfluxDBWriteError(f"InfluxDB2 client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
+            raise InfluxDBWriteError(f"InfluxDB client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
 
 
     def delete_bucket(self):
-        buckets_api = self._client.buckets_api()
-        found_bucket = buckets_api.find_bucket_by_name(self._bucket)
-        if found_bucket:
-            buckets_api.delete_bucket(found_bucket)
-            bucket = buckets_api.find_bucket_by_name(self._bucket)
-            if not bucket:
-                return True
-        return False
+        try:
+            buckets_api = self._client.buckets_api()
+            found_bucket = buckets_api.find_bucket_by_name(self._bucket)
+            if found_bucket:
+                buckets_api.delete_bucket(found_bucket)
+                bucket = buckets_api.find_bucket_by_name(self._bucket)
+                if not bucket:
+                    return True
+            return False
+        except ApiException as e:
+            raise InfluxDBBucketError(f"InfluxDB client unable to delete bucket '{self._bucket}' at {self._url}: {e.reason}")
+        except Exception as e:
+            raise InfluxDBBucketError(f"Unexpected exception in delete_bucket(): {e}")
 
 
     def connect_bucket(self, create_bucket=False):
-        buckets_api = self._client.buckets_api()
-        bucket = buckets_api.find_bucket_by_name(self._bucket)
-        if bucket:
-            return True
-        if create_bucket:
-            bucket = buckets_api.create_bucket(bucket_name=self._bucket, org_id=self._org, retention_rules=None, org=None)
+        try:
+            buckets_api = self._client.buckets_api()
+            bucket = buckets_api.find_bucket_by_name(self._bucket)
             if bucket:
-                _LOGGER.info(f"Created bucket '{self._bucket}' at {self._url}")
                 return True
-        return False
+            if create_bucket:
+                bucket = buckets_api.create_bucket(bucket_name=self._bucket, org_id=self._org, retention_rules=None, org=None)
+                if bucket:
+                    _LOGGER.info(f"Created bucket '{self._bucket}' at {self._url}")
+                    return True
+            return False
+        except ApiException as e:
+            raise InfluxDBBucketError(f"InfluxDB client unable to delete bucket '{self._bucket}' at {self._url}: {e.reason}")
+        except Exception as e:
+            raise InfluxDBBucketError(f"Unexpected exception in delete_bucket(): {e}")

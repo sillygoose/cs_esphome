@@ -103,3 +103,7 @@ class ESPHomeApi():
 
     def sensors_by_integration(self):
         return self._sensors_by_integration
+
+
+    def name(self):
+        return self._name

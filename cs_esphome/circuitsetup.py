@@ -5,7 +5,6 @@ import time
 import asyncio
 import logging
 import datetime
-import json
 
 from dateutil.relativedelta import relativedelta
 
@@ -31,8 +30,6 @@ _LOGGER = logging.getLogger('cs_esphome')
 class CircuitSetup():
     """Class to describe the CircuitSetup ESPHome API."""
 
-    _INFLUX = None
-
     _DEFAULT_WATCHDOG = 60
     _WATCHDOG = 0
 
@@ -40,6 +37,7 @@ class CircuitSetup():
         """Create a new CircuitSetup object."""
         self._config = config
         self._task_manager = None
+        self._query_manager = None
         self._influxdb_client = None
         self._task_gather = None
         self._esphome_api = None
@@ -54,12 +52,12 @@ class CircuitSetup():
         def _start_influxdb(config) -> bool:
             success = False
             if 'influxdb2' in config.keys():
-                CircuitSetup._INFLUX = InfluxDB(config)
-                self._influxdb_client = CircuitSetup._INFLUX
-                success = CircuitSetup._INFLUX.start()
+                self._influxdb_client = InfluxDB(config)
+                success = self._influxdb_client.start()
                 if not success:
-                    CircuitSetup._INFLUX = None
+                    self._influxdb_client = None
             return success
+
 
         config = self._config
         if 'settings' in config.keys():
@@ -72,34 +70,40 @@ class CircuitSetup():
         self._esphome_api = esphome.ESPHomeApi(config=config)
         if not await self._esphome_api.start():
             return False
+        self._name = self._esphome_api.name()
 
-        self._electric_meter = electricmeter.ElectricMeter(config=config, influxdb_client=CircuitSetup._INFLUX)
+        self._electric_meter = electricmeter.ElectricMeter(config=config, influxdb_client=self._influxdb_client)
         if not self._electric_meter.start():
             return False
 
-        self._task_manager = tasks.TaskManager(config=config, influx_client=CircuitSetup._INFLUX)
+        self._task_manager = tasks.TaskManager(config=config, influxdb_client=self._influxdb_client)
         if not await self._task_manager.start(by_location=self._esphome_api.sensors_by_location(), by_integration=self._esphome_api.sensors_by_integration()):
+            return False
+
+        self._query_manager = query.QueryManager(config=config, influxdb_client=self._influxdb_client)
+        if not await self._query_manager.start(locations=self._esphome_api.sensors_by_location()):
             return False
 
         return True
 
 
     async def run(self):
-        filldata.filldata(self._config, CircuitSetup._INFLUX)
+        filldata.filldata(self._config, self._influxdb_client)
         try:
             queues = {
                 'deletions': asyncio.Queue(),
-                'sampler': asyncio.Queue(),
+                'esphome': asyncio.Queue(),
                 'refresh': asyncio.Queue(),
             }
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
+                self._query_manager.run(),
                 self.watchdog(),
                 self.midnight(queues.get('refresh'), queues.get('deletions')),
                 self.task_deletions(queues.get('deletions')),
                 self.task_refresh(queues.get('refresh')),
-                self.task_sampler(queues.get('sampler')),
-                self.posting_task(queues.get('sampler')),
+                self.task_esphome_sensor_post(queues.get('esphome')),
+                self.task_esphome_sensor_gather(queues.get('esphome')),
             )
             await self._task_gather
         except FailedInitialization as e:
@@ -121,9 +125,9 @@ class CircuitSetup():
             self._esphome_api = None
             # await asyncio.sleep(0.5)
 
-        if CircuitSetup._INFLUX:
-            CircuitSetup._INFLUX.stop()
-            CircuitSetup._INFLUX = None
+        if self._influxdb_client:
+            self._influxdb_client.stop()
+            self._influxdb_client = None
 
         if self._task_gather:
             self._task_gather.cancel()
@@ -208,37 +212,38 @@ class CircuitSetup():
             _LOGGER.debug(f"task_refresh(): {e}")
 
 
-    async def posting_task(self, queue):
+    async def task_esphome_sensor_post(self, queue):
         """Process the subscribed data."""
         try:
             while True:
-                    packet = await queue.get()
-                    sensor = packet.get('sensor', None)
-                    state = packet.get('state', None)
-                    queue.task_done()
-                    if sensor and state and CircuitSetup._INFLUX:
-                        if sensor.get('sensor_name', '???') == 'cs24_sampling':
-                            _LOGGER.warning(f"{sensor}")
-                            continue
-                        ts = packet.get('ts', None)
-                        try:
-                            CircuitSetup._INFLUX.write_sensor(sensor=sensor, state=state, timestamp=ts)
-                        except InfluxDBFormatError as e:
-                            _LOGGER.warning(f"{e}")
+                packet = await queue.get()
+                sensor = packet.get('sensor', None)
+                state = packet.get('state', None)
+                queue.task_done()
+                if sensor and state and self._influxdb_client:
+                    ts = packet.get('ts', None)
+                    try:
+                        self._influxdb_client.write_sensor(sensor=sensor, state=state, timestamp=ts)
+                    except InfluxDBFormatError as e:
+                        _LOGGER.warning(f"{e}")
         except Exception as e:
             _LOGGER.debug(f"posting_task(): {e}")
 
 
-    async def task_sampler(self, queue):
+    async def task_esphome_sensor_gather(self, queue):
         """Post the subscribed data."""
         def sensor_callback(state):
             CircuitSetup._WATCHDOG += 1
             if type(state) == SensorState:
                 ts = (int(time.time()) // 10) * 10
-                sensor = self._esphome_api.sensors_by_key().get(state.key, None)
-                queue.put_nowait({'sensor': sensor, 'state': state.state, 'ts': ts})
+                sensor = sensors_by_key.get(state.key, None)
+                if sensor:
+                    queue.put_nowait({'sensor': sensor, 'state': state.state, 'ts': ts})
+                    #if sensor.get('location') == 'basement':
+                    #    _LOGGER.debug(f": device='{sensor.get('device')}' name='{sensor.get('sensor_name')}'  state='{state.state}'  ts='{ts}'")
 
         try:
+            sensors_by_key = self._esphome_api.sensors_by_key()
             await self._esphome_api.subscribe_states(sensor_callback)
         except Exception as e:
             _LOGGER.debug(f"task_sampler(): {e}")

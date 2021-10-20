@@ -4,6 +4,7 @@ cs_esphome:
   # debug fields (requires CS_ESPHOME_DEBUG to be set to True or 1 to be in effect)
   #  debug.create_bucket    creates the InfluxDB2 bucket if it does not exist (bool)
   #  debug.delete_bucket    deletes the bucket if it exists (bool)
+  #  debug.recreate_tasks   remove all InfluxDB tasks and create new ones (bool)
   #  debug.fill_data        fills in today/month/year energy fields to 0 (bool)
   #
   #  This last option can fill in the today/month/year energy records to make your long-term
@@ -12,6 +13,7 @@ cs_esphome:
   debug:
     create_bucket:  False
     delete_bucket:  False
+    recreate_tasks: False
     fill_data:      False
 
   # This option is used the current meter reading
