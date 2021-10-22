@@ -7,7 +7,7 @@ import os
 import time
 import logging
 
-from influxdb_client import InfluxDBClient, WritePrecision, Point
+from influxdb_client import InfluxDBClient, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 from influxdb_client.rest import ApiException
 

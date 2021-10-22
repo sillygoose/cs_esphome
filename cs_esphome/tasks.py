@@ -5,7 +5,7 @@ import json
 import datetime
 
 from influxdb_client.rest import ApiException
-from exceptions import FailedInitialization, InternalError, InfluxDBWriteError  # WatchdogTimer, InfluxDBFormatError, ,
+# from exceptions import   # WatchdogTimer, InfluxDBFormatError, ,
 
 
 _LOGGER = logging.getLogger('cs_esphome')
@@ -14,7 +14,7 @@ _LOGGER = logging.getLogger('cs_esphome')
 class TaskManager():
     """Class to create and manage InfluxDB tasks."""
 
-    _DEFAULT_INTEGRATIONS = 30
+    _DEFAULT_SAMPLING_INTEGRATIONS = 30
 
     def __init__(self, config, influxdb_client):
         """Create a new TaskManager object."""
@@ -25,7 +25,7 @@ class TaskManager():
         self._tasks_api = None
         self._query_api = None
         self._bucket = None
-        self._sampling_integrations = None
+        self._sampling_integrations = TaskManager._DEFAULT_SAMPLING_INTEGRATIONS
         self._sensors_by_integration = None
         self._sensors_by_location = None
 
@@ -42,11 +42,10 @@ class TaskManager():
         self._query_api = client.query_api()
         self._bucket = client.bucket()
 
-        self._sampling_integrations = TaskManager._DEFAULT_INTEGRATIONS
         config = self._config
         if 'settings' in config.keys():
             if 'sampling' in config.settings.keys():
-                self._sampling_integrations = config.settings.sampling.get('integrations', TaskManager._DEFAULT_INTEGRATIONS)
+                self._sampling_integrations = config.settings.sampling.get('integrations', TaskManager._DEFAULT_SAMPLING_INTEGRATIONS)
         if 'debug' in config.keys():
             if 'recreate_tasks' in config.debug.keys():
                 if config.debug.recreate_tasks:
@@ -59,8 +58,6 @@ class TaskManager():
         try:
             _LOGGER.info(f"CS/ESPHome starting up, ESPHome integration tasks run every {self._sampling_integrations} seconds")
             await self.influx_tasks()
-        except FailedInitialization as e:
-            _LOGGER.error(f"run(): {e}")
         except Exception as e:
             _LOGGER.error(f"Unexpected exception in run(): {e}")
 
