@@ -56,7 +56,7 @@ class TaskManager():
 
     async def run(self):
         try:
-            _LOGGER.info(f"CS/ESPHome starting up, ESPHome integration tasks run every {self._sampling_integrations} seconds")
+            _LOGGER.info(f"CS/ESPHome Task Manager starting up, integration tasks will run every {self._sampling_integrations} seconds")
             await self.influx_tasks()
         except Exception as e:
             _LOGGER.error(f"Unexpected exception in run(): {e}")

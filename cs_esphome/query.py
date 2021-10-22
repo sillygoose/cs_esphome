@@ -39,7 +39,7 @@ class QueryManager():
 
     async def run(self):
         try:
-            _LOGGER.info(f"CS/ESPHome starting up, ESPHome query tasks run every {self._sampling_queries} seconds")
+            _LOGGER.info(f"CS/ESPHome Query Manager starting up, query tasks will run every {self._sampling_queries} seconds")
             await self.scheduler()
         except Exception as e:
             _LOGGER.error(f"Unexpected exception in run(): {e}")
