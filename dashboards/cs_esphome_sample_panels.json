@@ -22,8 +22,8 @@
     "fiscalYearStartMonth": 0,
     "gnetId": null,
     "graphTooltip": 0,
-    "id": 13,
-    "iteration": 1634484070429,
+    "id": 14,
+    "iteration": 1634917826630,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -87,7 +87,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "ac_measurements power site"
+                            "options": "Production"
                         },
                         "properties": [
                             {
@@ -103,7 +103,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "power line"
+                            "options": "Consumption line"
                         },
                         "properties": [
                             {
@@ -147,6 +147,22 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "_value"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.hideFrom",
+                                "value": {
+                                    "legend": true,
+                                    "tooltip": true,
+                                    "viz": true
+                                }
+                            }
+                        ]
                     }
                 ]
             },
@@ -169,7 +185,7 @@
             },
             "targets": [
                 {
-                    "query": "production = from(bucket: \"multisma2\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"production\")\n  \nconsumption = from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"line\")\n  |> map(fn: (r) => ({ r with _time: r._time, _value: r._value * -1.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"consumption\")\n\nunion(tables: [production, consumption])\n  |> drop(columns: [\"_inverter\", \"_measurement\", \"_start\", \"_stop\"])\n  |> truncateTimeColumn(unit: 10s)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with Delta: r.power + r.line }))\n  |> yield(name: \"union\")\n\n",
+                    "query": "production = from(bucket: \"multisma2\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._inverter }))\n  |> yield(name: \"production\")\n  \nconsumption = from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._device}))\n  |> yield(name: \"consumption\")\n\nunion(tables: [production, consumption])\n  |> truncateTimeColumn(unit: 10s)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> sort(columns: [\"_time\"], desc: false)\n  |> fill(column: \"site\", value: 0)\n  |> map(fn: (r) => ({ _time: r._time, \"Net Power\": float(v: r.site) - r.line }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false, column: \"Net Power\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n  |> yield(name: \"net_power\")",
                     "refId": "Delta"
                 }
             ],
@@ -212,56 +228,7 @@
                     "mappings": [],
                     "unit": "percent"
                 },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "HotWater"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Hot Water"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "HeatPump"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Heat Pump"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "MainFloor"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Living Area"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "Vehicles"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "EV Charging"
-                            }
-                        ]
-                    }
-                ]
+                "overrides": []
             },
             "gridPos": {
                 "h": 8,
@@ -295,47 +262,52 @@
             "repeatDirection": "h",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"_kitchen\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, Kitchen:\n      if not exists r._kitchen or r._kitchen == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else r._kitchen / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"kitchen\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"kitchen\")\n",
                     "refId": "Kitchen"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"_basement\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, Basement:\n      if not exists r._basement or r._basement == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else r._basement / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"basement\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Basement\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"basement\")\n",
                     "refId": "Basement"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"_vehicles\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, Vehicles:\n      if not exists r._vehicles or r._vehicles == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else r._vehicles / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"vehicles\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"EV Charging\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"vehicles\")\n",
                     "refId": "Vehicles"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"_bedroom\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, Bedrooms:\n      if not exists r._bedroom or r._bedroom == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else r._bedroom / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"basement\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Bedroom\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"bedroom\")\n",
                     "refId": "Bedrooms"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"_laundry\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, Laundry:\n      if not exists r._laundry or r._laundry == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else r._laundry / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"laundry\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Laundry\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"laundry\")\n",
                     "refId": "Laundry"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"hot_water\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, HotWater:\n      if not exists r.hot_water or r.hot_water == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else r.hot_water / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
-                    "refId": "Hot water"
-                },
-                {
-                    "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"heatpump\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, HeatPump:\n      if not exists r.heatpump or r.heatpump == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else r.heatpump / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
-                    "refId": "Heat pump"
-                },
-                {
-                    "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"_main_floor\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> last()\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, MainFloor:\n      if not exists r._main_floor or r._main_floor == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else r._main_floor / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"main_floor\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Main Floor\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"main_floor\")\n",
                     "refId": "Main Floor"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and (r._device == \"metered\" or r._device == \"line\"))\n  |> drop(columns: [\"_location\"])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, Unmetered:\n      if not exists r.metered or r.metered == 0.0 then 0.0\n      else if not exists r.line or r.line == 0.0 then 0.0\n      else if (r.line - r.metered) <= 0.0 then 0.0\n      else (r.line - r.metered) / r.line * 100.0 } ))\n  |> yield(name: \"device\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"garage\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Garage\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"garage\")\n",
+                    "refId": "Garage"
+                },
+                {
+                    "hide": false,
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"hot_water\" or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if r._device == \"line\" then \"denominator\" else \"numerator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Hot Water\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"hot_water\")\n",
+                    "refId": "Hot water"
+                },
+                {
+                    "hide": false,
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"heatpump\" or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if r._device == \"line\" then \"denominator\" else \"numerator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Heat Pump\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"heatpump\")\n",
+                    "refId": "Heat pump"
+                },
+                {
+                    "hide": false,
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"metered\" or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if r._device == \"line\" then \"denominator\" else \"numerator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Unmetered\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else (r.denominator - r.numerator) / r.denominator * 100.0 } ))\n  |> yield(name: \"unmetered\")\n",
                     "refId": "Unmetered"
                 }
             ],
@@ -443,7 +415,7 @@
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_kitchen\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"consumption\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"kitchen\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"kitchen\")\n",
                     "refId": "A"
                 }
             ],
@@ -497,7 +469,7 @@
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"heatpump\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"consumption\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"heatpump\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"heatpump\")\n",
                     "refId": "A"
                 }
             ],
@@ -587,7 +559,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "Trend"
+                            "options": "Net Production"
                         },
                         "properties": [
                             {
@@ -638,18 +610,6 @@
                         },
                         "properties": [
                             {
-                                "id": "custom.drawStyle",
-                                "value": "points"
-                            },
-                            {
-                                "id": "custom.fillOpacity",
-                                "value": 0
-                            },
-                            {
-                                "id": "custom.pointSize",
-                                "value": 1
-                            },
-                            {
                                 "id": "custom.hideFrom",
                                 "value": {
                                     "legend": true,
@@ -675,7 +635,7 @@
                     "placement": "bottom"
                 },
                 "tooltip": {
-                    "mode": "single"
+                    "mode": "multi"
                 }
             },
             "pluginVersion": "8.1.5",
@@ -699,7 +659,7 @@
                     "orderByTime": "ASC",
                     "policy": "default",
                     "query": "from(bucket: \"multisma2\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"production\" and r._inverter == \"site\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, Production: r._value }))\n  |> yield(name: \"production\")\n",
-                    "refId": "A",
+                    "refId": "Production",
                     "resultFormat": "time_series",
                     "select": [
                         [
@@ -720,17 +680,17 @@
                 {
                     "hide": false,
                     "query": "from(bucket: \"cs24\")\n  |> range(start: -31d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, Consumption: r._value * -0.001}))\n  |> yield(name: \"consumption\")\n",
-                    "refId": "B"
+                    "refId": "Consumption"
                 },
                 {
                     "hide": false,
-                    "query": "c1 = from(bucket: \"cs24\")\n  |> range(start: -60d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_device\"] == \"line\")\n  |> filter(fn: (r) => r[\"_field\"] == \"today\")\n  |> movingAverage(n: 30)\n  |> map(fn: (r) => ({ _time: r._time, _movavg: r._value * -0.001}))\n  |> yield(name: \"c1\")\n\nm1 = from(bucket: \"multisma2\")\n  |> range(start: -60d)\n  |> filter(fn: (r) => r._measurement == \"production\" and r._inverter == \"site\" and r._field == \"today\")\n  |> movingAverage(n: 30)\n  |> map(fn: (r) => ({ _time: r._time, _movavg: r._value }))\n  |> yield(name: \"m1\")\n\njoin(tables: {d1: c1, d2: m1}, on: [\"_time\"])\n  |> drop(columns: [\"_movavg\"])\n  |> map(fn: (r) => ({ _time: r._time, Trend: r._movavg_d1 + r._movavg_d2}))\n  |> yield(name: \"c1m1\")\n",
-                    "refId": "C"
+                    "query": "c1 = from(bucket: \"cs24\")\n  |> range(start: -60d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == \"today\")\n  |> movingAverage(n: 30)\n  |> map(fn: (r) => ({ _time: r._time, _movavg: r._value * -0.001}))\n  |> yield(name: \"c1\")\n\nm1 = from(bucket: \"multisma2\")\n  |> range(start: -60d)\n  |> filter(fn: (r) => r._measurement == \"production\" and r._inverter == \"site\" and r._field == \"today\")\n  |> movingAverage(n: 30)\n  |> map(fn: (r) => ({ _time: r._time, _movavg: r._value }))\n  |> yield(name: \"m1\")\n\njoin(tables: {d1: c1, d2: m1}, on: [\"_time\"])\n  |> drop(columns: [\"_movavg\"])\n  |> map(fn: (r) => ({ _time: r._time, \"Net Production\": r._movavg_d1 + r._movavg_d2}))\n  |> yield(name: \"c1m1\")\n",
+                    "refId": "Net Production"
                 }
             ],
             "timeFrom": "31d",
             "timeShift": null,
-            "title": "30 Day Trend",
+            "title": "30 Day Net Production",
             "transformations": [],
             "type": "timeseries"
         },
@@ -841,7 +801,7 @@
             },
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\")\n  |> filter(fn: (r) => r[\"_field\"] == \"line\" or r[\"_field\"] == \"l1\" or r[\"_field\"] == \"l2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"sample\")\n  |> filter(fn: (r) => r._device == \"line\" or r._device == \"l1\" or r._device == \"l2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_field\"])\n  |> yield(name: \"line\")",
                     "refId": "A"
                 }
             ],
@@ -945,27 +905,27 @@
             "repeatDirection": "h",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._device == \"_kitchen\")\n  |> map(fn: (r) => ({ _value: r._device, Kitchen: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"kitchen\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"kitchen\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Kitchen: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"kitchen\")\n",
                     "refId": "Kitchen"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._device == \"_basement\")\n  |> map(fn: (r) => ({ _value: r._device, Basement: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"basement\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"basement\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Basement: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"basement\")\n",
                     "refId": "Basement"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._device == \"_vehicles\")\n  |> map(fn: (r) => ({ _value: r._device, EVCharging: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"vehicles\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"vehicles\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, EVCharging: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"vehicles\")\n",
                     "refId": "Vehicles"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._device == \"_bedroom\")\n  |> map(fn: (r) => ({ _value: r._device, Bedrooms: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"bedroom\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"bedroom\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Bedrooms: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"bedroom\")\n",
                     "refId": "Bedrooms"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._device == \"_laundry\")\n  |> map(fn: (r) => ({ _value: r._device, Laundry: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"laundry\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"laundry\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Laundry: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"laundry\")\n",
                     "refId": "Laundry"
                 },
                 {
@@ -980,8 +940,13 @@
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._device == \"_main_floor\")\n  |> map(fn: (r) => ({ _value: r._device, MainFloor: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"mainfloor\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"main_floor\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, MainFloor: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"main_floor\")\n",
                     "refId": "Main Floor"
+                },
+                {
+                    "hide": false,
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"garage\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Garage: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"garage\")\n",
+                    "refId": "Garage"
                 },
                 {
                     "hide": true,
@@ -1093,7 +1058,7 @@
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_vehicles\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"_vehicles\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"vehicles\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"vehicles\")\n",
                     "refId": "A"
                 }
             ],
@@ -1224,8 +1189,8 @@
                     "hide": false,
                     "orderByTime": "ASC",
                     "policy": "default",
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: -13mo, stop: -1mo)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_device\"] == \"line\")\n  |> filter(fn: (r) => r[\"_field\"] == \"month\")\n  |> map(fn: (r) => ({ _time: r._time, Previous: r._value * 0.001}))\n  |> yield(name: \"past\")\n",
-                    "refId": "A",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -13mo, stop: -1mo)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == \"month\")\n  |> map(fn: (r) => ({ _time: r._time, Previous: r._value * 0.001}))\n  |> yield(name: \"previous\")\n",
+                    "refId": "Previous",
                     "resultFormat": "time_series",
                     "select": [
                         [
@@ -1245,13 +1210,13 @@
                 },
                 {
                     "hide": false,
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1mo)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_device\"] == \"line\")\n  |> filter(fn: (r) => r[\"_field\"] == \"month\")\n  |> map(fn: (r) => ({ _time: r._time, Current: r._value * 0.001}))\n  |> yield(name: \"current\")\n",
-                    "refId": "B"
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1mo)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == \"month\")\n  |> map(fn: (r) => ({ _time: r._time, Current: r._value * 0.001}))\n  |> yield(name: \"current\")\n",
+                    "refId": "Current"
                 }
             ],
             "timeFrom": "13M",
             "timeShift": null,
-            "title": "12 Month Use",
+            "title": "12 Month Consumption",
             "transformations": [],
             "type": "timeseries"
         },
@@ -1308,7 +1273,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "dishwasher kitchen"
+                            "options": "dishwasher"
                         },
                         "properties": [
                             {
@@ -1320,7 +1285,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "microwave kitchen"
+                            "options": "microwave"
                         },
                         "properties": [
                             {
@@ -1332,7 +1297,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "range kitchen"
+                            "options": "range"
                         },
                         "properties": [
                             {
@@ -1344,7 +1309,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "refrigerator kitchen"
+                            "options": "refrigerator"
                         },
                         "properties": [
                             {
@@ -1381,17 +1346,17 @@
                     "placement": "bottom"
                 },
                 "tooltip": {
-                    "mode": "single"
+                    "mode": "multi"
                 }
             },
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field != \"outlets_1\" and r._field != \"outlets_2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"the_rest\")",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"sample\")\n  |> filter(fn: (r) => r._device != \"outlets_1\" and r._device != \"outlets_2\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"the_rest\")",
                     "refId": "TheRest"
                 },
                 {
                     "hide": false,
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"outlets_1\" or r._field == \"outlets_2\")\n  |> truncateTimeColumn(unit: 10s)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: r.outlets_1 + r.outlets_2 }))\n  |> drop(columns: [\"outlets_1\", \"outlets_2\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"outlets\")\n",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\")\n  |> filter(fn: (r) => r._device == \"outlets_1\" or r._device == \"outlets_2\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: r.outlets_1 + r.outlets_2 }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\", \"outlets_1\", \"outlets_2\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"outlets\")\n",
                     "refId": "Outlets"
                 }
             ],
@@ -1445,7 +1410,7 @@
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_bedroom\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"_bedroom\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"bedroom\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"bedroom\")\n",
                     "refId": "A"
                 }
             ],
@@ -1476,35 +1441,20 @@
                     "mappings": [
                         {
                             "options": {
-                                "_basement": {
+                                "basement": {
                                     "color": "text",
                                     "index": 2,
                                     "text": "Basement"
                                 },
-                                "_bedroom": {
+                                "bedroom": {
                                     "color": "text",
                                     "index": 3,
                                     "text": "Bedrooms"
                                 },
-                                "_kitchen": {
+                                "garage": {
                                     "color": "text",
-                                    "index": 5,
-                                    "text": "Kitchen"
-                                },
-                                "_laundry": {
-                                    "color": "text",
-                                    "index": 6,
-                                    "text": "Laundry"
-                                },
-                                "_main_floor": {
-                                    "color": "text",
-                                    "index": 7,
-                                    "text": "Main Floor"
-                                },
-                                "_vehicles": {
-                                    "color": "text",
-                                    "index": 4,
-                                    "text": "EV Charging"
+                                    "index": 8,
+                                    "text": "Garage"
                                 },
                                 "heatpump": {
                                     "color": "text",
@@ -1515,6 +1465,26 @@
                                     "color": "text",
                                     "index": 1,
                                     "text": "Hot Water"
+                                },
+                                "kitchen": {
+                                    "color": "text",
+                                    "index": 5,
+                                    "text": "Kitchen"
+                                },
+                                "laundry": {
+                                    "color": "text",
+                                    "index": 6,
+                                    "text": "Laundry"
+                                },
+                                "main_floor": {
+                                    "color": "text",
+                                    "index": 7,
+                                    "text": "Main Floor"
+                                },
+                                "vehicles": {
+                                    "color": "text",
+                                    "index": 4,
+                                    "text": "EV Charging"
                                 }
                             },
                             "type": "value"
@@ -1558,7 +1528,7 @@
             },
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"heatpump\" or\n                       r._device == \"hot_water\" or\n                       r._device == \"_kitchen\" or\n                       r._device == \"_laundry\" or\n                       r._device == \"_bedroom\" or\n                       r._device == \"_basement\" or\n                       r._device == \"_main_floor\" or\n                       r._device == \"_vehicles\"\n                    )\n  |> map(fn: (r) => ({ _value: r._device, kWh: r._value * 0.001 }))\n  |> toString()\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_field\"])\n  |> yield(name: \"use_by_location\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"heatpump\" or\n                       r._device == \"hot_water\" or\n                       (r._location == \"kitchen\" and not (exists r._device)) or\n                       (r._location == \"laundry\" and not (exists r._device)) or\n                       (r._location == \"bedroom\" and not (exists r._device)) or\n                       (r._location == \"basement\" and not (exists r._device)) or\n                       (r._location == \"main_floor\" and not (exists r._device)) or\n                       (r._location == \"garage\" and not (exists r._device)) or\n                       (r._location == \"vehicles\" and not (exists r._device))\n                    )\n  |> map(fn: (r) => ({ kWh: r._value * 0.001, _value: if exists r._device then r._device else r._location }))\n  |> toString()\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_field\"])\n  |> yield(name: \"use_by_location\")\n",
                     "refId": "A"
                 }
             ],
@@ -1612,7 +1582,7 @@
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_basement\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"_basement\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"basement\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"basement\")\n",
                     "refId": "A"
                 }
             ],
@@ -1666,7 +1636,7 @@
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_laundry\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"laundry\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"laundry\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"laundry\")\n",
                     "refId": "A"
                 }
             ],
@@ -1828,7 +1798,7 @@
                     "hide": false,
                     "orderByTime": "ASC",
                     "policy": "default",
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: -31d, stop: -1d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_device\"] == \"line\")\n  |> filter(fn: (r) => r[\"_field\"] == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, Previous: r._value * 0.001}))\n  |> yield(name: \"previous\")\n",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -31d, stop: -1d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, Previous: r._value * 0.001}))\n  |> yield(name: \"previous\")\n",
                     "refId": "Previous",
                     "resultFormat": "time_series",
                     "select": [
@@ -1849,7 +1819,7 @@
                 },
                 {
                     "hide": false,
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_device\"] == \"line\")\n  |> filter(fn: (r) => r[\"_field\"] == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, Current: r._value * 0.001}))\n  |> yield(name: \"current\")\n",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, Current: r._value * 0.001}))\n  |> yield(name: \"current\")\n",
                     "refId": "Current"
                 },
                 {
@@ -1869,7 +1839,7 @@
                     ],
                     "orderByTime": "ASC",
                     "policy": "default",
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: -60d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_device\"] == \"line\")\n  |> filter(fn: (r) => r[\"_field\"] == \"today\")\n  |> movingAverage(n: 30)\n  |> map(fn: (r) => ({ _time: r._time, MovingAverage: r._value * 0.001}))\n  |> yield(name: \"moving-average\")\n",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -60d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == \"today\")\n  |> movingAverage(n: 30)\n  |> map(fn: (r) => ({ _time: r._time, MovingAverage: r._value * 0.001}))\n  |> yield(name: \"moving_average\")\n",
                     "refId": "Moving Average",
                     "resultFormat": "time_series",
                     "select": [
@@ -1985,17 +1955,17 @@
                     "placement": "bottom"
                 },
                 "tooltip": {
-                    "mode": "single"
+                    "mode": "multi"
                 }
             },
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"hot_water\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"hot_water\")",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"hot_water\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"hot_water\")\n",
                     "refId": "Hot Water"
                 },
                 {
                     "hide": false,
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"heatpump\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"heatpump\")",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"heatpump\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"heatpump\")\n",
                     "refId": "Heat Pump"
                 }
             ],
@@ -2007,34 +1977,34 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "thresholds"
+                        "fixedColor": "red",
+                        "mode": "fixed"
                     },
+                    "decimals": 0,
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "red",
+                                "color": "green",
                                 "value": null
                             }
                         ]
                     },
-                    "unit": "watt"
+                    "unit": "none"
                 },
                 "overrides": []
             },
             "gridPos": {
-                "h": 7,
-                "w": 4,
+                "h": 8,
+                "w": 8,
                 "x": 16,
                 "y": 24
             },
-            "id": 8,
+            "id": 70,
             "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
+                "displayMode": "basic",
+                "orientation": "horizontal",
                 "reduceOptions": {
                     "calcs": [
                         "lastNotNull"
@@ -2042,82 +2012,58 @@
                     "fields": "",
                     "values": false
                 },
-                "text": {
-                    "valueSize": 75
-                },
-                "textMode": "auto"
-            },
-            "pluginVersion": "8.2.1",
-            "targets": [
-                {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\")\n  |> filter(fn: (r) => r[\"_field\"] == \"line\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
-                    "refId": "A"
-                }
-            ],
-            "title": "Current Load",
-            "type": "stat"
-        },
-        {
-            "datasource": "${datasource}",
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "decimals": 0,
-                    "mappings": [],
-                    "max": 20000,
-                    "min": -20000,
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "light-red",
-                                "value": -20000
-                            },
-                            {
-                                "color": "light-green",
-                                "value": 0
-                            }
-                        ]
-                    },
-                    "unit": "watt"
-                },
-                "overrides": []
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 4,
-                "x": 20,
-                "y": 24
-            },
-            "id": 59,
-            "options": {
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "lastNotNull"
-                    ],
-                    "fields": "/^Delta$/",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
+                "showUnfilled": false,
                 "text": {}
             },
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "production = from(bucket: \"multisma2\")\n  |> range(start: -10m)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> drop(columns: [\"_inverter\", \"_measurement\", \"_start\", \"_stop\"])\n  |> last()\n  |> yield(name: \"production\")\n  \nconsumption = from(bucket: \"cs24\")\n  |> range(start: -10m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"line\")\n  |> map(fn: (r) => ({ r with _time: r._time, _value: r._value * -1.0 }))\n  |> drop(columns: [\"_measurement\", \"_start\", \"_stop\"])\n  |> last()\n  |> yield(name: \"consumption\")\n\nunion(tables: [production, consumption])\n  |> truncateTimeColumn(unit: 10m)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with Delta: float(v: r.power) + r.line }))\n  |> yield(name: \"union\")\n",
-                    "refId": "A"
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"kitchen\")",
+                    "refId": "Kitchen"
+                },
+                {
+                    "hide": false,
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"vehicles\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"EV Charging\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"vehicles\")",
+                    "refId": "EV Charging"
+                },
+                {
+                    "hide": false,
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"heatpump\" and r._field == \"sample\")\n  |> last()\n  |> map(fn: (r) => ({ _time: r._time, \"Heat Pump\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"heatpump\")",
+                    "refId": "Heat Pump"
+                },
+                {
+                    "hide": false,
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"hot_water\" and r._field == \"sample\")\n  |> last()\n  |> map(fn: (r) => ({ _time: r._time, \"Hot Water\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"hot_water\")",
+                    "refId": "Hot Water"
+                },
+                {
+                    "hide": false,
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"basement\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Basement\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"basement\")",
+                    "refId": "Basement"
+                },
+                {
+                    "hide": false,
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"garage\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Garage\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"garage\")",
+                    "refId": "Garage"
+                },
+                {
+                    "hide": false,
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Laundry\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"laundry\")",
+                    "refId": "Laundry"
+                },
+                {
+                    "hide": false,
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"bedroom\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Bedrooms\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"bedroom\")",
+                    "refId": "Bedrooms"
+                },
+                {
+                    "hide": false,
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"main_floor\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Main Floor\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"main_floor\")",
+                    "refId": "Main Floor"
                 }
             ],
-            "title": "Net Power",
-            "type": "gauge"
+            "title": "Live (kWh)",
+            "type": "bargauge"
         },
         {
             "datasource": "${datasource}",
@@ -2166,7 +2112,7 @@
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"_main_floor\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"_main_floor\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"main_floor\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"main_floor\")\n",
                     "refId": "A"
                 }
             ],
@@ -2200,6 +2146,60 @@
                 "w": 2,
                 "x": 14,
                 "y": 28
+            },
+            "id": 71,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "/^Value$/",
+                    "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.2.1",
+            "targets": [
+                {
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"garage\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"garage\")\n",
+                    "refId": "A"
+                }
+            ],
+            "title": "Garage",
+            "type": "stat"
+        },
+        {
+            "datasource": "${datasource}",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "decimals": 0,
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 3,
+                "w": 2,
+                "x": 14,
+                "y": 31
             },
             "id": 69,
             "options": {
@@ -2281,7 +2281,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "juicebox vehicles"
+                            "options": "juicebox"
                         },
                         "properties": [
                             {
@@ -2293,7 +2293,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "tesla vehicles"
+                            "options": "tesla"
                         },
                         "properties": [
                             {
@@ -2323,7 +2323,7 @@
             },
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"power\")\n  |> filter(fn: (r) => r[\"_location\"] == \"vehicles\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"vehicles\")",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"vehicles\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"vehicles\")\n",
                     "refId": "A"
                 }
             ],
@@ -2383,7 +2383,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "dryer laundry"
+                            "options": "dryer"
                         },
                         "properties": [
                             {
@@ -2395,7 +2395,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "washer laundry"
+                            "options": "washer"
                         },
                         "properties": [
                             {
@@ -2425,12 +2425,129 @@
             },
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"laundry\")",
-                    "refId": "TheRest"
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"laundry\")",
+                    "refId": "Laundry"
                 }
             ],
             "title": "Laundry",
             "type": "timeseries"
+        },
+        {
+            "datasource": "${datasource}",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "watt"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 4,
+                "x": 16,
+                "y": 32
+            },
+            "id": 8,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "text": {
+                    "valueSize": 75
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.2.1",
+            "targets": [
+                {
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"current\")",
+                    "refId": "Current"
+                }
+            ],
+            "title": "Current Load",
+            "type": "stat"
+        },
+        {
+            "datasource": "${datasource}",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "decimals": 1,
+                    "mappings": [],
+                    "max": 20000,
+                    "min": -20000,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "light-red",
+                                "value": -20000
+                            },
+                            {
+                                "color": "light-green",
+                                "value": 0
+                            }
+                        ]
+                    },
+                    "unit": "watt"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 4,
+                "x": 20,
+                "y": 32
+            },
+            "id": 59,
+            "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "/^Delta$/",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "text": {}
+            },
+            "pluginVersion": "8.2.1",
+            "targets": [
+                {
+                    "query": "production = from(bucket: \"multisma2\")\n  |> range(start: -10m)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._inverter }))\n  |> last()\n  |> truncateTimeColumn(unit: 10m)\n  |> yield(name: \"production\")\n\nconsumption = from(bucket: \"cs24\")\n  |> range(start: -10m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> map(fn: (r) => ({ _time: r._time, _device: r._device, _value: r._value * -1.0 }))\n  |> last()\n  |> truncateTimeColumn(unit: 10m)\n  |> yield(name: \"consumption\")\n  \nunion(tables: [production, consumption])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, Delta: float(v: r.site) + r.line }))\n  |> drop(columns: [\"line\", \"site\"])\n  |> yield(name: \"net_power\")\n",
+                    "refId": "Net Power"
+                }
+            ],
+            "title": "Net Power",
+            "type": "gauge"
         },
         {
             "datasource": "${datasource}",
@@ -2460,7 +2577,7 @@
                 "h": 6,
                 "w": 8,
                 "x": 16,
-                "y": 32
+                "y": 40
             },
             "id": 67,
             "options": {
@@ -2516,7 +2633,7 @@
                 "h": 6,
                 "w": 8,
                 "x": 16,
-                "y": 38
+                "y": 46
             },
             "id": 68,
             "options": {
@@ -2537,7 +2654,7 @@
             "pluginVersion": "8.2.1",
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"today\")\n  |> filter(fn: (r) => r._device == \"meter_reading\" or r._device == \"delta_wh\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: (r.delta_wh * 0.001) + r.meter_reading }))\n  |> drop(columns: [\"_start\", \"_stop\", \"delta_wh\", \"meter_reading\"])\n  |> map(fn: (r) => ({ _value: if r._value < 0 then 100000.0 + r._value else r._value } ))\n  |> yield(name: \"meter_reading\")",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"today\")\n  |> filter(fn: (r) => r._device == \"meter_reading\" or r._device == \"delta_wh\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: (r.delta_wh * 0.001) + r.meter_reading }))\n  |> drop(columns: [\"_start\", \"_stop\", \"delta_wh\", \"meter_reading\"])\n  |> map(fn: (r) => ({ _value: if r._value < 0 then 100000.0 + r._value else r._value } ))\n  |> yield(name: \"meter_reading\")\n  ",
                     "refId": "A"
                 }
             ],
@@ -2621,12 +2738,12 @@
         ]
     },
     "time": {
-        "from": "now-24h",
+        "from": "now-12h",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "",
-    "title": "CircuitSetup",
-    "uid": "_-Qzs-Dnx",
-    "version": 30
+    "title": "CS/ESPHome Sample Panels",
+    "uid": "_-Qzs-Dpx",
+    "version": 17
 }

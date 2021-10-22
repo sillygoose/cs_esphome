@@ -290,6 +290,7 @@ def check_config(config):
                                   {'sampling': {'required': False, 'keys': [
                                       {'integrations': {'required': False, 'keys': [], 'type': int}},
                                       {'queries': {'required': False, 'keys': [], 'type': int}},
+                                      {'delta_wh': {'required': False, 'keys': [], 'type': int}},
                                   ]}},
                                   {'watchdog': {'required': False, 'keys': [], 'type': int}},
                               ]}},

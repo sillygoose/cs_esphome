@@ -11,15 +11,16 @@ cs_esphome:
   #  Grafana graphs filled.  Use a smart fill in queries the database for the first entry
   #  so not to overwrite any existing entries.  Will fill in a 13 months worth of data.
   debug:
-    delete_bucket:  False
-    create_bucket:  False
-    recreate_tasks: False
+    delete_bucket:  True
+    create_bucket:  True
+    recreate_tasks: True
     fill_data:      False
 
-  # This option is used the current meter reading
+  # This option is used to set the current meter reading (at midnight or if not adjust for the
+  # energy used)
   meter:
-    enable_setting: False
-    value:          95443
+    enable_setting: True
+    value:          95424
 
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.
@@ -49,11 +50,13 @@ cs_esphome:
   # settings.sampling defines how often the various processing loops run
   #   settings.sampling.integrations    period (seconds) for updating integrations (int)
   #   settings.sampling.queries         period (seconds) for updating CS/ESPHome database queries (int)
+  #   settings.sampling.delta_wh        period (seconds) for updating CS/ESPHome delta_wh entries (int)
   #   settings.watchdog                 override the default watchdog timer timeout (int)
   settings:
     sampling:
       integrations: 30
       queries:      30
+      delta_wh:     300
     watchdog:       30
 
   # Sensor setup
