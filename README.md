@@ -3,7 +3,7 @@ Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 E
 
 ## What's new
 #### 0.2.1
-- Using InlfuxDB queries and tasks to process data on the InfluxDB host, updated data schema
+- Using InfluxDB queries and tasks to process data on the InfluxDB host, updated data schema
 
 #### 0.2.0
 - Needed to add the meter state to the database so the deltas can be properly applied
