@@ -2,6 +2,9 @@
 Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 Energy Meter using the ESPHome API writing sensor data and integrations to an InfluxDB2 database.
 
 ## What's new
+#### 0.2.4
+- ?
+
 #### 0.2.3
 - Turned queries into InfluxDB tasks
 

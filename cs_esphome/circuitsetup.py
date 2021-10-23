@@ -152,6 +152,8 @@ class CircuitSetup():
         _PREDICATES = [
             {'name': 'power_factor', 'predicate': '_measurement="power_factor"', 'keep_last': 1},
             {'name': 'voltage', 'predicate': '_measurement="voltage"', 'keep_last': 3},
+            {'name': 'power_sample', 'predicate': '_measurement="power" AND _field="sample"', 'keep_last': 30},
+            {'name': 'power', 'predicate': '_measurement="power" AND _field="now"', 'keep_last': 30},
         ]
 
         delete_api = self._influxdb_client.delete_api()

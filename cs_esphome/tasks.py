@@ -105,7 +105,7 @@ class TaskManager():
                     location_map = '' if len(location) == 0 else f', _location: r._location'
                     location_name = '' if len(location) == 0 else f'.{location}'
 
-                    task_name = self._base_name + '._device.'+ device + location_name+  '.' + measurement + '.' + period + '.ts'
+                    task_name = self._base_name + '._device.'+ device + location_name+  '.' + measurement + '.' + period
                     tasks = tasks_api.find_tasks(name=task_name)
                     if tasks is None or len(tasks) == 0:
                         _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
@@ -201,8 +201,8 @@ class TaskManager():
                         f'union(tables: [production_{period}, consumption_{period}])\n' \
                         f'  |> pivot(rowKey:["_time"], columnKey: ["_meter"], valueColumn: "_value")\n' \
                         f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "{measurement}", {output_key}: "{output_value}", _field: "{period}", _value: r.line - r.site }}))\n' \
-                        f'  |> to(bucket: "cs24", org: "{organization.name}")\n' \
-                        f'  |> yield(name: "delta_wh_{period}")\n'
+                        f'  |> to(bucket: "cs24", org: "{organization.name}")\n'
+
                 try:
                     tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_delta_wh}s', organization=organization)
                     # _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
@@ -240,19 +240,19 @@ class TaskManager():
 
         if tasks is None or len(tasks) == 0:
             _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
-            midnight = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp()) * 1000000000
-            cron = '1 0 * * *'
+            right_now = datetime.datetime.now()
+            midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
+            next_midnight = int(midnight.timestamp()) * 1000000000
+            cron = '59 23 * * *'
             flux =  f'\n' \
                     f'from(bucket: "{bucket}")\n' \
-                    f'  |> range(start: -25h)\n' \
+                    f'  |> range(start: -1d)\n' \
                     f'  |> filter(fn: (r) => r._measurement == "{measurement}" and r._field == "{period}" and exists r.{tag_key})\n' \
-                    f'  |> first()\n' \
                     f'  |> pivot(rowKey:["_time"], columnKey: ["{tag_key}"], valueColumn: "_value")\n' \
                     f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "{measurement}", {tag_key}: "{output_value}", _field: "{period}", _value: r.{output_value} + (r.delta_wh * 0.001) }}))\n' \
                     f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n' \
-                    f'  |> map(fn: (r) => ({{ _time: time(v: {midnight}), _measurement: "{measurement}", {tag_key}: "{output_value}", _field: "{period}", _value: r._value }}))\n' \
-                    f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n' \
-                    f'  |> yield(name: "meter_reading")\n'
+                    f'  |> map(fn: (r) => ({{ _time: time(v: {next_midnight}), _measurement: "{measurement}", {tag_key}: "{output_value}", _field: "{period}", _value: r._value }}))\n' \
+                    f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
             try:
                 tasks_api.create_task_cron(name=task_name, flux=flux, cron=cron, org_id=organization.id)
@@ -274,7 +274,7 @@ class TaskManager():
         tasks_api = self._tasks_api
 
         for location, sensors in self._sensors_by_location.items():
-            task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period + '.ts'
+            task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
             tasks = tasks_api.find_tasks(name=task_name)
             if tasks is None or len(tasks) == 0:
                 _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
@@ -287,8 +287,7 @@ class TaskManager():
                         f'  |> drop(columns: ["_device"])\n' \
                         f'  |> sum(column: "_value")\n' \
                         f'  |> map(fn: (r) => ({{ _time: r._start, _measurement: "{measurement}", {tag_key}: r.{tag_key} , _field: "{period}", _value: r._value }}))\n' \
-                        f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n' \
-                        f'  |> yield(name: "power_location")\n'
+                        f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
                 try:
                     tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_locations_today}s', organization=organization)
@@ -309,7 +308,7 @@ class TaskManager():
         tasks_api = self._tasks_api
         for period in ['today', 'month', 'year']:
             for location, sensors in self._sensors_by_location.items():
-                task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period + '.ts'
+                task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
                 tasks = tasks_api.find_tasks(name=task_name)
                 if tasks is None or len(tasks) == 0:
                     _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
@@ -333,8 +332,7 @@ class TaskManager():
                             f'  |> drop(columns: ["_device"])\n' \
                             f'  |> sum(column: "_value")\n' \
                             f'  |> map(fn: (r) => ({{ _time: r._start, _measurement: "{measurement}", {tag_key}: r.{tag_key} , _field: "{period}", _value: r._value }}))\n' \
-                            f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n' \
-                            f'  |> yield(name: "energy_location")\n'
+                            f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
                     try:
                         tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
@@ -394,7 +392,7 @@ class TaskManager():
                         tasks_api.delete_task(task.id)
             else:
                 for period in periods:
-                    endswith = period + '.ts'
+                    endswith = period
                     for task in tasks:
                         if task.name.endswith(endswith):
                             _LOGGER.debug(f"'Deleting {task.name}")
