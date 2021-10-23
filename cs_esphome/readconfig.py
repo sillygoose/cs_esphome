@@ -288,9 +288,22 @@ def check_config(config):
                               ]}},
                               {'settings': {'required': False, 'keys': [
                                   {'sampling': {'required': False, 'keys': [
-                                      {'integrations': {'required': False, 'keys': [], 'type': int}},
-                                      {'queries': {'required': False, 'keys': [], 'type': int}},
                                       {'delta_wh': {'required': False, 'keys': [], 'type': int}},
+                                      {'integrations': {'required': False, 'keys': [
+                                        {'today': {'required': False, 'keys': [], 'type': int}},
+                                        {'month': {'required': False, 'keys': [], 'type': int}},
+                                        {'year': {'required': False, 'keys': [], 'type': int}},
+                                      ]}},
+                                      {'locations': {'required': False, 'keys': [
+                                        {'today': {'required': False, 'keys': [], 'type': int}},
+                                        {'month': {'required': False, 'keys': [], 'type': int}},
+                                        {'year': {'required': False, 'keys': [], 'type': int}},
+                                      ]}},
+                                      {'queries': {'required': False, 'keys': [
+                                        {'today': {'required': False, 'keys': [], 'type': int}},
+                                        {'month': {'required': False, 'keys': [], 'type': int}},
+                                        {'year': {'required': False, 'keys': [], 'type': int}},
+                                      ]}},
                                   ]}},
                                   {'watchdog': {'required': False, 'keys': [], 'type': int}},
                               ]}},

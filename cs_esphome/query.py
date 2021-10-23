@@ -14,13 +14,17 @@ _LOGGER = logging.getLogger('cs_esphome')
 class QueryManager():
     """Class to create and manage InfluxDB queries."""
 
-    _DEFAULT_SAMPLING_QUERIES = 60
+    _DEFAULT_SAMPLING_QUERIES_TODAY = 60
+    _DEFAULT_SAMPLING_QUERIES_MONTH = 300
+    _DEFAULT_SAMPLING_QUERIES_YEAR = 600
 
     def __init__(self, config, influxdb_client):
         """Create a new QueryManager object."""
         self._config = config
         self._influxdb_client = influxdb_client
-        self._sampling_queries = QueryManager._DEFAULT_SAMPLING_QUERIES
+        self._sampling_today = QueryManager._DEFAULT_SAMPLING_QUERIES_TODAY
+        self._sampling_month = QueryManager._DEFAULT_SAMPLING_QUERIES_MONTH
+        self._sampling_year = QueryManager._DEFAULT_SAMPLING_QUERIES_YEAR
 
 
     async def start(self, locations):
@@ -31,16 +35,18 @@ class QueryManager():
 
         config = self._config
         if 'settings' in config.keys():
-            if 'sampling' in config.settings.keys():
-                self._sampling_queries = config.settings.sampling.get('queries', QueryManager._DEFAULT_SAMPLING_QUERIES)
+            if 'sampling' in config.settings.keys() and 'queries' in config.settings.sampling.keys():
+                self._sampling_today = config.settings.sampling.queries.get('today', QueryManager._DEFAULT_SAMPLING_QUERIES_TODAY)
+                self._sampling__month = config.settings.sampling.queries.get('month', QueryManager._DEFAULT_SAMPLING_QUERIES_MONTH)
+                self._sampling__year = config.settings.sampling.queries.get('year', QueryManager._DEFAULT_SAMPLING_QUERIES_YEAR)
 
         return True
 
 
     async def run(self):
         try:
-            _LOGGER.info(f"CS/ESPHome Query Manager starting up, queries will be run every {self._sampling_queries} seconds")
-            await self.scheduler()
+            _LOGGER.info(f"CS/ESPHome Query Manager starting up, queries will be run every {self._sampling_today}/{self._sampling_month}/{self._sampling_year} seconds")
+            # ### await self.scheduler()
         except Exception as e:
             _LOGGER.error(f"Unexpected exception in run(): {e}")
 
@@ -53,10 +59,12 @@ class QueryManager():
             tick = time.time_ns() // 1000000000
             if tick != last_tick:
                 last_tick = tick
-                if tick % self._sampling_queries == 0:
-                    self.process_locations_power()
+                if tick % self._sampling_today == 0:
+                    #self.process_locations_power()
                     self.process_locations_energy(period='today')
+                if tick % self._sampling_month == 0:
                     self.process_locations_energy(period='month')
+                if tick % self._sampling_year == 0:
                     self.process_locations_energy(period='year')
             await asyncio.sleep(SLEEP)
 
