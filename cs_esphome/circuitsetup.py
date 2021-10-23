@@ -223,7 +223,7 @@ class CircuitSetup():
                 periods = await queue.get()
                 queue.task_done()
                 _LOGGER.info(f"task_refresh(queue): {periods}")
-                await self._task_manager.refresh_tasks(periods=periods)
+                # ### await self._task_manager.refresh_tasks(periods=periods)
         except Exception as e:
             _LOGGER.debug(f"task_refresh(): {e}")
 

@@ -54,9 +54,9 @@ cs_esphome:
   #   settings.watchdog                 override the default watchdog timer timeout (int)
   settings:
     sampling:
-      integrations: 30
-      queries:      30
-      delta_wh:     300
+      integrations: 60
+      queries:      60
+      delta_wh:     600
     watchdog:       30
 
   # Sensor setup
