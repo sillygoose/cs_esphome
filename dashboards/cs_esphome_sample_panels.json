@@ -23,7 +23,7 @@
     "gnetId": null,
     "graphTooltip": 0,
     "id": 14,
-    "iteration": 1634917826630,
+    "iteration": 1634956720886,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -205,7 +205,7 @@
                 "content": "",
                 "mode": "markdown"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "title": "${period} (kWh)",
             "type": "text"
         },
@@ -262,7 +262,7 @@
             "repeatDirection": "h",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"kitchen\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"kitchen\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"kitchen\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"kitchen\")\n",
                     "refId": "Kitchen"
                 },
                 {
@@ -277,7 +277,7 @@
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"basement\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Bedroom\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"bedroom\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nnumerator = from(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => (r._location == \"basement\" and not exists r._device) or r._device == \"line\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _ratio: if exists r._location then \"numerator\" else \"denominator\" }))\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_ratio\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, \"Bedrooms\":\n      if not exists r.denominator or r.denominator == 0.0 then 0.0\n      else r.numerator / r.denominator * 100.0 } ))\n  |> yield(name: \"bedroom\")\n",
                     "refId": "Bedrooms"
                 },
                 {
@@ -358,7 +358,7 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"consumption\")\n",
@@ -412,10 +412,10 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"kitchen\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"kitchen\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"kitchen\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"kitchen\")\n",
                     "refId": "A"
                 }
             ],
@@ -466,7 +466,7 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"heatpump\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"heatpump\")\n",
@@ -690,7 +690,7 @@
             ],
             "timeFrom": "31d",
             "timeShift": null,
-            "title": "30 Day Net Production",
+            "title": "30 Day Production Trend",
             "transformations": [],
             "type": "timeseries"
         },
@@ -721,7 +721,7 @@
                         "scaleDistribution": {
                             "type": "linear"
                         },
-                        "showPoints": "auto",
+                        "showPoints": "never",
                         "spanNulls": false,
                         "stacking": {
                             "group": "A",
@@ -901,32 +901,42 @@
                 "showUnfilled": false,
                 "text": {}
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "repeatDirection": "h",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"kitchen\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Kitchen: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"kitchen\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"kitchen\" and not exists r._device)\n  |> map(fn: (r) => ({ _value: r._device, Kitchen: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"kitchen\")\n",
                     "refId": "Kitchen"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"basement\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Basement: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"basement\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"basement\" and not exists r._device)\n  |> map(fn: (r) => ({ _value: r._device, Basement: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"basement\")\n",
                     "refId": "Basement"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"vehicles\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, EVCharging: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"vehicles\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"vehicles\" and not exists r._device)\n  |> map(fn: (r) => ({ _value: r._device, EVCharging: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"vehicles\")\n",
                     "refId": "Vehicles"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"bedroom\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Bedrooms: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"bedroom\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"bedroom\" and not exists r._device)\n  |> map(fn: (r) => ({ _value: r._device, Bedrooms: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"bedroom\")\n",
                     "refId": "Bedrooms"
                 },
                 {
                     "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"laundry\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Laundry: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"laundry\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"main_floor\" and not exists r._device)\n  |> map(fn: (r) => ({ _value: r._device, MainFloor: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"main_floor\")\n",
+                    "refId": "Main Floor"
+                },
+                {
+                    "hide": false,
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"laundry\" and not exists r._device)\n  |> map(fn: (r) => ({ _value: r._device, Laundry: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"laundry\")\n",
                     "refId": "Laundry"
+                },
+                {
+                    "hide": false,
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"garage\" and not exists r._device)\n  |> map(fn: (r) => ({ _value: r._device, Garage: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"garage\")\n",
+                    "refId": "Garage"
                 },
                 {
                     "hide": false,
@@ -937,16 +947,6 @@
                     "hide": false,
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._device == \"heatpump\")\n  |> map(fn: (r) => ({ _value: r._device, Heatpump: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"heatpump\")\n",
                     "refId": "Heat pump"
-                },
-                {
-                    "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"main_floor\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, MainFloor: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"main_floor\")\n",
-                    "refId": "Main Floor"
-                },
-                {
-                    "hide": false,
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f and r._location == \"garage\" and not(exists r._device))\n  |> map(fn: (r) => ({ _value: r._device, Garage: r._value * 0.001 } ))\n  |> toString()\n  |> yield(name: \"garage\")\n",
-                    "refId": "Garage"
                 },
                 {
                     "hide": true,
@@ -1001,7 +1001,7 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"hot_water\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"hot_water\")\n",
@@ -1055,10 +1055,10 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"vehicles\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"vehicles\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"vehicles\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"vehicles\")\n",
                     "refId": "A"
                 }
             ],
@@ -1247,7 +1247,7 @@
                         "scaleDistribution": {
                             "type": "linear"
                         },
-                        "showPoints": "auto",
+                        "showPoints": "never",
                         "spanNulls": false,
                         "stacking": {
                             "group": "A",
@@ -1407,10 +1407,10 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"bedroom\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"bedroom\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"bedroom\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"bedroom\")\n",
                     "refId": "A"
                 }
             ],
@@ -1528,7 +1528,7 @@
             },
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"heatpump\" or\n                       r._device == \"hot_water\" or\n                       (r._location == \"kitchen\" and not (exists r._device)) or\n                       (r._location == \"laundry\" and not (exists r._device)) or\n                       (r._location == \"bedroom\" and not (exists r._device)) or\n                       (r._location == \"basement\" and not (exists r._device)) or\n                       (r._location == \"main_floor\" and not (exists r._device)) or\n                       (r._location == \"garage\" and not (exists r._device)) or\n                       (r._location == \"vehicles\" and not (exists r._device))\n                    )\n  |> map(fn: (r) => ({ kWh: r._value * 0.001, _value: if exists r._device then r._device else r._location }))\n  |> toString()\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_field\"])\n  |> yield(name: \"use_by_location\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"heatpump\" or\n                       r._device == \"hot_water\" or\n                       (r._location == \"kitchen\" and not exists r._device) or\n                       (r._location == \"laundry\" and not exists r._device) or\n                       (r._location == \"bedroom\" and not exists r._device) or\n                       (r._location == \"basement\" and not exists r._device) or\n                       (r._location == \"main_floor\" and not exists r._device) or\n                       (r._location == \"garage\" and not exists r._device) or\n                       (r._location == \"vehicles\" and not exists r._device)\n                    )\n  |> map(fn: (r) => ({ kWh: r._value * 0.001, _value: if exists r._device then r._device else r._location }))\n  |> toString()\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_field\"])\n  |> yield(name: \"use_by_location\")\n",
                     "refId": "A"
                 }
             ],
@@ -1579,10 +1579,10 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"basement\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"basement\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"basement\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"basement\")\n",
                     "refId": "A"
                 }
             ],
@@ -1633,10 +1633,10 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"laundry\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"laundry\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"laundry\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"laundry\")\n",
                     "refId": "A"
                 }
             ],
@@ -1892,7 +1892,7 @@
                         "scaleDistribution": {
                             "type": "linear"
                         },
-                        "showPoints": "auto",
+                        "showPoints": "never",
                         "spanNulls": false,
                         "stacking": {
                             "group": "A",
@@ -1969,7 +1969,7 @@
                     "refId": "Heat Pump"
                 }
             ],
-            "title": "Heatpump & Hot Water",
+            "title": "Heat Pump & Hot Water",
             "type": "timeseries"
         },
         {
@@ -2015,7 +2015,7 @@
                 "showUnfilled": false,
                 "text": {}
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
                     "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\": r._value }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> yield(name: \"kitchen\")",
@@ -2109,10 +2109,10 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"main_floor\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"main_floor\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"main_floor\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"main_floor\")\n",
                     "refId": "A"
                 }
             ],
@@ -2163,10 +2163,10 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"garage\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"garage\")\n",
+                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"garage\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n  |> yield(name: \"garage\")\n",
                     "refId": "A"
                 }
             ],
@@ -2217,7 +2217,7 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
                     "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == lookup.${period}.f)\n  |> filter(fn: (r) => r._device == \"metered\" or r._device == \"line\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, _value: (r.line - r.metered) * 0.001}))\n  |> yield(name: \"unmetered\")\n",
@@ -2255,7 +2255,7 @@
                         "scaleDistribution": {
                             "type": "linear"
                         },
-                        "showPoints": "auto",
+                        "showPoints": "never",
                         "spanNulls": false,
                         "stacking": {
                             "group": "A",
@@ -2357,7 +2357,7 @@
                         "scaleDistribution": {
                             "type": "linear"
                         },
-                        "showPoints": "auto",
+                        "showPoints": "never",
                         "spanNulls": false,
                         "stacking": {
                             "group": "A",
@@ -2477,7 +2477,7 @@
                 },
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
                     "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"current\")",
@@ -2539,7 +2539,7 @@
                 "showThresholdMarkers": true,
                 "text": {}
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
                     "query": "production = from(bucket: \"multisma2\")\n  |> range(start: -10m)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._inverter }))\n  |> last()\n  |> truncateTimeColumn(unit: 10m)\n  |> yield(name: \"production\")\n\nconsumption = from(bucket: \"cs24\")\n  |> range(start: -10m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> map(fn: (r) => ({ _time: r._time, _device: r._device, _value: r._value * -1.0 }))\n  |> last()\n  |> truncateTimeColumn(unit: 10m)\n  |> yield(name: \"consumption\")\n  \nunion(tables: [production, consumption])\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ _time: r._time, Delta: float(v: r.site) + r.line }))\n  |> drop(columns: [\"line\", \"site\"])\n  |> yield(name: \"net_power\")\n",
@@ -2595,14 +2595,14 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -1mo, f: \"month\"}, Year: {p: -1y, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"delta_wh\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ r with _value: r._value * 0.001 }))\n  |> yield(name: \"delta_wh\")\n",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._meter == \"delta_wh\" and r._field == \"today\")\n  |> map(fn: (r) => ({ r with _value: r._value * 0.001 }))\n  |> yield(name: \"delta_wh\")\n",
                     "refId": "A"
                 }
             ],
-            "title": "Electric Meter Change: ${period}",
+            "title": "Electric Meter Change",
             "type": "stat"
         },
         {
@@ -2651,10 +2651,10 @@
                 "text": {},
                 "textMode": "auto"
             },
-            "pluginVersion": "8.2.1",
+            "pluginVersion": "8.2.2",
             "targets": [
                 {
-                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"today\")\n  |> filter(fn: (r) => r._device == \"meter_reading\" or r._device == \"delta_wh\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: (r.delta_wh * 0.001) + r.meter_reading }))\n  |> drop(columns: [\"_start\", \"_stop\", \"delta_wh\", \"meter_reading\"])\n  |> map(fn: (r) => ({ _value: if r._value < 0 then 100000.0 + r._value else r._value } ))\n  |> yield(name: \"meter_reading\")\n  ",
+                    "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._field == \"today\" and exists r._meter)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_meter\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: (r.delta_wh * 0.001) + r.reading }))\n  |> map(fn: (r) => ({ _value: if r._value > 100000.0 then r._value - 100000.0 else r._value } ))\n  |> yield(name: \"meter_reading\")\n  ",
                     "refId": "A"
                 }
             ],
@@ -2662,7 +2662,7 @@
             "type": "stat"
         }
     ],
-    "refresh": "",
+    "refresh": "10s",
     "schemaVersion": 31,
     "style": "dark",
     "tags": [],
@@ -2738,12 +2738,12 @@
         ]
     },
     "time": {
-        "from": "now-12h",
+        "from": "now-1h",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "",
     "title": "CS/ESPHome Sample Panels",
-    "uid": "_-Qzs-Dpx",
-    "version": 17
+    "uid": "_-Qzs-Dmx",
+    "version": 23
 }

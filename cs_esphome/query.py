@@ -189,3 +189,15 @@ class QueryManager():
             except Exception as e:
                 _LOGGER.error(f"Unexpected exception processing query in process_locations_energy(): {e}")
 
+
+def execute_query(query_api, query):
+    tables = []
+    try:
+        tables = query_api.query(query)
+    except ApiException as e:
+        raise InfluxDBQueryError(f"InfluxDB query error: {e.reason}")
+    except Exception as e:
+        raise InternalError(f"{e}")
+    return tables
+
+

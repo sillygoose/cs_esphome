@@ -19,8 +19,8 @@ cs_esphome:
   # This option is used to set the current meter reading (at midnight or if not adjust for the
   # energy used)
   meter:
-    enable_setting: True
-    value:          95424
+    enable_setting: False
+    value:          95443
 
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.
@@ -48,8 +48,8 @@ cs_esphome:
   # CS/ESPHome settings
   # Allows some settings to be modified without editing the code
   # settings.sampling defines how often the various processing loops run
-  #   settings.sampling.integrations    period (seconds) for updating integrations (int)
-  #   settings.sampling.queries   ###      period (seconds) for updating CS/ESPHome database queries (int)
+  #   settings.sampling.integrations    period (seconds) for running the integration tasks (int)
+  #   settings.sampling.locations       period (seconds) for updating CS/ESPHome database queries (int)
   #   settings.sampling.delta_wh        period (seconds) for updating CS/ESPHome delta_wh entries (int)
   #   settings.watchdog                 override the default watchdog timer timeout (int)
   settings:
@@ -62,11 +62,7 @@ cs_esphome:
         today:      20
         month:      300
         year:       600
-      queries:
-        today:      60
-        month:      300
-        year:       600
-      delta_wh:     600
+      delta_wh:     60
     watchdog:       30
 
   # Sensor setup

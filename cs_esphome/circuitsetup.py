@@ -6,13 +6,9 @@ import asyncio
 import logging
 import datetime
 
-from dateutil.relativedelta import relativedelta
-
 from aioesphomeapi import SensorState
-from influxdb_client.domain.bucket import Bucket
 
 import version
-import query
 import tasks
 import esphome
 import filldata
@@ -20,8 +16,7 @@ import electricmeter
 from readconfig import retrieve_options
 
 from influx import InfluxDB
-from influxdb_client.rest import ApiException
-from exceptions import WatchdogTimer, InfluxDBFormatError, InfluxDBWriteError, InternalError, FailedInitialization
+from exceptions import WatchdogTimer, InfluxDBFormatError, FailedInitialization
 
 
 _LOGGER = logging.getLogger('cs_esphome')
@@ -80,10 +75,6 @@ class CircuitSetup():
         if not await self._task_manager.start(by_location=self._esphome_api.sensors_by_location(), by_integration=self._esphome_api.sensors_by_integration()):
             return False
 
-        self._query_manager = query.QueryManager(config=config, influxdb_client=self._influxdb_client)
-        if not await self._query_manager.start(locations=self._esphome_api.sensors_by_location()):
-            return False
-
         return True
 
 
@@ -97,7 +88,6 @@ class CircuitSetup():
             }
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
-                self._query_manager.run(),
                 self.watchdog(),
                 self.midnight(queues.get('refresh'), queues.get('deletions')),
                 self.task_deletions(queues.get('deletions')),
@@ -150,10 +140,10 @@ class CircuitSetup():
             if right_now.month == 1:
                 periods.append('year')
             refresh_queue.put_nowait(periods)
-            _LOGGER.info(f"Posted event to the refresh queue: {periods}")
+            _LOGGER.debug(f"Posted event to the refresh queue: {periods}")
 
-            deletion_queue.put_nowait(False)
-            _LOGGER.info(f"Posted event to the deletion queue: {False}")
+            deletion_queue.put_nowait(periods)
+            _LOGGER.debug(f"Posted event to the deletion queue: {periods}")
 
 
     async def task_deletions(self, deletion_queue) -> None:
@@ -162,7 +152,6 @@ class CircuitSetup():
         _PREDICATES = [
             {'name': 'power_factor', 'predicate': '_measurement="power_factor"', 'keep_last': 1},
             {'name': 'voltage', 'predicate': '_measurement="voltage"', 'keep_last': 3},
-            {'name': '_vehicles', 'predicate': '_measurement="energy AND _device="_vehicles"', 'keep_last': 0},
         ]
 
         delete_api = self._influxdb_client.delete_api()
@@ -170,9 +159,9 @@ class CircuitSetup():
         org = self._influxdb_client.org()
         start = datetime.datetime(1970, 1, 1).isoformat() + 'Z'
         while True:
-            predicate = await deletion_queue.get()
+            periods = await deletion_queue.get()
             deletion_queue.task_done()
-            _LOGGER.info(f"task_deletions(queue): {predicate}")
+            _LOGGER.info(f"task_deletions(queue): {periods}")
 
             await asyncio.sleep(60 * 60 * 4)
             try:
@@ -222,8 +211,8 @@ class CircuitSetup():
             while True:
                 periods = await queue.get()
                 queue.task_done()
-                _LOGGER.info(f"task_refresh(queue): {periods}")
-                # ### await self._task_manager.refresh_tasks(periods=periods)
+                _LOGGER.debug(f"task_refresh(queue): {periods}")
+                await self._task_manager.refresh_tasks(periods=periods)
         except Exception as e:
             _LOGGER.debug(f"task_refresh(): {e}")
 
@@ -262,4 +251,4 @@ class CircuitSetup():
             sensors_by_key = self._esphome_api.sensors_by_key()
             await self._esphome_api.subscribe_states(sensor_callback)
         except Exception as e:
-            _LOGGER.debug(f"task_sampler(): {e}")
+            _LOGGER.debug(f"task_esphome_sensor_gather(): {e}")

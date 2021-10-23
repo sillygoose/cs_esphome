@@ -2,6 +2,9 @@
 Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 Energy Meter using the ESPHome API writing sensor data and integrations to an InfluxDB2 database.
 
 ## What's new
+#### 0.2.3
+- Turned queries into InfluxDB tasks
+
 #### 0.2.2
 - Updated Grafana dashboard for CS/ESPHome 0.2.1 and later
 
@@ -109,7 +112,7 @@ Data is organized in InfluxDB2 using the following schemas, refer to the Flux qu
     Power:
         _measurement    power
         _device         device (W)
-        _location       optional location
+        _location       (optional)
         _field          sample (W)
 
         _measurement    power
@@ -119,7 +122,7 @@ Data is organized in InfluxDB2 using the following schemas, refer to the Flux qu
     Energy:
         _measurement    energy
         _device         device
-        _location       optional location
+        _location       (optional)
         _field          today (Wh), month (Wh), year (Wh)
 
         _measurement    energy
@@ -128,7 +131,7 @@ Data is organized in InfluxDB2 using the following schemas, refer to the Flux qu
 
         _measurement    energy
         _meter          delta_wh
-        _field          today (Wh), month (Wh), year (Wh)
+        _field          today (Wh)
 
         _measurement    energy
         _meter          reading
