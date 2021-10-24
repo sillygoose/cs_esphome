@@ -27,7 +27,7 @@ class TaskManager():
     def __init__(self, config, influxdb_client):
         """Create a new TaskManager object."""
         self._config = config
-        self._client = influxdb_client
+        self._influxdb_client = influxdb_client
         self._task_gather = None
         self._organizations_api = None
         self._tasks_api = None
@@ -51,7 +51,7 @@ class TaskManager():
         """Initialize the task manager"""
         self._sensors_by_integration = by_integration
         self._sensors_by_location = by_location
-        client = self._client
+        client = self._influxdb_client
 
         self._organizations_api = client.organizations_api()
         self._tasks_api = client.tasks_api()
@@ -368,12 +368,11 @@ class TaskManager():
 
 
     async def influx_tasks(self, periods=None) -> None:
+        """."""
         _LOGGER.debug(f"influx_tasks(periods={periods})")
-        influxdb_client = self._client
-
-        organizations_api = influxdb_client.organizations_api()
+        organizations_api = self._influxdb_client.organizations_api()
         try:
-            organizations = organizations_api.find_organizations(org=influxdb_client.org())
+            organizations = organizations_api.find_organizations(org=self._influxdb_client.org())
         except ApiException as e:
             body_dict = json.loads(e.body)
             _LOGGER.error(f"influx_tasks() can't access the InfluxDB organization: {body_dict.get('message', '???')}")
@@ -403,9 +402,9 @@ class TaskManager():
 
 
     def delete_tasks(self, periods=None) -> None:
+        """."""
         _LOGGER.debug(f"delete_tasks()")
-        influxdb_client = self._client
-        tasks_api = influxdb_client.tasks_api()
+        tasks_api = self._influxdb_client.tasks_api()
         try:
             tasks = tasks_api.find_tasks()
             if periods is None:
