@@ -264,11 +264,11 @@ def check_config(config):
                                   {'url': {'required': True, 'keys': [], 'type': str}},
                                   {'bucket': {'required': True, 'keys': [], 'type': str}},
                                   {'token': {'required': True, 'keys': [], 'type': str}},
+                                  {'recreate_tasks': {'required': False, 'keys': [], 'type': bool}},
                               ]}},
                               {'debug': {'required': False, 'keys': [
                                   {'create_bucket': {'required': False, 'keys': [], 'type': bool}},
                                   {'delete_bucket': {'required': False, 'keys': [], 'type': bool}},
-                                  {'recreate_tasks': {'required': False, 'keys': [], 'type': bool}},
                                   {'fill_data': {'required': False, 'keys': [], 'type': bool}},
                               ]}},
                               {'meter': {'required': False, 'keys': [

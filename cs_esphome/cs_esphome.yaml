@@ -1,10 +1,10 @@
 # YAML configuration file for configuring the application to connect to the
 # ESPHome API and subscribe to energy sensor updates from the CircuitSetup hardware.
+
 cs_esphome:
   # debug fields (requires CS_ESPHOME_DEBUG to be set to True or 1 to be in effect)
   #  debug.delete_bucket    deletes the bucket if it exists (bool)
   #  debug.create_bucket    creates the InfluxDB2 bucket if it does not exist (bool)
-  #  debug.recreate_tasks   remove all InfluxDB tasks and create new ones (bool)
   #  debug.fill_data        fills in today/month/year energy fields to 0 (bool)
   #
   #  This last option can fill in the today/month/year energy records to make your long-term
@@ -13,7 +13,6 @@ cs_esphome:
   debug:
     delete_bucket:  False
     create_bucket:  False
-    recreate_tasks: False
     fill_data:      False
 
   # This option is used to set the current meter reading (at midnight or if not adjust for the
@@ -34,35 +33,39 @@ cs_esphome:
 
   # InfluxDB setup
   # The InfluxDB interface requires the following options.
-  #   influxdb2.enable        set to True to enable InfluxDB output ('bool')
-  #   influxdb2.bucket        set to the InfluxDB bucket ('str')
-  #   influxdb2.url           set to the InfluxDB server URL and port ('str')
-  #   influxdb2.org           set to the v2 organization ('str')
-  #   influxdb2.token         set to a valid v2 token ('str')
+  #   influxdb2.enable          set to True to enable InfluxDB output ('bool')
+  #   influxdb2.bucket          set to the InfluxDB bucket ('str')
+  #   influxdb2.url             set to the InfluxDB server URL and port ('str')
+  #   influxdb2.org             set to the v2 organization ('str')
+  #   influxdb2.token           set to a valid v2 token ('str')
+  #
+  # The following settings are optional:
+  #  influxdb2.recreate_tasks   remove all InfluxDB tasks and create new ones (bool)
   influxdb2:
     org:    !secret influxdb2_org
     url:    !secret influxdb2_url
     bucket: !secret influxdb2_bucket
     token:  !secret influxdb2_token
+    recreate_tasks: False
 
   # CS/ESPHome settings
   # Allows some settings to be modified without editing the code
   # settings.sampling defines how often the various processing loops run
   #   settings.sampling.integrations    period (seconds) for running the integration tasks (int)
-  #   settings.sampling.locations       period (seconds) for updating CS/ESPHome database queries (int)
+  #   settings.sampling.locations       period (seconds) for updating CS/ESPHome database locations (int)
   #   settings.sampling.delta_wh        period (seconds) for updating CS/ESPHome delta_wh entries (int)
   #   settings.watchdog                 override the default watchdog timer timeout (int)
   settings:
     sampling:
       integrations:
-        today:      60
+        today:      30
         month:      300
         year:       600
       locations:
-        today:      20
+        today:      10
         month:      300
         year:       600
-      delta_wh:     60
+      delta_wh:     150
     watchdog:       30
 
   # Sensor setup

@@ -4,8 +4,11 @@ Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 E
 Right now this project is changing rapidly as I figure out the balance between processing in the app and on tInfluxDB.
 
 ## What's new
+#### 0.2.5
+- Turned off deletion of tasks at startup, if you modify any then the option is now in the 'influxdb2' section of the YAML file.
+
 #### 0.2.4
-- Impovesments in task processing
+- Improvements in task processing
 
 #### 0.2.3
 - Turned queries into InfluxDB tasks

@@ -5,7 +5,6 @@ import json
 import datetime
 
 from influxdb_client.rest import ApiException
-# from exceptions import   # WatchdogTimer, InfluxDBFormatError, ,
 
 
 _LOGGER = logging.getLogger('cs_esphome')
@@ -14,13 +13,16 @@ _LOGGER = logging.getLogger('cs_esphome')
 class TaskManager():
     """Class to create and manage InfluxDB tasks."""
 
-    _DEFAULT_SAMPLING_LOCATIONS_TODAY = 16
-    _DEFAULT_SAMPLING_LOCATIONS_MONTH = 301
-    _DEFAULT_SAMPLING_LOCATIONS_YEAR = 602
-    _DEFAULT_SAMPLING_INTEGRATIONS_TODAY = 60
+    _DEFAULT_SAMPLING_LOCATIONS_TODAY = 30
+    _DEFAULT_SAMPLING_LOCATIONS_MONTH = 300
+    _DEFAULT_SAMPLING_LOCATIONS_YEAR = 600
+
+    _DEFAULT_SAMPLING_INTEGRATIONS_TODAY = 30
     _DEFAULT_SAMPLING_INTEGRATIONS_MONTH = 300
     _DEFAULT_SAMPLING_INTEGRATIONS_YEAR = 600
-    _DEFAULT_SAMPLING_DELTA_WH = 300
+
+    _DEFAULT_SAMPLING_DELTA_WH = 150
+
 
     def __init__(self, config, influxdb_client):
         """Create a new TaskManager object."""
@@ -45,7 +47,6 @@ class TaskManager():
 
     async def start(self, by_location, by_integration) -> bool:
         """Initialize the task manager"""
-
         self._sensors_by_integration = by_integration
         self._sensors_by_location = by_location
         client = self._client
@@ -68,15 +69,16 @@ class TaskManager():
                     self._sampling_locations_month = config.settings.sampling.locations.get('month', TaskManager._DEFAULT_SAMPLING_LOCATIONS_MONTH)
                     self._sampling_locations_year = config.settings.sampling.locations.get('year', TaskManager._DEFAULT_SAMPLING_LOCATIONS_YEAR)
 
-        #if 'debug' in config.keys():
-        #    if 'recreate_tasks' in config.debug.keys():
-        #        if config.debug.recreate_tasks:
-        self.delete_tasks()
+        if 'influxdb2' in config.keys():
+            if 'recreate_tasks' in config.influxdb2.keys():
+                if config.influxdb2.recreate_tasks:
+                    self.delete_tasks()
 
         return True
 
 
     async def run(self):
+        """Start up."""
         try:
             _LOGGER.info(f"CS/ESPHome Task Manager starting up, integration tasks will run every {self._sampling_integrations_today}/{self._sampling_integrations_month}/{self._sampling_integrations_year} seconds")
             await self.influx_tasks()
@@ -85,15 +87,16 @@ class TaskManager():
 
 
     async def stop(self):
-        """Shutdown."""
+        """Shutdown the TaskManager."""
         if self._task_gather:
             self._task_gather.cancel()
 
 
-    def influx_device_integration_tasks(self, organization, sensors, periods=None) -> None:
-        """Create the InfluxDB tasks to integrate devices."""
+    def influx_device_integration_tasks(self, organization, sensors, periods=None):
+        """Create the InfluxDB tasks to integrate and sum devices."""
 
-        def _integration_worker(organization, sensors, period) -> None:
+        def _integration_worker(organization, sensors, period):
+            """Worker function to create the integrations tasks."""
             tasks_api = self._tasks_api
             bucket = self._bucket
             try:
@@ -166,10 +169,10 @@ class TaskManager():
             _LOGGER.error(f"Unexpected exception during task creation in influx_integration_tasks(): {e}")
 
 
-    def influx_delta_wh_tasks(self, organization, periods=None) -> None:
+    def influx_delta_wh_tasks(self, organization, periods=None):
         """These tasks calculate the change in Wh during a given period."""
 
-        def _delta_wh_worker(organization, period, range) -> None:
+        def _delta_wh_worker(organization, period, range):
             measurement = 'energy'
             output_key = '_meter'
             output_value = 'delta_wh'
@@ -189,7 +192,7 @@ class TaskManager():
                         f'production_{period} = from(bucket: "multisma2")\n' \
                         f'  |> range(start: {range})\n' \
                         f'  |> filter(fn: (r) => r._measurement == "production" and r._field == "{period}" and r._inverter == "site")\n' \
-                        f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "energy", {output_key}: r._inverter, _field: r._field, _value: r._value * 1000.0 }}))\n' \
+                        f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "{measurement}", {output_key}: r._inverter, _field: r._field, _value: r._value * 1000.0 }}))\n' \
                         f'  |> yield(name: "production_{period}")\n' \
                         f'\n' \
                         f'consumption_{period} = from(bucket: "cs24")\n' \
@@ -199,7 +202,7 @@ class TaskManager():
                         f'  |> yield(name: "consumption_{period}")\n' \
                         f'\n' \
                         f'union(tables: [production_{period}, consumption_{period}])\n' \
-                        f'  |> pivot(rowKey:["_time"], columnKey: ["_meter"], valueColumn: "_value")\n' \
+                        f'  |> pivot(rowKey:["_time"], columnKey: ["{output_key}"], valueColumn: "_value")\n' \
                         f'  |> map(fn: (r) => ({{ _time: r._time, _measurement: "{measurement}", {output_key}: "{output_value}", _field: "{period}", _value: r.line - r.site }}))\n' \
                         f'  |> to(bucket: "cs24", org: "{organization.name}")\n'
 
@@ -212,6 +215,7 @@ class TaskManager():
                 except Exception as e:
                     _LOGGER.error(f"Unexpected exception during task creation in _delta_wh_worker(): {e}")
 
+
         range = {'today': '-1d', 'month': '-1mo', 'year': '-1y'}
         if periods is None:
             periods = ['today']
@@ -222,7 +226,7 @@ class TaskManager():
             _LOGGER.error(f"Unexpected exception during task creation in influx_integration_tasks(): {e}")
 
 
-    def influx_meter_tasks(self, organization, force=False) -> None:
+    def influx_meter_tasks(self, organization):
         """Creates the cron task that updates the meter reading at midnight."""
         measurement = 'energy'
         tag_key = '_meter'
@@ -233,7 +237,7 @@ class TaskManager():
         bucket = self._bucket
         tasks_api = self._tasks_api
         tasks = tasks_api.find_tasks(name=task_name)
-        if tasks and len(tasks) and force:
+        if tasks and len(tasks):
             for task in tasks:
                 tasks_api.delete_task(task.id)
             tasks = tasks_api.find_tasks(name=task_name)
@@ -265,7 +269,7 @@ class TaskManager():
 
 
     def influx_location_power_tasks(self, organization) -> None:
-        """Creates the tasks that sums up location power."""
+        """Creates the tasks that sums up power by location."""
         measurement = 'power'
         tag_key = '_location'
         period = "now"
