@@ -33,6 +33,8 @@ class TaskManager():
         self._tasks_api = None
         self._query_api = None
         self._bucket = None
+        self._delete_before = False
+
         self._sampling_integrations_today = TaskManager._DEFAULT_SAMPLING_INTEGRATIONS_TODAY
         self._sampling_integrations_month = TaskManager._DEFAULT_SAMPLING_INTEGRATIONS_MONTH
         self._sampling_integrations_year = TaskManager._DEFAULT_SAMPLING_INTEGRATIONS_YEAR
@@ -110,6 +112,12 @@ class TaskManager():
 
                     task_name = self._base_name + '._device.'+ device + location_name+  '.' + measurement + '.' + period
                     tasks = tasks_api.find_tasks(name=task_name)
+                    if self._delete_before:
+                        for task in tasks:
+                            _LOGGER.debug(f"'Deleting {task.name}")
+                            tasks_api.delete_task(task.id)
+                            tasks = None
+
                     if tasks is None or len(tasks) == 0:
                         _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
                         if period == 'today':
@@ -180,8 +188,8 @@ class TaskManager():
 
             tasks_api = self._tasks_api
             tasks = tasks_api.find_tasks(name=task_name)
-            for task in tasks:
-                if task.name.endswith(period):
+            if self._delete_before:
+                for task in tasks:
                     _LOGGER.debug(f"'Deleting {task.name}")
                     tasks_api.delete_task(task.id)
                     tasks = None
@@ -237,10 +245,11 @@ class TaskManager():
         bucket = self._bucket
         tasks_api = self._tasks_api
         tasks = tasks_api.find_tasks(name=task_name)
-        if tasks and len(tasks):
+        if self._delete_before:
             for task in tasks:
+                _LOGGER.debug(f"'Deleting {task.name}")
                 tasks_api.delete_task(task.id)
-            tasks = tasks_api.find_tasks(name=task_name)
+                tasks = None
 
         if tasks is None or len(tasks) == 0:
             _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
@@ -280,7 +289,7 @@ class TaskManager():
         for location, sensors in self._sensors_by_location.items():
             task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
             tasks = tasks_api.find_tasks(name=task_name)
-            if self._delete_tasks:
+            if self._delete_before:
                 for task in tasks:
                     _LOGGER.debug(f"'Deleting {task.name}")
                     tasks_api.delete_task(task.id)
@@ -320,7 +329,7 @@ class TaskManager():
             for location, sensors in self._sensors_by_location.items():
                 task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
                 tasks = tasks_api.find_tasks(name=task_name)
-                if self._delete_tasks:
+                if self._delete_before:
                     for task in tasks:
                         _LOGGER.debug(f"'Deleting {task.name}")
                         tasks_api.delete_task(task.id)
