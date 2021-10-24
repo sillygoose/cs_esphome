@@ -75,11 +75,19 @@ class InfluxDB:
             self._organizations_api = self._client.organizations_api()
 
             cs_esphome_debug = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
-            if cs_esphome_debug and debug_options.get('delete_bucket', None) and self.delete_bucket():
-                _LOGGER.info(f"Deleted bucket '{self._bucket}' at '{self._url}'")
+            try:
+                if cs_esphome_debug and debug_options.get('delete_bucket', False):
+                    self.delete_bucket()
+                    _LOGGER.info(f"Deleted bucket '{self._bucket}' at '{self._url}'")
+            except InfluxDBBucketError as e:
+                raise FailedInitialization(f"{e}")
 
-            if not self.connect_bucket(cs_esphome_debug and debug_options.get('create_bucket', None)):
-                raise FailedInitialization(f"unable to access bucket '{self._bucket}' at '{self._url}'")
+            try:
+                if not self.connect_bucket(cs_esphome_debug and debug_options.get('create_bucket', False)):
+                    raise FailedInitialization(f"Unable to access (or create) bucket '{self._bucket}' at '{self._url}'")
+            except InfluxDBBucketError as e:
+                raise FailedInitialization(f"{e}")
+
             _LOGGER.info(f"Connected to InfluxDB: '{self._url}', bucket '{self._bucket}'")
             result = True
 
@@ -214,6 +222,6 @@ class InfluxDB:
                     return True
             return False
         except ApiException as e:
-            raise InfluxDBBucketError(f"InfluxDB client unable to delete bucket '{self._bucket}' at {self._url}: {e.reason}")
+            raise InfluxDBBucketError(f"InfluxDB client unable to create bucket '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
-            raise InfluxDBBucketError(f"Unexpected exception in delete_bucket(): {e}")
+            raise InfluxDBBucketError(f"Unexpected exception in connect_bucket(): {e}")
