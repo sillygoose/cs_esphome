@@ -280,6 +280,12 @@ class TaskManager():
         for location, sensors in self._sensors_by_location.items():
             task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
             tasks = tasks_api.find_tasks(name=task_name)
+            if self._delete_tasks:
+                for task in tasks:
+                    _LOGGER.debug(f"'Deleting {task.name}")
+                    tasks_api.delete_task(task.id)
+                    tasks = None
+
             if tasks is None or len(tasks) == 0:
                 _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
                 ts = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
@@ -314,6 +320,12 @@ class TaskManager():
             for location, sensors in self._sensors_by_location.items():
                 task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
                 tasks = tasks_api.find_tasks(name=task_name)
+                if self._delete_tasks:
+                    for task in tasks:
+                        _LOGGER.debug(f"'Deleting {task.name}")
+                        tasks_api.delete_task(task.id)
+                        tasks = None
+
                 if tasks is None or len(tasks) == 0:
                     _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
                     if period == 'today':
@@ -325,8 +337,6 @@ class TaskManager():
                     elif period == 'year':
                         ts = int(datetime.datetime.combine(datetime.datetime.now().replace(month=1, day=1), datetime.time(0, 0)).timestamp())
                         sampling = self._sampling_locations_year
-                    else:
-                        pass
 
                     flux =  f'\n' \
                             f'from(bucket: "{bucket}")\n' \
