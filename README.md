@@ -4,8 +4,11 @@ Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 E
 Right now this project is changing rapidly as I figure out the balance between processing in the app and on tInfluxDB.
 
 ## What's new
+#### 0.2.8
+- reorganize tasks
+
 #### 0.2.7
-- .now tasks not being refreshed at midnight, new meter writing task (cs_esphome._meter.writing.energy.year) to update the utility meter value in the InFluxDB UI.  Also utility meter is stored in Wh but generally displayed in kWh.
+- '.now' tasks not being refreshed at midnight, new meter writing task (cs_esphome._meter.writing.energy.year) to update the utility meter value in the InfluxDB UI.  Also utility meter is stored in Wh but generally displayed in kWh.
 
 #### 0.2.6
 - Minor bug fixes.

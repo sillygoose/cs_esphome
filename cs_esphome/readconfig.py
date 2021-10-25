@@ -5,7 +5,6 @@ import os
 import sys
 
 from config.configuration import Configuration
-from dateutil.parser import parse
 from pathlib import Path
 import yaml
 from config import config_from_yaml
@@ -202,11 +201,12 @@ def check_required_keys(yaml, required, path='') -> bool:
                 raise FailedInitialization('Unexpected YAML checking error')
     return passed
 
+
 def check_unsupported(yaml, required, path=''):
     passed = True
 
     if not yaml:
-        raise FailedInitialization(Exception(f"YAML file is corrupt or truncated, nothong left to parse"))
+        raise FailedInitialization(Exception("YAML file is corrupt or truncated, nothong left to parse"))
 
     if isinstance(yaml, list):
         for index, element in enumerate(yaml):
@@ -252,59 +252,52 @@ def check_config(config):
 
     required_keys = [
         {
-            'cs_esphome': {'required': True, 'keys':
-                          [
-                              {'circuitsetup': {'required': True, 'keys': [
-                                  {'url': {'required': True, 'keys': [], 'type': str}},
-                                  {'port': {'required': False, 'keys': [], 'type': int}},
-                                  {'password': {'required': False, 'keys': [], 'type': str}},
-                              ]}},
-                              {'influxdb2': {'required': False, 'keys': [
-                                  {'org': {'required': True, 'keys': [], 'type': str}},
-                                  {'url': {'required': True, 'keys': [], 'type': str}},
-                                  {'bucket': {'required': True, 'keys': [], 'type': str}},
-                                  {'token': {'required': True, 'keys': [], 'type': str}},
-                                  {'recreate_tasks': {'required': False, 'keys': [], 'type': bool}},
-                              ]}},
-                              {'debug': {'required': False, 'keys': [
-                                  {'create_bucket': {'required': False, 'keys': [], 'type': bool}},
-                                  {'delete_bucket': {'required': False, 'keys': [], 'type': bool}},
-                                  {'fill_data': {'required': False, 'keys': [], 'type': bool}},
-                              ]}},
-                              {'sensors': {'required': True, 'keys': [
-                                  {'sensor': {'required': True, 'keys': [
-                                      {'enable': {'required': False, 'keys': [], 'type': bool}},
-                                      {'sensor_name': {'required': True, 'keys': [], 'type': str}},
-                                      {'display_name': {'required': True, 'keys': [], 'type': str}},
-                                      {'measurement': {'required': True, 'keys': [], 'type': str}},
-                                      {'device': {'required': True, 'keys': [], 'type': str}},
-                                      {'location': {'required': True, 'keys': [], 'type': str}},
-                                      {'integrate': {'required': False, 'keys': [], 'type': bool}},
-                                  ]}},
-                              ]}},
-                              {'settings': {'required': False, 'keys': [
-                                  {'sampling': {'required': False, 'keys': [
-                                      {'delta_wh': {'required': False, 'keys': [], 'type': int}},
-                                      {'integrations': {'required': False, 'keys': [
-                                        {'today': {'required': False, 'keys': [], 'type': int}},
-                                        {'month': {'required': False, 'keys': [], 'type': int}},
-                                        {'year': {'required': False, 'keys': [], 'type': int}},
-                                      ]}},
-                                      {'locations': {'required': False, 'keys': [
-                                        {'today': {'required': False, 'keys': [], 'type': int}},
-                                        {'month': {'required': False, 'keys': [], 'type': int}},
-                                        {'year': {'required': False, 'keys': [], 'type': int}},
-                                      ]}},
-                                      {'queries': {'required': False, 'keys': [
-                                        {'today': {'required': False, 'keys': [], 'type': int}},
-                                        {'month': {'required': False, 'keys': [], 'type': int}},
-                                        {'year': {'required': False, 'keys': [], 'type': int}},
-                                      ]}},
-                                  ]}},
-                                  {'watchdog': {'required': False, 'keys': [], 'type': int}},
-                              ]}},
-                          ],
-                          },
+            'cs_esphome': {'required': True, 'keys': [
+                {'circuitsetup': {'required': True, 'keys': [
+                    {'url': {'required': True, 'keys': [], 'type': str}},
+                    {'port': {'required': False, 'keys': [], 'type': int}},
+                    {'password': {'required': False, 'keys': [], 'type': str}},
+                ]}},
+                {'influxdb2': {'required': False, 'keys': [
+                    {'org': {'required': True, 'keys': [], 'type': str}},
+                    {'url': {'required': True, 'keys': [], 'type': str}},
+                    {'bucket': {'required': True, 'keys': [], 'type': str}},
+                    {'token': {'required': True, 'keys': [], 'type': str}},
+                    {'recreate_tasks': {'required': False, 'keys': [], 'type': bool}},
+                ]}},
+                {'debug': {'required': False, 'keys': [
+                    {'create_bucket': {'required': False, 'keys': [], 'type': bool}},
+                    {'delete_bucket': {'required': False, 'keys': [], 'type': bool}},
+                    {'fill_data': {'required': False, 'keys': [], 'type': bool}},
+                ]}},
+                {'sensors': {'required': True, 'keys': [
+                    {'sensor': {'required': True, 'keys': [
+                        {'enable': {'required': False, 'keys': [], 'type': bool}},
+                        {'sensor_name': {'required': True, 'keys': [], 'type': str}},
+                        {'display_name': {'required': True, 'keys': [], 'type': str}},
+                        {'measurement': {'required': True, 'keys': [], 'type': str}},
+                        {'device': {'required': True, 'keys': [], 'type': str}},
+                        {'location': {'required': True, 'keys': [], 'type': str}},
+                        {'integrate': {'required': False, 'keys': [], 'type': bool}},
+                    ]}},
+                ]}},
+                {'settings': {'required': False, 'keys': [
+                    {'sampling': {'required': False, 'keys': [
+                        {'delta_wh': {'required': False, 'keys': [], 'type': int}},
+                        {'integrations': {'required': False, 'keys': [
+                            {'today': {'required': False, 'keys': [], 'type': int}},
+                            {'month': {'required': False, 'keys': [], 'type': int}},
+                            {'year': {'required': False, 'keys': [], 'type': int}},
+                        ]}},
+                        {'locations': {'required': False, 'keys': [
+                            {'today': {'required': False, 'keys': [], 'type': int}},
+                            {'month': {'required': False, 'keys': [], 'type': int}},
+                            {'year': {'required': False, 'keys': [], 'type': int}},
+                        ]}},
+                    ]}},
+                    {'watchdog': {'required': False, 'keys': [], 'type': int}},
+                ]}},
+            ]},
         },
     ]
 
@@ -316,6 +309,7 @@ def check_config(config):
     except Exception as e:
         raise FailedInitialization(Exception(f"Unexpected exception: {e}"))
     return config if result else None
+
 
 def read_config():
     """Open the YAML configuration file and optionally check the contents"""

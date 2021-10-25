@@ -13,7 +13,6 @@ from tasks import TaskManager
 from esphome import ESPHomeApi
 
 import filldata
-from readconfig import retrieve_options
 
 from influx import InfluxDB
 from exceptions import WatchdogTimer, InfluxDBFormatError, FailedInitialization
@@ -32,13 +31,11 @@ class CircuitSetup():
         """Create a new CircuitSetup object."""
         self._config = config
         self._task_manager = None
-        self._query_manager = None
         self._influxdb_client = None
         self._task_gather = None
         self._esphome_api = None
         self._name = None
         self._watchdog = CircuitSetup._DEFAULT_WATCHDOG
-
 
     async def start(self) -> bool:
         """Initialize the CS/ESPHome API."""
@@ -51,7 +48,6 @@ class CircuitSetup():
                 if not success:
                     self._influxdb_client = None
             return success
-
 
         _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
         config = self._config
@@ -73,7 +69,6 @@ class CircuitSetup():
 
         return True
 
-
     async def run(self):
         filldata.filldata(self._config, self._influxdb_client)
         try:
@@ -83,7 +78,6 @@ class CircuitSetup():
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
                 self.watchdog(),
-                self.task_refresh(),
                 self.task_deletions(),
                 self.task_esphome_sensor_post(queues.get('esphome')),
                 self.task_esphome_sensor_gather(queues.get('esphome')),
@@ -95,7 +89,6 @@ class CircuitSetup():
             _LOGGER.error(f"run(): {e}")
         except Exception as e:
             _LOGGER.error(f"Unexpected exception in run(): {e}")
-
 
     async def stop(self):
         """Shutdown."""
@@ -114,27 +107,6 @@ class CircuitSetup():
         if self._task_gather:
             self._task_gather.cancel()
             await asyncio.sleep(0.5)
-
-
-    async def task_refresh(self) -> None:
-        """Task to InfluxDB tasks at midnight."""
-        while True:
-            right_now = datetime.datetime.now()
-            midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
-            await asyncio.sleep((midnight - right_now).total_seconds())
-
-            # Restart any InfluxDB now, today, month, and year tasks
-            periods = ['now', 'today']
-            right_now = datetime.datetime.now()
-            if right_now.day == 1:
-                periods.append('month')
-            if right_now.month == 1:
-                periods.append('year')
-            try:
-                await self._task_manager.refresh_tasks(periods=periods)
-            except Exception as e:
-                _LOGGER.error(f"task_refresh(): {e}")
-
 
     async def task_deletions(self) -> None:
         """Task to remove old database entries."""
@@ -167,7 +139,6 @@ class CircuitSetup():
             except Exception as e:
                 _LOGGER.debug(f"Unexpected exception in task_deletions(): {e}")
 
-
     def _deletions(self, predicate) -> None:
         """Remove old database entries with your predicate."""
         delete_api = self._influxdb_client.delete_api()
@@ -182,7 +153,6 @@ class CircuitSetup():
         except Exception as e:
             _LOGGER.debug(f"Unexpected exception in _deletions(): {e}")
 
-
     async def watchdog(self):
         """Check that we are connected to the CircuitSetup hardware."""
         try:
@@ -195,7 +165,6 @@ class CircuitSetup():
                 saved_watchdog = current_watchdog
         except Exception as e:
             _LOGGER.debug(f"watchdog(): {e}")
-
 
     async def task_esphome_sensor_post(self, queue):
         """Process the subscribed data."""
@@ -214,7 +183,6 @@ class CircuitSetup():
         except Exception as e:
             _LOGGER.debug(f"posting_task(): {e}")
 
-
     async def task_esphome_sensor_gather(self, queue):
         """Post the subscribed data."""
         def sensor_callback(state):
@@ -224,7 +192,7 @@ class CircuitSetup():
                 sensor = sensors_by_key.get(state.key, None)
                 if sensor:
                     queue.put_nowait({'sensor': sensor, 'state': state.state, 'ts': ts})
-                    #if sensor.get('location') == 'basement':
+                    # if sensor.get('location') == 'basement':
                     #    _LOGGER.debug(f": device='{sensor.get('device')}' name='{sensor.get('sensor_name')}'  state='{state.state}'  ts='{ts}'")
 
         try:

@@ -26,7 +26,6 @@ class ESPHomeApi():
         self._sensor_integrate = None
         self._sensor_locations = None
 
-
     async def start(self):
         """."""
         success = False
@@ -80,30 +79,23 @@ class ESPHomeApi():
         self._sensors_by_integration = sensors.parse_by_integration(self._sensors_by_name)
         return True
 
-
     async def disconnect(self):
         await self._client.disconnect()
-
 
     async def subscribe_states(self, sensor_callback):
         await self._client.subscribe_states(sensor_callback)
 
-
     def sensors_by_name(self):
         return self._sensors_by_name
-
 
     def sensors_by_key(self):
         return self._sensors_by_key
 
-
     def sensors_by_location(self):
         return self._sensors_by_location
 
-
     def sensors_by_integration(self):
         return self._sensors_by_integration
-
 
     def name(self):
         return self._name

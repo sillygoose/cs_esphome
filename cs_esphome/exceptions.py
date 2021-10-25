@@ -1,7 +1,5 @@
 """Exceptions used in CS/ESPHome."""
 
-from enum import Enum, auto
-
 
 class NormalCompletion(Exception):
     """Normal completion, no errors."""

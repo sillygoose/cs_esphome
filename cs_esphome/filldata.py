@@ -7,7 +7,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from readconfig import retrieve_options
-import query
 
 
 _LOGGER = logging.getLogger('cs_esphome')
@@ -21,7 +20,7 @@ def filldata(config, influxdb_client) -> None:
     }
     debug_options = retrieve_options(config, 'debug', _DEBUG_OPTIONS)
     cs_esphome_debug = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
-    if cs_esphome_debug == False or debug_options.get('fill_data', False) == False:
+    if cs_esphome_debug is False or debug_options.get('fill_data', False) is False:
         return
 
     start = datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)) - relativedelta(months=13)
@@ -33,7 +32,12 @@ def filldata(config, influxdb_client) -> None:
         f' |> range(start: 0)' \
         f' |> filter(fn: (r) => r._measurement == "energy" and r._device == "line" and r._field == "today")' \
         f' |> first()'
-    tables = query.execute_query(query_api, check_query)
+    tables = []
+    try:
+        tables = query_api.query(check_query)
+    except Exception as e:
+        raise Exception(f"Unexpected exception in filldata(): {e}")
+
     for table in tables:
         for row in table.records:
             utc = row.values.get('_time')
@@ -55,5 +59,3 @@ def filldata(config, influxdb_client) -> None:
         current += relativedelta(days=1)
 
     _LOGGER.info(f"CS/ESPHome missing data fill: {start.date()} to {stop.date()}")
-
-

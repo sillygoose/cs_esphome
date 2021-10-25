@@ -54,7 +54,7 @@ class CS_ESPHome():
         except (KeyboardInterrupt, NormalCompletion, TerminateSignal):
             pass
         except WatchdogTimer as e:
-            _LOGGER.critical("Received WatchdogTimer exception: {e}")
+            _LOGGER.critical(f"Received WatchdogTimer exception: {e}")
             delay = 10
         except AbnormalCompletion:
             _LOGGER.critical("Received AbnormalCompletion exception")

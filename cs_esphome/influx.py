@@ -14,7 +14,7 @@ from influxdb_client.rest import ApiException
 from readconfig import retrieve_options
 
 from exceptions import FailedInitialization
-from exceptions import InfluxDBWriteError, InfluxDBFormatError, InfluxDBInitializationError, InfluxDBBucketError
+from exceptions import InfluxDBWriteError, InfluxDBFormatError, InfluxDBBucketError
 
 from urllib3.exceptions import NewConnectionError
 
@@ -48,7 +48,6 @@ class InfluxDB:
         self._org = None
         self._url = None
         self._bucket = None
-
 
     def start(self):
         """Initialize the InflixDB client."""
@@ -103,7 +102,6 @@ class InfluxDB:
         finally:
             return result
 
-
     def stop(self):
         if self._write_api:
             self._write_api.close()
@@ -112,34 +110,26 @@ class InfluxDB:
             self._client.close()
             self._client = None
 
-
     def bucket(self):
         return self._bucket
-
 
     def org(self):
         return self._org
 
-
     def write_api(self):
         return self._write_api
-
 
     def query_api(self):
         return self._query_api
 
-
     def delete_api(self):
         return self._delete_api
-
 
     def tasks_api(self):
         return self._tasks_api
 
-
     def organizations_api(self):
         return self._organizations_api
-
 
     def write_point(self, measurement, tags, field, value, timestamp=None):
         """Write a single sensor to the database."""
@@ -158,7 +148,6 @@ class InfluxDB:
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
 
-
     def write_points(self, points):
         """Write a list of points to the database."""
         try:
@@ -167,7 +156,6 @@ class InfluxDB:
             raise InfluxDBWriteError(f"InfluxDB client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
-
 
     def write_sensor(self, sensor, state, timestamp=None):
         """Write a sensor to the database."""
@@ -178,11 +166,11 @@ class InfluxDB:
         location = sensor.get('location', None)
         precision = sensor.get('precision', None)
         if measurement is None or device is None:
-            raise InfluxDBFormatError(f"'measurement' and/or 'device' are required")
+            raise InfluxDBFormatError("'measurement' and/or 'device' are required")
 
         location_tag = '' if not location or not len(location) else f',_location={location}'
         device_tag = f',_device={device}'
-        value = round(state, precision) if ((precision != None) and isinstance(state, float)) else state
+        value = round(state, precision) if ((precision is not None) and isinstance(state, float)) else state
         lp = f'{measurement}{device_tag}{location_tag} sample={value} {timestamp}'
 
         try:
@@ -191,7 +179,6 @@ class InfluxDB:
             raise InfluxDBWriteError(f"InfluxDB client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
-
 
     def delete_bucket(self):
         try:
@@ -207,7 +194,6 @@ class InfluxDB:
             raise InfluxDBBucketError(f"InfluxDB client unable to delete bucket '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBBucketError(f"Unexpected exception in delete_bucket(): {e}")
-
 
     def connect_bucket(self, create_bucket=False):
         try:
