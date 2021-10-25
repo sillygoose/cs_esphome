@@ -9,10 +9,10 @@ import datetime
 from aioesphomeapi import SensorState
 
 import version
-import tasks
-import esphome
+from tasks import TaskManager
+from esphome import ESPHomeApi
+
 import filldata
-import electricmeter
 from readconfig import retrieve_options
 
 from influx import InfluxDB
@@ -36,12 +36,11 @@ class CircuitSetup():
         self._influxdb_client = None
         self._task_gather = None
         self._esphome_api = None
-        self._electric_meter = None
         self._name = None
         self._watchdog = CircuitSetup._DEFAULT_WATCHDOG
 
 
-    async def start(self):
+    async def start(self) -> bool:
         """Initialize the CS/ESPHome API."""
 
         def _start_influxdb(config) -> bool:
@@ -54,6 +53,7 @@ class CircuitSetup():
             return success
 
 
+        _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
         config = self._config
         if 'settings' in config.keys():
             if 'watchdog' in config.settings.keys():
@@ -62,16 +62,12 @@ class CircuitSetup():
         if not _start_influxdb(config=config):
             return False
 
-        self._esphome_api = esphome.ESPHomeApi(config=config)
+        self._esphome_api = ESPHomeApi(config=config)
         if not await self._esphome_api.start():
             return False
         self._name = self._esphome_api.name()
 
-        self._electric_meter = electricmeter.ElectricMeter(config=config, influxdb_client=self._influxdb_client)
-        if not self._electric_meter.start():
-            return False
-
-        self._task_manager = tasks.TaskManager(config=config, influxdb_client=self._influxdb_client)
+        self._task_manager = TaskManager(config=config, influxdb_client=self._influxdb_client)
         if not await self._task_manager.start(by_location=self._esphome_api.sensors_by_location(), by_integration=self._esphome_api.sensors_by_integration()):
             return False
 
@@ -82,16 +78,13 @@ class CircuitSetup():
         filldata.filldata(self._config, self._influxdb_client)
         try:
             queues = {
-                'deletions': asyncio.Queue(),
                 'esphome': asyncio.Queue(),
-                'refresh': asyncio.Queue(),
             }
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
                 self.watchdog(),
-                self.midnight(queues.get('refresh'), queues.get('deletions')),
-                self.task_deletions(queues.get('deletions')),
-                self.task_refresh(queues.get('refresh')),
+                self.task_refresh(),
+                self.task_deletions(),
                 self.task_esphome_sensor_post(queues.get('esphome')),
                 self.task_esphome_sensor_gather(queues.get('esphome')),
             )
@@ -113,7 +106,6 @@ class CircuitSetup():
         if self._esphome_api:
             await self._esphome_api.disconnect()
             self._esphome_api = None
-            # await asyncio.sleep(0.5)
 
         if self._influxdb_client:
             self._influxdb_client.stop()
@@ -124,29 +116,27 @@ class CircuitSetup():
             await asyncio.sleep(0.5)
 
 
-    async def midnight(self, refresh_queue, deletion_queue) -> None:
-        """Task to wake up after midnight and update the solar data for the new day."""
+    async def task_refresh(self) -> None:
+        """Task to InfluxDB tasks at midnight."""
         while True:
-            _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")
             right_now = datetime.datetime.now()
             midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
             await asyncio.sleep((midnight - right_now).total_seconds())
 
-            # Restart any InfluxDB today, month, and year tasks
-            periods = ['today']
+            # Restart any InfluxDB now, today, month, and year tasks
+            periods = ['now', 'today']
             right_now = datetime.datetime.now()
             if right_now.day == 1:
                 periods.append('month')
             if right_now.month == 1:
                 periods.append('year')
-            refresh_queue.put_nowait(periods)
-            _LOGGER.debug(f"Posted event to the refresh queue: {periods}")
+            try:
+                await self._task_manager.refresh_tasks(periods=periods)
+            except Exception as e:
+                _LOGGER.error(f"task_refresh(): {e}")
 
-            deletion_queue.put_nowait(periods)
-            _LOGGER.debug(f"Posted event to the deletion queue: {periods}")
 
-
-    async def task_deletions(self, deletion_queue) -> None:
+    async def task_deletions(self) -> None:
         """Task to remove old database entries."""
 
         _PREDICATES = [
@@ -160,12 +150,12 @@ class CircuitSetup():
         bucket = self._influxdb_client.bucket()
         org = self._influxdb_client.org()
         start = datetime.datetime(1970, 1, 1).isoformat() + 'Z'
-        while True:
-            periods = await deletion_queue.get()
-            deletion_queue.task_done()
-            _LOGGER.info(f"task_deletions(queue): {periods}")
 
-            await asyncio.sleep(60 * 60 * 4)
+        while True:
+            right_now = datetime.datetime.now()
+            midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(1, 30))
+            await asyncio.sleep((midnight - right_now).total_seconds())
+
             try:
                 for predicate in _PREDICATES:
                     keep_last = predicate.get('keep_last', 3)
@@ -205,18 +195,6 @@ class CircuitSetup():
                 saved_watchdog = current_watchdog
         except Exception as e:
             _LOGGER.debug(f"watchdog(): {e}")
-
-
-    async def task_refresh(self, queue):
-        """Remove old tasks and replace with new ones."""
-        try:
-            while True:
-                periods = await queue.get()
-                queue.task_done()
-                _LOGGER.debug(f"task_refresh(queue): {periods}")
-                await self._task_manager.refresh_tasks(periods=periods)
-        except Exception as e:
-            _LOGGER.debug(f"task_refresh(): {e}")
 
 
     async def task_esphome_sensor_post(self, queue):

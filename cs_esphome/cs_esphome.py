@@ -4,7 +4,6 @@
 
 import logging
 import sys
-import os
 import time
 import signal
 from readconfig import read_config
@@ -13,7 +12,6 @@ import asyncio
 
 from delayedints import DelayedKeyboardInterrupt
 from circuitsetup import CircuitSetup
-import version
 import logfiles
 
 from exceptions import TerminateSignal, NormalCompletion, AbnormalCompletion, FailedInitialization, WatchdogTimer

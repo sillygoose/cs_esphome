@@ -15,12 +15,6 @@ cs_esphome:
     create_bucket:  False
     fill_data:      False
 
-  # This option is used to set the current meter reading (at midnight or if not adjust for the
-  # energy used)
-  meter:
-    enable_setting: False
-    value:          95443
-
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.
   #   circuitsetup.url        set to the ESPHome API url ('str')
@@ -46,7 +40,7 @@ cs_esphome:
     url:    !secret influxdb2_url
     bucket: !secret influxdb2_bucket
     token:  !secret influxdb2_token
-    recreate_tasks: False
+    recreate_tasks: True
 
   # CS/ESPHome settings
   # Allows some settings to be modified without editing the code
