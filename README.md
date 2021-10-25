@@ -6,6 +6,10 @@ Right now this project is changing rapidly as I figure out the balance between p
 
 ## What's new
 
+#### 0.2.9
+
+- adding dashboard and images, no code changes
+
 #### 0.2.8
 
 - reorganize tasks
