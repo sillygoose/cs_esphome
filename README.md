@@ -6,99 +6,9 @@ Right now this project is changing rapidly as I figure out the balance between p
 
 ## What's new
 
-#### 0.2.9
+#### 0.3.1
 
-- adding dashboard and images, no code changes
-
-#### 0.2.8
-
-- reorganize tasks
-
-#### 0.2.7
-
-- '.now' tasks not being refreshed at midnight, new meter writing task (cs_esphome.\_meter.writing.energy.year) to update the utility meter value in the InfluxDB UI. Also utility meter is stored in Wh but generally displayed in kWh.
-
-#### 0.2.6
-
-- Minor bug fixes.
-
-#### 0.2.5
-
-- Turned off deletion of tasks at startup, if you modify any then the option is now in the 'influxdb2' section of the YAML file.
-
-#### 0.2.4
-
-- Improvements in task processing
-
-#### 0.2.3
-
-- Turned queries into InfluxDB tasks
-
-#### 0.2.2
-
-- Updated Grafana dashboard for CS/ESPHome 0.2.1 and later
-
-#### 0.2.1
-
-- Using InfluxDB queries and tasks to process data on the InfluxDB host, updated data schema
-
-#### 0.2.0
-
-- Needed to add the meter state to the database so the deltas can be properly applied
-
-#### 0.1.9
-
-- used the InfluxDB task API to create InfluxDB tasks to track the differences in production and consumption by day, month, and year. The goal is to model my electric meter which runs forward when I pull power from the grid and runs in reverse when I push excess solar power to the grid.
-
-#### 0.1.8
-
-- Sensor timestamps are grouped by tens of seconds, makes for easier Flux queries since you will have results with the same timestamps
-- requires aioesphomeapi to be at least version 10.0.0 due to changes in the ESPHome API
-
-#### 0.1.7
-
-Help make Grafana dashboards graphs look good
-
-- debug.fill_data will backfill the database with 13 months of energy entries, up to the first existing entry
-- improved watchdog code with YAML file override of watchdog period
-- settings option to override the default integration task period
-
-#### 0.1.6
-
-Renaming of files and repos to avoid using `esphome` to avoid any confusion
-
-#### 0.1.5
-
-New database schema supports reporting sensor and location values and integration (today, month, and year totals).
-
-#### 0.1.4
-
-CS_ESP_DEBUG environment variable
-
-- ignores debug options in YAML file when not defined
-
-#### 0.1.3
-
-queries
-
-- sensors with integration write daily, monthly, and annual totals
-
-#### 0.1.2
-
-More improvements
-
-- Can delete and/or create the database if requested
-- More tasks to prepare for future database queries
-- Improved error handling
-
-#### 0.1.0
-
-Coming together but still a prototype.
-
-- ESPHome sensors written to InfluxDB2
-- YAML file configuration support
-
-#
+    - first public preview
 
 ### Requirements
 
@@ -158,8 +68,6 @@ As an example, suppose you download the current **CS/ESPHome** build of 1.0.0. T
     sudo docker image tag cs_esphome:1.0.0 cs_esphome:latest
     sudo docker-compose up -d
 ```
-
-#
 
 ## InfluxDB Schemas
 

@@ -11,7 +11,7 @@ def parse_by_location(sensors):
     for sensor in sensors.values():
         location = sensor.get('location', None)
         integrate = sensor.get('integrate', None)
-        if location == None or integrate == None:
+        if location is None or integrate is None:
             continue
         if location and integrate:
             device = sensor.get('device', None)
