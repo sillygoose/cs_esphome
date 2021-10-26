@@ -38,9 +38,13 @@ cs_esphome:
     recreate_tasks: True
     pruning:
       - task:
-          name: 'power_factor'
+          name: 'pf'
           predicate: '_measurement="power_factor"'
-          keep_last: 1
+          keep_last: 3
+      - task:
+          name: 'frequency'
+          predicate: '_measurement="frequency"'
+          keep_last: 3
       - task:
           name: 'voltage'
           predicate: '_measurement="voltage"'
