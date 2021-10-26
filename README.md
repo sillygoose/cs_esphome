@@ -1,14 +1,37 @@
 # **CS/ESPHome**
 
-Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 Energy Meter using the ESPHome API writing sensor data and integrations to an InfluxDB2 database.
+Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 Energy Meter. Sensor data is sourced using the ESPHome API and stored in an InfluxDB database.
 
-Right now this project is changing rapidly as I figure out the balance between processing in the app and on tInfluxDB.
+The processing is split between this application which uses the ESPHome API to subscribe to the CircuitSetup 6-channel power monitoring hardware and send it to the InfluxDB database. 22 channels are used for various home circuits and the other two CTs collect information on each of the split phases.
+
+At startup the application creates numerous InfluxDB tasks which run independently on the InfluxDB server at scheduled intervals and convert the sample data to database entries organized by device and location (see the data schema below). This is all organized in a YAML file that has entries similar to these:
+
+```
+  sensors:
+    - sensor:
+        enable:         True
+        sensor_name:    'cs24_volts'
+        display_name:   'Line Voltage'
+        measurement:    'voltage'
+        device:         'line'
+        location:       ''
+    ...
+    - sensor:
+        sensor_name:    'cs24_w'
+        display_name:   'Total load'
+        measurement:    'power'
+        device:         'line'
+        location:       ''
+        integrate:      True
+```
 
 ## What's new
 
 #### 0.3.1
 
     - first public preview
+
+#
 
 ### Requirements
 
@@ -22,8 +45,10 @@ Right now this project is changing rapidly as I figure out the balance between p
   - python-configuration
   - pyyaml
 
-- CircuitSetup Expandable 6 Channel ESP32 Energy Meter hardware (developed using a 24 channel version)
-- Docker (a Dockerfile is supplied to allow running in a Docker container, I run this on a Raspberry Pi4 with 8GB memory that also has containers running instances of Portainer, InfluxDB2, Telegraf, Grafana, and other useful applications)
+- CircuitSetup Expandable 6 Channel ESP32 Energy Meter hardware (developed using a 24 channel version, my ESPHome code is located here: https://github.com/sillygoose/esphome-cs24)
+- Docker (a Dockerfile is supplied to allow running in a Docker container, I run this on a Raspberry Pi4 with 8GB memory that also has containers running instances of Portainer, InfluxDB, Grafana, and other useful applications)
+
+#
 
 ## Installation
 
@@ -69,6 +94,8 @@ As an example, suppose you download the current **CS/ESPHome** build of 1.0.0. T
     sudo docker-compose up -d
 ```
 
+#
+
 ## InfluxDB Schemas
 
 Data is organized in InfluxDB using the following schemas, refer to the Flux queries for examples of pulling data from InfluxDB for dashboard or other use.
@@ -78,40 +105,59 @@ Data is organized in InfluxDB using the following schemas, refer to the Flux que
         _device         device (W)
         _location       (optional)
         _field          sample (W)
+        _time           local time
 
         _measurement    power
         _location       current power being consumed in the location
         _field          now (W)
+        _time           midnight
 
     Energy:
         _measurement    energy
         _device         device
         _location       (optional)
         _field          today (Wh), month (Wh), year (Wh)
+        _time           midnight
 
         _measurement    energy
         _location       location
         _field          today (Wh), month (Wh), year (Wh)
+        _time           midnight
 
         _measurement    energy
         _meter          delta_wh
         _field          today (Wh)
+        _time           midnight
 
         _measurement    energy
         _meter          reading
         _field          today (Wh)
+        _time           midnight
 
     Voltage:
         _measurement    voltage
         _field          line (V), l1 (V), l2 (V)
+        _time           local time
 
     Frequency:
         _measurement    frequency
         _field          frequency (Hz)
+        _time           local time
 
     Power factor:
         _measurement    power_factor
         _field          pf
+        _time           local time
+
+#
+
+## Debugging
+
+Create the environment variable CS_ESPHOME_DEBUG and set to 1 or True to enable debug output.
+
+This is also required if you wish to use the debugging options that automatically delete or create the database. This is nice during development but would not want to accidentally cause somthing bad to happen when in production.
+
+#
 
 ## Dashboards
 

@@ -12,8 +12,6 @@ import version
 from tasks import TaskManager
 from esphome import ESPHomeApi
 
-import filldata
-
 from influx import InfluxDB
 from exceptions import WatchdogTimer, InfluxDBFormatError, FailedInitialization
 
@@ -34,7 +32,7 @@ class CircuitSetup():
         self._influxdb_client = None
         self._task_gather = None
         self._esphome_api = None
-        self._name = None
+        self._esphome_name = None
         self._watchdog = CircuitSetup._DEFAULT_WATCHDOG
 
     async def start(self) -> bool:
@@ -61,7 +59,7 @@ class CircuitSetup():
         self._esphome_api = ESPHomeApi(config=config)
         if not await self._esphome_api.start():
             return False
-        self._name = self._esphome_api.name()
+        self._esphome_name = self._esphome_api.name()
 
         self._task_manager = TaskManager(config=config, influxdb_client=self._influxdb_client)
         if not await self._task_manager.start(by_location=self._esphome_api.sensors_by_location(), by_integration=self._esphome_api.sensors_by_integration()):
@@ -70,17 +68,14 @@ class CircuitSetup():
         return True
 
     async def run(self):
-        filldata.filldata(self._config, self._influxdb_client)
         try:
-            queues = {
-                'esphome': asyncio.Queue(),
-            }
+            queue = asyncio.Queue()
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
                 self.watchdog(),
                 self.task_deletions(),
-                self.task_esphome_sensor_post(queues.get('esphome')),
-                self.task_esphome_sensor_gather(queues.get('esphome')),
+                self.task_esphome_sensor_post(queue),
+                self.task_esphome_sensor_gather(queue),
             )
             await self._task_gather
         except FailedInitialization as e:
@@ -111,17 +106,24 @@ class CircuitSetup():
     async def task_deletions(self) -> None:
         """Task to remove old database entries."""
 
-        _PREDICATES = [
-            {'name': 'power_factor', 'predicate': '_measurement="power_factor"', 'keep_last': 1},
-            {'name': 'voltage', 'predicate': '_measurement="voltage"', 'keep_last': 3},
-            {'name': 'power_sample', 'predicate': '_measurement="power" AND _field="sample"', 'keep_last': 30},
-            {'name': 'power', 'predicate': '_measurement="power" AND _field="now"', 'keep_last': 30},
-        ]
-
         delete_api = self._influxdb_client.delete_api()
         bucket = self._influxdb_client.bucket()
         org = self._influxdb_client.org()
         start = datetime.datetime(1970, 1, 1).isoformat() + 'Z'
+
+        pruning_tasks = []
+        config = self._config
+        if 'influxdb2' in config.keys():
+            if 'pruning' in config.influxdb2.keys():
+                for pruning_task in config.influxdb2.pruning:
+                    for task in pruning_task.values():
+                        name = task.get('name', None)
+                        keep_last = task.get('keep_last', 30)
+                        predicate = task.get('predicate', None)
+                        if name and predicate:
+                            new_task = {'name': name, 'predicate': predicate, 'keep_last': keep_last}
+                            pruning_tasks.append(new_task)
+                            _LOGGER.debug(f"Added database pruning task: {new_task}")
 
         while True:
             right_now = datetime.datetime.now()
@@ -129,13 +131,10 @@ class CircuitSetup():
             await asyncio.sleep((midnight - right_now).total_seconds())
 
             try:
-                for predicate in _PREDICATES:
-                    keep_last = predicate.get('keep_last', 3)
-                    predicate = predicate.get('predicate', None)
-                    if predicate:
-                        stop = datetime.datetime.combine(datetime.datetime.now() - datetime.timedelta(days=keep_last), datetime.time(0, 0)).isoformat() + 'Z'
-                        delete_api.delete(start, stop, predicate, bucket=bucket, org=org)
-                        _LOGGER.info(f"Pruned database '{bucket}': {predicate}, kept last {keep_last} days")
+                for task in pruning_tasks:
+                    stop = datetime.datetime.combine(datetime.datetime.now() - datetime.timedelta(days=keep_last), datetime.time(0, 0)).isoformat() + 'Z'
+                    delete_api.delete(start, stop, predicate, bucket=bucket, org=org)
+                    _LOGGER.debug(f"Pruned database '{bucket}': {predicate}, kept last {keep_last} days")
             except Exception as e:
                 _LOGGER.debug(f"Unexpected exception in task_deletions(): {e}")
 
@@ -161,7 +160,7 @@ class CircuitSetup():
                 await asyncio.sleep(self._watchdog)
                 current_watchdog = CircuitSetup._WATCHDOG
                 if saved_watchdog == current_watchdog:
-                    raise WatchdogTimer(f"Lost connection to {self._name}")
+                    raise WatchdogTimer(f"Lost connection to {self._esphome_name}")
                 saved_watchdog = current_watchdog
         except Exception as e:
             _LOGGER.debug(f"watchdog(): {e}")

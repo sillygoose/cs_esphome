@@ -264,6 +264,13 @@ def check_config(config):
                     {'bucket': {'required': True, 'keys': [], 'type': str}},
                     {'token': {'required': True, 'keys': [], 'type': str}},
                     {'recreate_tasks': {'required': False, 'keys': [], 'type': bool}},
+                    {'pruning': {'required': True, 'keys': [
+                        {'task': {'required': True, 'keys': [
+                            {'name': {'required': True, 'keys': [], 'type': str}},
+                            {'predicate': {'required': True, 'keys': [], 'type': str}},
+                            {'keep_last': {'required': True, 'keys': [], 'type': int}},
+                        ]}},
+                    ]}},
                 ]}},
                 {'debug': {'required': False, 'keys': [
                     {'create_bucket': {'required': False, 'keys': [], 'type': bool}},

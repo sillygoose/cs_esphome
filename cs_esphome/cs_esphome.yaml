@@ -5,15 +5,9 @@ cs_esphome:
   # debug fields (requires CS_ESPHOME_DEBUG to be set to True or 1 to be in effect)
   #  debug.delete_bucket    deletes the bucket if it exists (bool)
   #  debug.create_bucket    creates the InfluxDB2 bucket if it does not exist (bool)
-  #  debug.fill_data        fills in today/month/year energy fields to 0 (bool)
-  #
-  #  This last option can fill in the today/month/year energy records to make your long-term
-  #  Grafana graphs filled.  Use a smart fill in queries the database for the first entry
-  #  so not to overwrite any existing entries.  Will fill in a 13 months worth of data.
   debug:
-    delete_bucket:  False
-    create_bucket:  False
-    fill_data:      False
+    delete_bucket: False
+    create_bucket: False
 
   # ESPHome API fields
   # These options are used to login into the ESPHome API to collect the sensor data.
@@ -21,9 +15,9 @@ cs_esphome:
   #   circuitsetup.port       optional ESPHome API port, defaults to 6053 ('int')
   #   circuitsetup.password   optional ESPHome API password, defaults to '' ('str')
   circuitsetup:
-    url:          !secret circuitsetup_url
-    port:         !secret circuitsetup_port
-    password:     !secret circuitsetup_password
+    url: !secret circuitsetup_url
+    port: !secret circuitsetup_port
+    password: !secret circuitsetup_password
 
   # InfluxDB setup
   # The InfluxDB interface requires the following options.
@@ -35,12 +29,30 @@ cs_esphome:
   #
   # The following settings are optional:
   #  influxdb2.recreate_tasks   remove all InfluxDB tasks and create new ones (bool)
+  #  influxdb2.pruning          entries to run once a day and prune the database of old data
   influxdb2:
-    org:    !secret influxdb2_org
-    url:    !secret influxdb2_url
+    org: !secret influxdb2_org
+    url: !secret influxdb2_url
     bucket: !secret influxdb2_bucket
-    token:  !secret influxdb2_token
+    token: !secret influxdb2_token
     recreate_tasks: True
+    pruning:
+      - task:
+          name: 'power_factor'
+          predicate: '_measurement="power_factor"'
+          keep_last: 1
+      - task:
+          name: 'voltage'
+          predicate: '_measurement="voltage"'
+          keep_last: 5
+      - task:
+          name: 'sample_data'
+          predicate: '_measurement="power" AND _field="sample"'
+          keep_last: 60
+      - task:
+          name: 'power_now'
+          predicate: '_measurement="power" AND _field="now"'
+          keep_last: 30
 
   # CS/ESPHome settings
   # Allows some settings to be modified without editing the code
@@ -52,15 +64,15 @@ cs_esphome:
   settings:
     sampling:
       integrations:
-        today:      30
-        month:      300
-        year:       600
+        today: 30
+        month: 300
+        year: 600
       locations:
-        today:      10
-        month:      300
-        year:       600
-      delta_wh:     150
-    watchdog:       30
+        today: 10
+        month: 300
+        year: 600
+      delta_wh: 150
+    watchdog: 30
 
   # Sensor setup
   # Sensors are a list of one or more sensors in the ESPHome subscription.
@@ -68,222 +80,219 @@ cs_esphome:
   #   sensor.sensor_name    set to the CS sensor name ('str')
   #   sensor.display_name   set to the desired display name ('str')
   #   sensor.measurement    set to the InfluxDB _measurement ('str')
-  #   sensor.tag            set to an optional InfluxDB tag ('str')
-  #   sensor.field          set to the InfluxDB field ('str')
+  #   sensor.device         set to an optional InfluxDB tag ('str')
+  #   sensor.location       set to the InfluxDB location tag ('str')
+  #   sensor.integrate      set to integrate the device, defaults to False if not present ('str')
   sensors:
     - sensor:
-        enable:         True
-        sensor_name:    'cs24_volts'
-        display_name:   'Line Voltage'
-        measurement:    'voltage'
-        device:         'line'
-        location:       ''
+        sensor_name: 'cs24_volts'
+        display_name: 'Line Voltage'
+        measurement: 'voltage'
+        device: 'line'
+        location: ''
     - sensor:
-        enable:         True
-        sensor_name:    'cs24_volts_ph1'
-        display_name:   'Phase 1 Voltage'
-        measurement:    'voltage'
-        device:         'l1'
-        location:       ''
+        sensor_name: 'cs24_volts_ph1'
+        display_name: 'Phase 1 Voltage'
+        measurement: 'voltage'
+        device: 'l1'
+        location: ''
     - sensor:
-        enable:         True
-        sensor_name:    'cs24_volts_ph2'
-        display_name:   'Phase 2 Voltage'
-        measurement:    'voltage'
-        device:         'l2'
-        location:       ''
+        sensor_name: 'cs24_volts_ph2'
+        display_name: 'Phase 2 Voltage'
+        measurement: 'voltage'
+        device: 'l2'
+        location: ''
     - sensor:
-        enable:         False
-        sensor_name:    'cs24_frequency'
-        display_name:   'Line Frequency'
-        measurement:    'frequency'
-        device:         'frequency'
-        location:       ''
+        sensor_name: 'cs24_frequency'
+        display_name: 'Line Frequency'
+        measurement: 'frequency'
+        device: 'frequency'
+        location: ''
     - sensor:
-        sensor_name:    'cs24_pf1'
-        display_name:   'Power Factor'
-        measurement:    'power_factor'
-        device:         'pf'
-        location:       ''
+        sensor_name: 'cs24_pf1'
+        display_name: 'Power Factor'
+        measurement: 'power_factor'
+        device: 'pf'
+        location: ''
     - sensor:
-        sensor_name:    'cs24_w'
-        display_name:   'Total load'
-        measurement:    'power'
-        device:         'line'
-        location:       ''
-        integrate:      True
+        sensor_name: 'cs24_w'
+        display_name: 'Total load'
+        measurement: 'power'
+        device: 'line'
+        location: ''
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_metered_w'
-        display_name:   'Metered circuits'
-        measurement:    'power'
-        device:         'metered'
-        location:       ''
-        integrate:      True
+        sensor_name: 'cs24_metered_w'
+        display_name: 'Metered circuits'
+        measurement: 'power'
+        device: 'metered'
+        location: ''
+        integrate: True
 
     # Individual CTs
     - sensor:
-        sensor_name:    'cs24_ct11_w'
-        display_name:   'L1 Power'
-        measurement:    'power'
-        device:         'l1'
-        location:       ''
+        sensor_name: 'cs24_ct11_w'
+        display_name: 'L1 Power'
+        measurement: 'power'
+        device: 'l1'
+        location: ''
     - sensor:
-        sensor_name:    'cs24_ct12_w'
-        display_name:   'L2 Power'
-        measurement:    'power'
-        device:         'l2'
-        location:       ''
+        sensor_name: 'cs24_ct12_w'
+        display_name: 'L2 Power'
+        measurement: 'power'
+        device: 'l2'
+        location: ''
     - sensor:
-        sensor_name:    'cs24_ct13_w'
-        display_name:   'Tesla HPWC'
-        measurement:    'power'
-        device:         'tesla'
-        location:       'vehicles'
-        integrate:      True
+        sensor_name: 'cs24_ct13_w'
+        display_name: 'Tesla HPWC'
+        measurement: 'power'
+        device: 'tesla'
+        location: 'vehicles'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct14_w'
-        display_name:   'Datacenter'
-        measurement:    'power'
-        device:         'datacenter'
-        location:       'basement'
-        integrate:      True
+        sensor_name: 'cs24_ct14_w'
+        display_name: 'Datacenter'
+        measurement: 'power'
+        device: 'datacenter'
+        location: 'basement'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct15_w'
-        display_name:   'Basement East'
-        measurement:    'power'
-        device:         'east_basement'
-        location:       'basement'
-        integrate:      True
+        sensor_name: 'cs24_ct15_w'
+        display_name: 'Basement East'
+        measurement: 'power'
+        device: 'east_basement'
+        location: 'basement'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct16_w'
-        display_name:   'Dryer'
-        measurement:    'power'
-        device:         'dryer'
-        location:       'laundry'
-        integrate:      True
+        sensor_name: 'cs24_ct16_w'
+        display_name: 'Dryer'
+        measurement: 'power'
+        device: 'dryer'
+        location: 'laundry'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct21_w'
-        display_name:   'Heat pump'
-        measurement:    'power'
-        device:         'heatpump'
-        location:       ''
-        integrate:      True
+        sensor_name: 'cs24_ct21_w'
+        display_name: 'Heat pump'
+        measurement: 'power'
+        device: 'heatpump'
+        location: ''
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct22_w'
-        display_name:   'Washer'
-        measurement:    'power'
-        device:         'washer'
-        location:       'laundry'
-        integrate:      True
+        sensor_name: 'cs24_ct22_w'
+        display_name: 'Washer'
+        measurement: 'power'
+        device: 'washer'
+        location: 'laundry'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct23_w'
-        display_name:   'Hot water'
-        measurement:    'power'
-        device:         'hot_water'
-        location:       ''
-        integrate:      True
+        sensor_name: 'cs24_ct23_w'
+        display_name: 'Hot water'
+        measurement: 'power'
+        device: 'hot_water'
+        location: ''
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct24_w'
-        display_name:   'JuiceBox'
-        measurement:    'power'
-        device:         'juicebox'
-        location:       'vehicles'
-        integrate:      True
+        sensor_name: 'cs24_ct24_w'
+        display_name: 'JuiceBox'
+        measurement: 'power'
+        device: 'juicebox'
+        location: 'vehicles'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct25_w'
-        display_name:   'Range'
-        measurement:    'power'
-        device:         'range'
-        location:       'kitchen'
-        integrate:      True
+        sensor_name: 'cs24_ct25_w'
+        display_name: 'Range'
+        measurement: 'power'
+        device: 'range'
+        location: 'kitchen'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct26_w'
-        display_name:   'Microwave'
-        measurement:    'power'
-        device:         'microwave'
-        location:       'kitchen'
-        integrate:      True
+        sensor_name: 'cs24_ct26_w'
+        display_name: 'Microwave'
+        measurement: 'power'
+        device: 'microwave'
+        location: 'kitchen'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct31_w'
-        display_name:   'Sump pump'
-        measurement:    'power'
-        device:         'sump'
-        location:       'basement'
-        integrate:      True
+        sensor_name: 'cs24_ct31_w'
+        display_name: 'Sump pump'
+        measurement: 'power'
+        device: 'sump'
+        location: 'basement'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct32_w'
-        display_name:   'Main Bedroom'
-        measurement:    'power'
-        device:         'main'
-        location:       'bedroom'
-        integrate:      True
+        sensor_name: 'cs24_ct32_w'
+        display_name: 'Main Bedroom'
+        measurement: 'power'
+        device: 'main'
+        location: 'bedroom'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct33_w'
-        display_name:   'Refrigerator'
-        measurement:    'power'
-        device:         'refrigerator'
-        location:       'kitchen'
-        integrate:      True
+        sensor_name: 'cs24_ct33_w'
+        display_name: 'Refrigerator'
+        measurement: 'power'
+        device: 'refrigerator'
+        location: 'kitchen'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct34_w'
-        display_name:   'GFI Outlets'
-        measurement:    'power'
-        device:         'outlets_1'
-        location:       'kitchen'
-        integrate:      True
+        sensor_name: 'cs24_ct34_w'
+        display_name: 'GFI Outlets'
+        measurement: 'power'
+        device: 'outlets_1'
+        location: 'kitchen'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct35_w'
-        display_name:   'GFI Outlets'
-        measurement:    'power'
-        device:         'outlets_2'
-        location:       'kitchen'
-        integrate:      True
+        sensor_name: 'cs24_ct35_w'
+        display_name: 'GFI Outlets'
+        measurement: 'power'
+        device: 'outlets_2'
+        location: 'kitchen'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct36_w'
-        display_name:   'Dishwasher'
-        measurement:    'power'
-        device:         'dishwasher'
-        location:       'kitchen'
-        integrate:      True
+        sensor_name: 'cs24_ct36_w'
+        display_name: 'Dishwasher'
+        measurement: 'power'
+        device: 'dishwasher'
+        location: 'kitchen'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct41_w'
-        display_name:   'Guest bedrooms'
-        measurement:    'power'
-        device:         'guest'
-        location:       'bedroom'
-        integrate:      True
+        sensor_name: 'cs24_ct41_w'
+        display_name: 'Guest bedrooms'
+        measurement: 'power'
+        device: 'guest'
+        location: 'bedroom'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct42_w'
-        display_name:   'Living room'
-        measurement:    'power'
-        device:         'living_room'
-        location:       'main_floor'
-        integrate:      True
+        sensor_name: 'cs24_ct42_w'
+        display_name: 'Living room'
+        measurement: 'power'
+        device: 'living_room'
+        location: 'main_floor'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct43_w'
-        display_name:   'Foyer/bath'
-        measurement:    'power'
-        device:         'foyer'
-        location:       'main_floor'
-        integrate:      True
+        sensor_name: 'cs24_ct43_w'
+        display_name: 'Foyer/bath'
+        measurement: 'power'
+        device: 'foyer'
+        location: 'main_floor'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct44_w'
-        display_name:   'Refrigerator'
-        measurement:    'power'
-        device:         'refrigerator'
-        location:       'basement'
-        integrate:      True
+        sensor_name: 'cs24_ct44_w'
+        display_name: 'Refrigerator'
+        measurement: 'power'
+        device: 'refrigerator'
+        location: 'basement'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct45_w'
-        display_name:   'Garage/Freezer'
-        measurement:    'power'
-        device:         'garage'
-        location:       'garage'
-        integrate:      True
+        sensor_name: 'cs24_ct45_w'
+        display_name: 'Garage/Freezer'
+        measurement: 'power'
+        device: 'garage'
+        location: 'garage'
+        integrate: True
     - sensor:
-        sensor_name:    'cs24_ct46_w'
-        display_name:   'Basement'
-        measurement:    'power'
-        device:         'west_basement'
-        location:       'basement'
-        integrate:      True
+        sensor_name: 'cs24_ct46_w'
+        display_name: 'Basement'
+        measurement: 'power'
+        device: 'west_basement'
+        location: 'basement'
+        integrate: True
