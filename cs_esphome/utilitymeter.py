@@ -73,7 +73,13 @@ class UtilityMeter():
             _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
             flux = \
                 '\n' \
-                '// Supply the new meter reading (in kWh) and run the task manually\n' \
+                '// Supply the new meter reading (in kWh) for midnight today and run the task manually.' \
+                '//' \
+                '// If running this task at midnight you have no adjustmens and can just enter the new reading' \
+                '// but later in the day you must factor in the change due to production and consumption.  For' \
+                '// example, if the current meter reading is 100 and you have consumed 10 kWh of energy today,' \
+                '// set the new_reading value to 90, this is the reading the meter would have at midnight.' \
+                '\n' \
                 'new_reading = 0\n' \
                 '\n' \
                 f'from(bucket: "{bucket}")\n' \
