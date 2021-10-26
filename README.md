@@ -151,6 +151,22 @@ Data is organized in InfluxDB using the following schemas, refer to the Flux que
 
 #
 
+## Setting the utility meter
+
+There is a task in InfluxDB that allows you adjust the utility meter to match reality:
+
+`cs_esphome._meter.writing.energy.year`
+
+Using the InfluxDB web interface, locate this task and edit the code to supply the new meter reading (in kWh) for midnight today and run the task manually.
+
+If running this task at midnight you have no adjustments and can just enter the new reading but later in the day you must factor in the change due to production and consumption. For example, if the current meter reading is 100 and you have consumed 10 kWh of energy today, set the new_reading value to 90, this is the value the meter would have been at midnight.
+
+    new_reading = 90
+
+Save the task and click on the smal gear at the right and select 'Run task'.
+
+#
+
 ## Debugging
 
 Create the environment variable CS_ESPHOME_DEBUG and set to 1 or True to enable debug output.
