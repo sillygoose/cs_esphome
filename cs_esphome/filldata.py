@@ -1,15 +1,12 @@
 """Utility function to fill in missing data points."""
 
-
-import os
 import logging
+import random
 
 import datetime
 from dateutil.relativedelta import relativedelta
 
 from influx import InfluxDB
-
-from readconfig import retrieve_options
 from readconfig import read_config
 import logfiles
 
@@ -17,17 +14,49 @@ import logfiles
 _LOGGER = logging.getLogger('cs_esphome')
 
 
-def filldata(config, influxdb_client) -> None:
-    """Fill in missing data for Grafana."""
+def fill_consumption_data(influxdb_client) -> None:
+    """Fill in missing consumptiondata for Grafana."""
+    parker_lane_monthly = [
+        {'date': '2020-10-01', 'prod': 1531, 'billed': 41, 'cons': 1572},
+        {'date': '2020-11-01', 'prod': 1131, 'billed': 900, 'cons': 2031},
+        {'date': '2020-12-01', 'prod': 538, 'billed': 1867, 'cons': 2405},
+        {'date': '2021-01-01', 'prod': 496, 'billed': 1948, 'cons': 2444},
+        {'date': '2021-02-01', 'prod': 1348, 'billed': 887, 'cons': 2235},
+        {'date': '2021-03-01', 'prod': 2577, 'billed': -635, 'cons': 1942},
+        {'date': '2021-04-01', 'prod': 2621, 'billed': -650, 'cons': 1971},
+        {'date': '2021-05-01', 'prod': 3260, 'billed': -1873, 'cons': 1387},
+        {'date': '2021-06-01', 'prod': 3214, 'billed': -1551, 'cons': 1663},
+        {'date': '2021-07-01', 'prod': 2786, 'billed': -1346, 'cons': 1440},
+        {'date': '2021-08-01', 'prod': 2765, 'billed': -378, 'cons': 2387},
+        {'date': '2021-09-01', 'prod': 2119, 'billed': -298, 'cons': 1821},
+    ]
 
-    _DEBUG_ENV_VAR = 'CS_ESPHOME_DEBUG'
-    _DEBUG_OPTIONS = {
-        'fill_data': {'type': bool, 'required': False},
-    }
-    #debug_options = retrieve_options(config, 'debug', _DEBUG_OPTIONS)
-    #cs_esphome_debug = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
-    #if cs_esphome_debug is False or debug_options.get('fill_data', False) is False:
-    #    return
+    start = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)) - relativedelta(days=62)
+    stop = datetime.datetime.combine(datetime.date(2021, 10, 21), datetime.time(0, 0))
+    increment = 50
+    october = 0.0
+    while start < stop:
+        start += relativedelta(days=1)
+        rand_float = random.random()
+        value = 1000.0 * (35.0 + increment * rand_float)
+        influxdb_client.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='today', value=value, timestamp=int(start.timestamp()))
+        increment += 0.1
+        if start.month == 10 and start.day == 1:
+            oct = start
+        if start.month == 10:
+            october += value
+            if start.day == 1:
+                oct = start
+    influxdb_client.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='month', value=october, timestamp=int(oct.timestamp()))
+
+    for month in parker_lane_monthly:
+        current = datetime.datetime.fromisoformat(month.get('date'))
+        value = 1000.0 * month.get('cons')
+        influxdb_client.write_point(measurement='energy', tags=[{'t': '_device', 'v': 'line'}], field='month', value=value, timestamp=int(current.timestamp()))
+
+
+def fill_grafana_data(config, influxdb_client) -> None:
+    """Fill in missing data for Grafana."""
 
     start = datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)) - relativedelta(months=13)
     stop = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0))
@@ -74,4 +103,5 @@ if __name__ == "__main__":
         if 'cs_esphome' in config.keys() and 'influxdb2' in config.cs_esphome.keys():
             influxdb_client = InfluxDB(config.cs_esphome)
             influxdb_client.start()
-            filldata(config.cs_esphome, influxdb_client)
+            fill_consumption_data(influxdb_client)
+            fill_grafana_data(config.cs_esphome, influxdb_client)
