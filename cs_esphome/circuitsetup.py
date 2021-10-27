@@ -109,7 +109,6 @@ class CircuitSetup():
         delete_api = self._influxdb_client.delete_api()
         bucket = self._influxdb_client.bucket()
         org = self._influxdb_client.org()
-        start = datetime.datetime(1970, 1, 1).isoformat() + 'Z'
 
         pruning_tasks = []
         config = self._config
@@ -131,6 +130,7 @@ class CircuitSetup():
             await asyncio.sleep((midnight - right_now).total_seconds())
 
             try:
+                start = datetime.datetime(1970, 1, 1).isoformat() + 'Z'
                 for task in pruning_tasks:
                     stop = datetime.datetime.combine(datetime.datetime.now() - datetime.timedelta(days=keep_last), datetime.time(0, 0)).isoformat() + 'Z'
                     delete_api.delete(start, stop, predicate, bucket=bucket, org=org)

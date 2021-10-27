@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 15,
-  "iteration": 1635279945958,
+  "iteration": 1635302681256,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -196,7 +196,7 @@
           },
           "targets": [
             {
-              "query": "production = from(bucket: \"multisma2\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._inverter }))\n  |> yield(name: \"production\")\n  \nconsumption = from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._device}))\n  |> yield(name: \"consumption\")\n\nunion(tables: [production, consumption])\n  |> truncateTimeColumn(unit: 10s)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> sort(columns: [\"_time\"], desc: false)\n  |> fill(column: \"site\", value: 0.0)\n  |> map(fn: (r) => ({ _time: r._time, \"Net Power\": float(v: r.site) - r.line }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false, column: \"Net Power\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
+              "query": "production = from(bucket: \"multisma2\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> map(fn: (r) => ({ _time: r._time, _value: float(v: r._value), _device: r._inverter }))\n  |> yield(name: \"production\")\n  \nconsumption = from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._device}))\n  |> yield(name: \"consumption\")\n\nunion(tables: [production, consumption])\n  |> truncateTimeColumn(unit: 10s)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> sort(columns: [\"_time\"], desc: false)\n  |> fill(column: \"site\", value: 0.0)\n  |> map(fn: (r) => ({ _time: r._time, \"Net Power\": r.site - r.line }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false, column: \"Net Power\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
               "refId": "Delta"
             }
           ],
@@ -240,18 +240,18 @@
               "calcs": [
                 "lastNotNull"
               ],
-              "fields": "",
+              "fields": "/^Line$/",
               "values": false
             },
             "text": {
-              "valueSize": 75
+              "valueSize": 50
             },
             "textMode": "auto"
           },
           "pluginVersion": "8.2.2",
           "targets": [
             {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({ _time: r._time, Line: r._value }))\n",
               "refId": "Current"
             }
           ],
@@ -1357,7 +1357,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "light-red",
+                  "fixedColor": "orange",
                   "mode": "fixed"
                 }
               }
@@ -1510,7 +1510,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "light-orange",
+                  "fixedColor": "yellow",
                   "mode": "fixed"
                 }
               },
@@ -1545,7 +1545,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "light-red",
+                  "fixedColor": "orange",
                   "mode": "fixed"
                 }
               }
@@ -2113,7 +2113,7 @@
             ]
           },
           "gridPos": {
-            "h": 14,
+            "h": 9,
             "w": 24,
             "x": 0,
             "y": 32
@@ -2223,7 +2223,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 46
+            "y": 41
           },
           "id": 60,
           "options": {
@@ -2326,7 +2326,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 54
+            "y": 49
           },
           "id": 4,
           "options": {
@@ -2740,7 +2740,7 @@
       "type": "row"
     }
   ],
-  "refresh": "10s",
+  "refresh": "",
   "schemaVersion": 31,
   "style": "dark",
   "tags": [],
@@ -2748,7 +2748,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "parkerlane",
           "value": "parkerlane"
         },
@@ -2813,5 +2813,5 @@
   "timezone": "",
   "title": "CS/ESPHome Sample Panels",
   "uid": "_-Qzs-Dmx",
-  "version": 39
+  "version": 42
 }
