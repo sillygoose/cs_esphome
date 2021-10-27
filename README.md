@@ -1,5 +1,23 @@
 # **CS/ESPHome**
 
+## Table of Contents
+
+- [Overview](#overview)
+- [What's new](#whats-new)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Docker setup](#docker)
+- [influxDB Schemas](#schemas)
+- [Pruning database entries](#pruning-database)
+- [Setting the utility meter](#setting-utility-meter)
+- [Debugging](#debugging)
+- [Grafana Dashboards](#dashboards)
+- [Thanks](#thanks)
+
+<a id='overview'></a>
+
+## Overview
+
 Python data collection utility for the CircuitSetup Expandable 6 Channel ESP32 Energy Meter. Sensor data is sourced using the ESPHome API and stored in an InfluxDB database.
 
 The processing is split between this application which uses the ESPHome API to subscribe to the CircuitSetup 6-channel power monitoring hardware and send it to the InfluxDB database. 22 channels are used for various home circuits and the other two CTs collect information on each of the split phases.
@@ -25,12 +43,16 @@ At startup the application creates numerous InfluxDB tasks which run independent
         integrate:      True
 ```
 
+<a id='whats-new'></a>
+
 ## What's new
 
 - create database pruning predicates in the YAML configuration file (0.3.2, see [Pruning database entries](#pruning-database)
   section below)
 
 #
+
+<a id='requirements'></a>
 
 ### Requirements
 
@@ -44,10 +66,12 @@ At startup the application creates numerous InfluxDB tasks which run independent
   - python-configuration
   - pyyaml
 
-- CircuitSetup Expandable 6 Channel ESP32 Energy Meter hardware (developed using a 24 channel version, my ESPHome code is located here: https://github.com/sillygoose/esphome-cs24)
+- CircuitSetup Expandable 6 Channel ESP32 Energy Meter hardware (developed using a 24 channel version, my ESPHome code is located [here](#https://github.com/sillygoose/esphome-cs24).
 - Docker (a Dockerfile is supplied to allow running in a Docker container, I run this on a Raspberry Pi4 with 8GB memory that also has containers running instances of Portainer, InfluxDB, Grafana, and other useful applications)
 
 #
+
+<a id='installation'></a>
 
 ## Installation
 
@@ -73,7 +97,9 @@ At startup the application creates numerous InfluxDB tasks which run independent
 
 #
 
-### Docker setup
+<a id='docker'></a>
+
+## Docker setup
 
 Once you have the working `cs_esphome.yaml` and `cs_esphome_secrets.yaml` files you can build a Docker container that runs **CS/ESPHome**:
 
@@ -94,6 +120,8 @@ As an example, suppose you download the current **CS/ESPHome** build of 1.0.0. T
 ```
 
 #
+
+<a id='schemas'></a>
 
 ## InfluxDB Schemas
 
@@ -170,6 +198,8 @@ You can have as many of these as desired, the sample YAML file has entries for t
 
 #
 
+<a id='setting-utility-meter'></a>
+
 ## Setting the utility meter
 
 There is a task in InfluxDB that allows you adjust the utility meter to match reality:
@@ -186,6 +216,8 @@ Save the task and click on the smal gear at the right and select 'Run task'.
 
 #
 
+<a id='debugging'></a>
+
 ## Debugging
 
 Create the environment variable CS_ESPHOME_DEBUG and set to 1 or True to enable debug output.
@@ -194,7 +226,9 @@ This is also required if you wish to use the debugging options that automaticall
 
 #
 
-## Dashboards
+<a id='dashboards'></a>
+
+## Grafana Dashboards
 
 A sample Grafana 8.2 dashboard is available, it contains the Flux queries needed to visualize the power and energy flows through the house pulled from the InfluxDB database. The dashboard is organized into rows which provide an overview, utility meter, trend, power, and energy views.
 
@@ -237,6 +271,8 @@ To the right is the same information but displayed as a bar chart with kWH in pl
 ![Energy:](https://raw.githubusercontent.com/sillygoose/cs_esphome/main/images/energy.jpg)
 
 #
+
+<a id='thanks'></a>
 
 ## Thanks
 
