@@ -104,8 +104,7 @@ class CircuitSetup():
             await asyncio.sleep(0.5)
 
     async def task_deletions(self) -> None:
-        """Task to remove old database entries."""
-
+        """Task to remove older database entries."""
         delete_api = self._influxdb_client.delete_api()
         bucket = self._influxdb_client.bucket()
         org = self._influxdb_client.org()
@@ -137,20 +136,6 @@ class CircuitSetup():
                     _LOGGER.debug(f"Pruned database '{bucket}': {predicate}, kept last {keep_last} days")
             except Exception as e:
                 _LOGGER.debug(f"Unexpected exception in task_deletions(): {e}")
-
-    def _deletions(self, predicate) -> None:
-        """Remove old database entries with your predicate."""
-        delete_api = self._influxdb_client.delete_api()
-        bucket = self._influxdb_client.bucket()
-        org = self._influxdb_client.org()
-        start = datetime.datetime(1970, 1, 1).isoformat() + 'Z'
-        _LOGGER.info(f"_deletions(queue): {predicate}")
-        try:
-            stop = datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).isoformat() + 'Z'
-            delete_api.delete(start, stop, predicate, bucket=bucket, org=org)
-            _LOGGER.info(f"Pruned database '{bucket}': {predicate}")
-        except Exception as e:
-            _LOGGER.debug(f"Unexpected exception in _deletions(): {e}")
 
     async def watchdog(self):
         """Check that we are connected to the CircuitSetup hardware."""

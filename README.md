@@ -27,9 +27,8 @@ At startup the application creates numerous InfluxDB tasks which run independent
 
 ## What's new
 
-#### 0.3.1
-
-    - first public preview
+- create database pruning predicates in the YAML configuration file (0.3.2, see [Pruning database entries](#pruning-database)
+  section below)
 
 #
 
@@ -148,6 +147,26 @@ Data is organized in InfluxDB using the following schemas, refer to the Flux que
         _measurement    power_factor
         _field          pf
         _time           local time
+
+#
+
+<a id='pruning-database'></a>
+
+## Pruning database entries
+
+Some data points get stale quickly and can be deleted, the pruning option can be used to remove them. Here is an example pruning task that keeps the last 3 days of the power factor sensor:
+
+```
+  influxdb2:
+    ...
+    pruning:
+      - task:
+          name: 'pf'
+          predicate: '_measurement="power_factor"'
+          keep_last: 3
+```
+
+You can have as many of these as desired, the sample YAML file has entries for the voltage, line frequency, and also discards the sample data after it is unlikely to be accessed.
 
 #
 

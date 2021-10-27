@@ -65,7 +65,7 @@ class UtilityMeter():
         measurement = 'energy'
         tag_key = '_meter'
         output_value = 'writing'
-        period = 'year'
+        period = 'today'
 
         task_name = self._base_name + '.' + tag_key + '.' + output_value + '.' + measurement + '.' + period
         tasks = tasks_api.find_tasks(name=task_name)
@@ -75,9 +75,9 @@ class UtilityMeter():
                 '\n' \
                 '// Supply the new meter reading (in kWh) for midnight today and run the task manually.' \
                 '//' \
-                '// If running this task at midnight you have no adjustmens and can just enter the new reading' \
-                '// but later in the day you must factor in the change due to production and consumption.  For' \
-                '// example, if the current meter reading is 100 and you have consumed 10 kWh of energy today,' \
+                '// If running this task at midnight you have no adjustments and can just enter the new reading but' \
+                '// later in the day you must factor in the change due to production and consumption since midnight. ' \
+                '// For example, if the current meter reading is 100 and you have consumed 10 kWh of energy today, ' \
                 '// set the new_reading value to 90, this is the reading the meter would have at midnight.' \
                 '\n' \
                 'new_reading = 0\n' \
@@ -89,7 +89,7 @@ class UtilityMeter():
                 f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
             try:
-                tasks_api.create_task_every(name=task_name, flux=flux, every='10y', organization=organization)
+                tasks_api.create_task_every(name=task_name, flux=flux, every='1y', organization=organization)
                 # _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
             except ApiException as e:
                 body_dict = json.loads(e.body)
