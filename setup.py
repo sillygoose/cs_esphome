@@ -4,7 +4,7 @@
 from pathlib import Path
 from setuptools import setup
 
-VERSION = "0.3.4"
+VERSION = "0.3.5"
 URL = "https://github.com/sillygoose/cs_esphome.git"
 
 setup(

@@ -4,6 +4,7 @@ import logging
 import datetime
 import json
 import asyncio
+import pytz
 
 from influxdb_client.rest import ApiException
 
@@ -115,7 +116,11 @@ class UtilityMeter():
             right_now = datetime.datetime.now()
             midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
             next_midnight = int(midnight.timestamp()) * 1000000000
-            cron = '59 23 * * *'
+
+            # needs to be midnight UTC for InfluxDB
+            utc_run_at = datetime.datetime.combine(datetime.datetime.now(), datetime.time(23, 59)).astimezone(pytz.UTC)
+            cron = f'{utc_run_at.minute} {utc_run_at.hour} * * *'
+
             flux = \
                 f'\n' \
                 f'from(bucket: "{bucket}")\n' \
