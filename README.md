@@ -47,8 +47,8 @@ At startup the application creates numerous InfluxDB tasks which run independent
 
 ## What's new
 
-- create database pruning predicates in the YAML configuration file (0.3.2, see [Pruning database entries](#pruning-database)
-  section below)
+- create database pruning predicates in the YAML configuration file: [Pruning database entries](#pruning-database)
+- set the initial value of the utility meter: [Pruning database entries](#setting-utility-meter)
 
 #
 
@@ -66,7 +66,7 @@ At startup the application creates numerous InfluxDB tasks which run independent
   - python-configuration
   - pyyaml
 
-- CircuitSetup Expandable 6 Channel ESP32 Energy Meter hardware (developed using a 24 channel version, my ESPHome code is located [here](#https://github.com/sillygoose/esphome-cs24).
+- CircuitSetup Expandable 6 Channel ESP32 Energy Meter hardware (developed using a 24 channel version, my ESPHome code is found [here](https://github.com/sillygoose/esphome-cs24).
 - Docker (a Dockerfile is supplied to allow running in a Docker container, I run this on a Raspberry Pi4 with 8GB memory that also has containers running instances of Portainer, InfluxDB, Grafana, and other useful applications)
 
 #
