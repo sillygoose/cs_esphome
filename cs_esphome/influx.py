@@ -12,6 +12,8 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from influxdb_client.rest import ApiException
 
 from readconfig import retrieve_options
+from readconfig import read_config
+import logfiles
 
 from exceptions import FailedInitialization
 from exceptions import InfluxDBWriteError, InfluxDBFormatError, InfluxDBBucketError
@@ -50,7 +52,7 @@ class InfluxDB:
         self._bucket = None
 
     def start(self):
-        """Initialize the InflixDB client."""
+        """Initialize the InfluxDB client."""
         try:
             influxdb_options = retrieve_options(self._config, 'influxdb2', _INFLUXDB2_OPTIONS)
             debug_options = retrieve_options(self._config, 'debug', _DEBUG_OPTIONS)
@@ -146,7 +148,7 @@ class InfluxDB:
         except ApiException as e:
             raise InfluxDBWriteError(f"InfluxDB client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
-            raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
+            raise InfluxDBWriteError(f"Unexpected failure in write_point(): {e}")
 
     def write_points(self, points):
         """Write a list of points to the database."""
@@ -155,30 +157,39 @@ class InfluxDB:
         except ApiException as e:
             raise InfluxDBWriteError(f"InfluxDB client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
-            raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
+            raise InfluxDBWriteError(f"Unexpected failure in write_points(): {e}")
 
-    def write_sensor(self, sensor, state, timestamp=None):
-        """Write a sensor to the database."""
+    def write_batch_sensors(self, batch_sensors, timestamp=None):
+        """Write a batch of sensors to the database."""
+
+        if len(batch_sensors) == 0:
+            return
+
         timestamp = timestamp if timestamp is not None else int(time.time())
 
-        measurement = sensor.get('measurement', None)
-        device = sensor.get('device', None)
-        location = sensor.get('location', None)
-        precision = sensor.get('precision', None)
-        if measurement is None or device is None:
-            raise InfluxDBFormatError("'measurement' and/or 'device' are required")
+        batch = []
+        for record in batch_sensors:
+            sensor = record.get('sensor', None)
+            state = record.get('state', None)
+            measurement = sensor.get('measurement', None)
+            device = sensor.get('device', None)
+            location = sensor.get('location', None)
+            precision = sensor.get('precision', None)
+            if measurement is None or device is None:
+                raise InfluxDBFormatError("'measurement' and/or 'device' are required")
 
-        location_tag = '' if not location or not len(location) else f',_location={location}'
-        device_tag = f',_device={device}'
-        value = round(state, precision) if ((precision is not None) and isinstance(state, float)) else state
-        lp = f'{measurement}{device_tag}{location_tag} sample={value} {timestamp}'
+            location_tag = '' if not location or not len(location) else f',_location={location}'
+            device_tag = f',_device={device}'
+            value = round(state, precision) if ((precision is not None) and isinstance(state, float)) else state
+            lp = f'{measurement}{device_tag}{location_tag} sample={value} {timestamp}'
+            batch.append(lp)
 
         try:
-            self._write_api.write(bucket=self._bucket, record=lp, write_precision=WritePrecision.S)
+            self._write_api.write(bucket=self._bucket, record=batch, write_precision=WritePrecision.S)
         except ApiException as e:
             raise InfluxDBWriteError(f"InfluxDB client unable to write to '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
-            raise InfluxDBWriteError(f"Unexpected failure in write_sensor(): {e}")
+            raise InfluxDBWriteError(f"Unexpected failure in write_batch_sensors(): {e}")
 
     def delete_bucket(self):
         try:
@@ -211,3 +222,12 @@ class InfluxDB:
             raise InfluxDBBucketError(f"InfluxDB client unable to create bucket '{self._bucket}' at {self._url}: {e.reason}")
         except Exception as e:
             raise InfluxDBBucketError(f"Unexpected exception in connect_bucket(): {e}")
+
+
+if __name__ == "__main__":
+    logfiles.start()
+    config = read_config()
+    if config:
+        if 'cs_esphome' in config.keys() and 'influxdb2' in config.cs_esphome.keys():
+            influxdb_client = InfluxDB(config.cs_esphome)
+            influxdb_client.start()

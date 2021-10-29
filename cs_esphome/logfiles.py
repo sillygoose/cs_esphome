@@ -1,4 +1,4 @@
-"""Module handling the application and production log files/"""
+"""Module handling the application and production log files"""
 
 import os
 import sys
@@ -16,6 +16,7 @@ _DEFAULT_LOG_LEVEL = 'INFO'
 
 def start():
     """Create the application log."""
+
     _DEBUG_ENV_VAR = 'CS_ESPHOME_DEBUG'
     debug_mode = os.getenv(_DEBUG_ENV_VAR, 'False').lower() in ('true', '1', 't')
 

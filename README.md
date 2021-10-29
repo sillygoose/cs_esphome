@@ -278,11 +278,7 @@ To the right is the same information but displayed as a bar chart with kWH in pl
 
 Thanks for the following packages used to build this software:
 
-- ESPHome Python API
-  - https://github.com/esphome/aioesphomeapi
-- InfluxDB Python API
-  - https://influxdb-client.readthedocs.io/en/stable/api.html
-- YAML configuration file support
-  - https://python-configuration.readthedocs.io
-- Tricks for managing startup and shutdown
-  - https://github.com/wbenny/python-graceful-shutdown
+- [ESPHome Python API](https://github.com/esphome/aioesphomeapi)
+- [InfluxDB Python API](https://influxdb-client.readthedocs.io/en/stable/api.html)
+- [YAML configuration file support](https://python-configuration.readthedocs.io)
+- [Tricks for managing startup and shutdown](https://github.com/wbenny/python-graceful-shutdown)

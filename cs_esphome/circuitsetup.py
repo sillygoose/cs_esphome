@@ -152,6 +152,8 @@ class CircuitSetup():
 
     async def task_esphome_sensor_post(self, queue):
         """Process the subscribed data."""
+        batch_ts = 0
+        batch_sensors = []
         try:
             while True:
                 packet = await queue.get()
@@ -160,12 +162,17 @@ class CircuitSetup():
                 queue.task_done()
                 if sensor and state and self._influxdb_client:
                     ts = packet.get('ts', None)
-                    try:
-                        self._influxdb_client.write_sensor(sensor=sensor, state=state, timestamp=ts)
-                    except InfluxDBFormatError as e:
-                        _LOGGER.warning(f"{e}")
+                    if batch_ts != ts:
+                        try:
+                            self._influxdb_client.write_batch_sensors(batch_sensors=batch_sensors, timestamp=batch_ts)
+                            batch_ts = ts
+                            batch_sensors = [packet]
+                        except InfluxDBFormatError as e:
+                            _LOGGER.warning(f"{e}")
+                    else:
+                        batch_sensors.append(packet)
         except Exception as e:
-            _LOGGER.debug(f"posting_task(): {e}")
+            _LOGGER.debug(f"task_esphome_sensor_post(): {e}")
 
     async def task_esphome_sensor_gather(self, queue):
         """Post the subscribed data."""

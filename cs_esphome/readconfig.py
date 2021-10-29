@@ -15,8 +15,8 @@ from typing import Dict, List, TextIO, TypeVar, Union
 from exceptions import FailedInitialization
 
 
-CONFIG_YAML = "cs_esphome.yaml"
-SECRET_YAML = "cs_esphome_secrets.yaml"
+CONFIG_YAML = 'cs_esphome.yaml'
+SECRET_YAML = 'cs_esphome_secrets.yaml'
 
 JSON_TYPE = Union[List, Dict, str]      # pylint: disable=invalid-name
 DICT_T = TypeVar("DICT_T", bound=Dict)  # pylint: disable=invalid-name
@@ -319,7 +319,7 @@ def check_config(config):
 
 
 def read_config():
-    """Open the YAML configuration file and optionally check the contents"""
+    """Open the YAML configuration file and check the contents"""
     try:
         yaml.FullLoader.add_constructor('!secret', secret_yaml)
         yaml_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_YAML)
@@ -337,6 +337,10 @@ def read_config():
 
 def retrieve_options(config, key, option_list) -> dict:
     """Retrieve requested options."""
+
+    if key not in config.keys():
+        return {}
+
     errors = False
     options = dict(config[key])
     for option, value in option_list.items():
