@@ -45,6 +45,8 @@ class CircuitSetup():
                 success = self._influxdb_client.start()
                 if not success:
                     self._influxdb_client = None
+            else:
+                _LOGGER.error("'influxdb2' options missing from YAML configuration file")
             return success
 
         _LOGGER.info(f"CS/ESPHome energy collection utility {version.get_version()}, PID is {os.getpid()}")

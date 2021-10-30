@@ -60,12 +60,15 @@ class InfluxDB:
             _LOGGER.error(f"{e}")
             return False
 
+        if len(influxdb_options.keys()) == 0:
+            raise FailedInitialization("missing 'influxdb2' options")
+
         result = False
         try:
-            self._bucket = influxdb_options.get('bucket')
-            self._url = influxdb_options.get('url')
-            self._token = influxdb_options.get('token')
-            self._org = influxdb_options.get('org')
+            self._bucket = influxdb_options.get('bucket', None)
+            self._url = influxdb_options.get('url', None)
+            self._token = influxdb_options.get('token', None)
+            self._org = influxdb_options.get('org', None)
             self._client = InfluxDBClient(url=self._url, token=self._token, org=self._org, enable_gzip=True)
             if not self._client:
                 raise FailedInitialization(f"failed to get InfluxDBClient from '{self._url}' (check url, token, and/or organization)")
