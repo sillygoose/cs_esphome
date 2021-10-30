@@ -105,15 +105,8 @@ class TaskManager():
 
     async def task_refresh(self) -> None:
         """Update InfluxDB tasks at midnight."""
+        periods = ['now', 'today', 'month', 'year']
         while True:
-            # Restart any InfluxDB now, today, month, and year tasks
-            periods = ['now', 'today']
-            right_now = datetime.datetime.now()
-            if right_now.day == 1:
-                periods.append('month')
-            if right_now.month == 1:
-                periods.append('year')
-
             try:
                 _LOGGER.debug(f"task_refresh({periods})")
                 self.delete_tasks(periods)
@@ -127,6 +120,14 @@ class TaskManager():
             right_now = datetime.datetime.now()
             midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
             await asyncio.sleep((midnight - right_now).total_seconds())
+
+            # Restart any InfluxDB now, today, month, and year tasks
+            periods = ['now', 'today']
+            right_now = datetime.datetime.now()
+            if right_now.day == 1:
+                periods.append('month')
+            if right_now.month == 1:
+                periods.append('year')
 
     async def influx_tasks(self, periods=None) -> None:
         """."""

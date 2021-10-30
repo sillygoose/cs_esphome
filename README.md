@@ -279,6 +279,8 @@ To the right is the same information but displayed as a bar chart with kWH in pl
 
 Thanks for the following packages used to build this software:
 
+- [ESPHome](https://esphome.io)
+- [Expandable 6 Channel ESP32 Energy Meter Main Board](https://circuitsetup.us/product/expandable-6-channel-esp32-energy-meter/)
 - [ESPHome Python API](https://github.com/esphome/aioesphomeapi)
 - [InfluxDB Python API](https://influxdb-client.readthedocs.io/en/stable/api.html)
 - [YAML configuration file support](https://python-configuration.readthedocs.io)
