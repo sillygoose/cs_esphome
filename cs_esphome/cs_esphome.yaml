@@ -288,9 +288,9 @@ cs_esphome:
         integrate: True
     - sensor:
         sensor_name: 'cs24_ct45_w'
-        display_name: 'Garage/Freezer'
+        display_name: 'Freezer'
         measurement: 'power'
-        device: 'garage'
+        device: 'freezer'
         location: 'garage'
         integrate: True
     - sensor:
