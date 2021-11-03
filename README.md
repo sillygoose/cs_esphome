@@ -88,7 +88,7 @@ At startup the application creates numerous InfluxDB tasks which run independent
 
     Edit `cs_esphome.yaml` and `cs_esphome_secrets.yaml` to match your CircuitSetup hardware, you will need the URL, port, and password for the CircuitSetup ESPHome API. If interfacing to InfluxDB you need the host URL, site name, bucket, and login credentials.
 
-    There are some other fields to configure for the log files, time zone, etc, these should be easy to figure out.
+    There are some other fields to configure for the CircuitSetup senrors you will be importing, etc, these should be easy to adjust to your unique setup.
 
 3.  Test that **CS/ESPHome** connects to your CircuitSetup hardware and the InfluxDB database:
 

@@ -205,8 +205,11 @@ class TaskManager():
                                 f'  |> map(fn: (r) => ({{ _time: r._start, _device: r._device, _field: period, _measurement: "energy", _value: r._value{location_map} }}))\n' \
                                 f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
                         try:
-                            tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
-                            # _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                            result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
+                            if result.status != 'active':
+                                _LOGGER.error(f"Failed to create task '{task_name}'")
+                            else:
+                                _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
                         except ApiException as e:
                             body_dict = json.loads(e.body)
                             _LOGGER.error(f"ApiException during task creation in influx_integration_tasks(): {body_dict.get('message', '???')}")
@@ -258,8 +261,11 @@ class TaskManager():
                     f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
                 try:
-                    tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_locations_today}s', organization=organization)
-                    # _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                    result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_locations_today}s', organization=organization)
+                    if result.status != 'active':
+                        _LOGGER.error(f"Failed to create task '{task_name}'")
+                    else:
+                        _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
                 except ApiException as e:
                     body_dict = json.loads(e.body)
                     _LOGGER.error(f"ApiException during task creation in influx_meter_tasks(): {body_dict.get('message', '???')}")
@@ -308,8 +314,11 @@ class TaskManager():
                         f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
                     try:
-                        tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
-                        # _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                        result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
+                        if result.status != 'active':
+                            _LOGGER.error(f"Failed to create task '{task_name}'")
+                        else:
+                            _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
                     except ApiException as e:
                         body_dict = json.loads(e.body)
                         _LOGGER.error(f"ApiException during task creation in influx_meter_tasks(): {body_dict.get('message', '???')}")

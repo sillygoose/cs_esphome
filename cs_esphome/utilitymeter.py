@@ -85,13 +85,16 @@ class UtilityMeter():
                 '\n' \
                 f'from(bucket: "{bucket}")\n' \
                 f'  |> range(start: -1d)\n' \
-                f'  |> filter(fn: (r) => r._measurement == "energy" and r._meter == "reading" and r._field == "today")\n' \
-                f'  |> map(fn: (r) => ({{ _time: r._time, _field: r._field, _meter: r._meter, _measurement: r._measurement, _value: float(v: new_reading) * 1000.0 }}))\n' \
+                f'  |> filter(fn: (r) => r._measurement == "energy" and r._meter == "delta_wh" and r._field == "today")\n' \
+                f'  |> map(fn: (r) => ({{ _time: r._time, _field: r._field, _meter: "reading", _measurement: r._measurement, _value: float(v: new_reading) * 1000.0 }}))\n' \
                 f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
             try:
-                tasks_api.create_task_every(name=task_name, flux=flux, every='1y', organization=organization)
-                # _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                result = tasks_api.create_task_every(name=task_name, flux=flux, every='1y', organization=organization)
+                if result.status != 'active':
+                    _LOGGER.error(f"Failed to create task '{task_name}'")
+                else:
+                    _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
             except ApiException as e:
                 body_dict = json.loads(e.body)
                 _LOGGER.error(f"ApiException during task creation in _delta_wh_worker(): {body_dict.get('message', '???')}")
@@ -133,8 +136,11 @@ class UtilityMeter():
                 f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
             try:
-                tasks_api.create_task_cron(name=task_name, flux=flux, cron=cron, org_id=self._organization.id)
-                # _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                result = tasks_api.create_task_cron(name=task_name, flux=flux, cron=cron, org_id=self._organization.id)
+                if result.status != 'active':
+                    _LOGGER.error(f"Failed to create task '{task_name}'")
+                else:
+                    _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
             except ApiException as e:
                 body_dict = json.loads(e.body)
                 _LOGGER.error(f"ApiException during task creation in influx_meter_tasks(): {body_dict.get('message', '???')}")
@@ -173,8 +179,11 @@ class UtilityMeter():
                     f'  |> to(bucket: "cs24", org: "{organization.name}")\n'
 
                 try:
-                    tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_delta_wh}s', organization=organization)
-                    # _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                    result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_delta_wh}s', organization=organization)
+                    if result.status != 'active':
+                        _LOGGER.error(f"Failed to create task '{task_name}'")
+                    else:
+                        _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
                 except ApiException as e:
                     body_dict = json.loads(e.body)
                     _LOGGER.error(f"ApiException during task creation in _delta_wh_worker(): {body_dict.get('message', '???')}")
