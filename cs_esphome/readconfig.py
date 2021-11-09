@@ -264,7 +264,6 @@ def check_config(config):
                     {'url': {'required': True, 'keys': [], 'type': str}},
                     {'bucket': {'required': True, 'keys': [], 'type': str}},
                     {'token': {'required': True, 'keys': [], 'type': str}},
-                    {'recreate_tasks': {'required': False, 'keys': [], 'type': bool}},
                     {'pruning': {'required': True, 'keys': [
                         {'task': {'required': True, 'keys': [
                             {'name': {'required': True, 'keys': [], 'type': str}},

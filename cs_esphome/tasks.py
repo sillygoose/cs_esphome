@@ -74,14 +74,7 @@ class TaskManager():
                     self._sampling_locations_year = config.settings.sampling.locations.get('year', TaskManager._DEFAULT_SAMPLING_LOCATIONS_YEAR)
 
         self._utility_meter.start(self._tasks_api, self._organization, self._bucket)
-
         _LOGGER.info(f"CS/ESPHome Task Manager starting up, integration tasks will run every {self._sampling_integrations_today}/{self._sampling_integrations_month}/{self._sampling_integrations_year} seconds")
-        if 'influxdb2' in config.keys():
-            if 'recreate_tasks' in config.influxdb2.keys():
-                if config.influxdb2.recreate_tasks:
-                    _LOGGER.info("Task manager deleting existing InfluxDB tasks (remove or set 'recreate_tasks' to False to disable)")
-                    self.delete_tasks()
-
         return True
 
     async def run(self):
@@ -108,7 +101,7 @@ class TaskManager():
         periods = ['now', 'today', 'month', 'year']
         while True:
             try:
-                _LOGGER.debug(f"task_refresh({periods})")
+                _LOGGER.debug(f"task_refresh() deleting and recreating tasks for the periods '{periods}'")
                 self.delete_tasks(periods)
                 await self.influx_tasks(periods)
             except ApiException as e:
@@ -118,7 +111,7 @@ class TaskManager():
                 _LOGGER.error(f"task_refresh() can't create an InfluxDB task: unexpected exception: {e}")
 
             right_now = datetime.datetime.now()
-            midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0))
+            midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0, 10))
             await asyncio.sleep((midnight - right_now).total_seconds())
 
             # Restart any InfluxDB now, today, month, and year tasks
@@ -159,7 +152,7 @@ class TaskManager():
                     tasks = tasks_api.find_tasks(name=task_name)
                     if self._delete_before:
                         for task in tasks:
-                            _LOGGER.debug(f"'Deleting {task.name}")
+                            _LOGGER.debug(f"Deleting '{task.name}'")
                             tasks_api.delete_task(task.id)
                             tasks = None
 
@@ -242,7 +235,7 @@ class TaskManager():
             tasks = tasks_api.find_tasks(name=task_name)
             if self._delete_before:
                 for task in tasks:
-                    _LOGGER.debug(f"'Deleting {task.name}")
+                    _LOGGER.debug(f"Deleting '{task.name}'")
                     tasks_api.delete_task(task.id)
                     tasks = None
 
@@ -287,7 +280,7 @@ class TaskManager():
                 tasks = tasks_api.find_tasks(name=task_name)
                 if self._delete_before:
                     for task in tasks:
-                        _LOGGER.debug(f"'Deleting {task.name}")
+                        _LOGGER.debug(f"Deleting '{task.name}'")
                         tasks_api.delete_task(task.id)
                         tasks = None
 
@@ -321,9 +314,9 @@ class TaskManager():
                             _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
                     except ApiException as e:
                         body_dict = json.loads(e.body)
-                        _LOGGER.error(f"ApiException during task creation in influx_meter_tasks(): {body_dict.get('message', '???')}")
+                        _LOGGER.error(f"ApiException during task creation in influx_location_energy_tasks(): {body_dict.get('message', '???')}")
                     except Exception as e:
-                        _LOGGER.error(f"Unexpected exception during task creation in influx_meter_tasks(): {e}")
+                        _LOGGER.error(f"Unexpected exception during task creation in influx_location_energy_tasks(): {e}")
 
     def delete_tasks(self, periods=None) -> None:
         """."""
@@ -334,14 +327,28 @@ class TaskManager():
             if periods is None:
                 for task in tasks:
                     if task.name.startswith(self._base_name):
-                        _LOGGER.debug(f"'Deleting {task.name}")
+                        _LOGGER.debug(f"Deleting '{task.name}'")
                         tasks_api.delete_task(task.id)
+                        try:
+                            tasks_api.find_task_by_id(task.id)
+                            _LOGGER.error(f"Failed to delete {task.name}")
+                        except ApiException:
+                            pass
+                        except Exception as e:
+                            _LOGGER.error(f"Unexpected exception during task delete checking in delete_tasks({periods}): {e}")
             else:
                 for period in periods:
                     for task in tasks:
                         if task.name.endswith('.' + period):
-                            _LOGGER.debug(f"'Deleting {task.name}")
+                            _LOGGER.debug(f"Deleting '{task.name}'")
                             tasks_api.delete_task(task.id)
+                            try:
+                                tasks_api.find_task_by_id(task.id)
+                                _LOGGER.error(f"Failed to delete {task.name}")
+                            except ApiException:
+                                pass
+                            except Exception as e:
+                                _LOGGER.error(f"Unexpected exception during task delete checking in delete_tasks({periods}): {e}")
 
         except Exception as e:
             _LOGGER.error(f"delete_tasks(): unexpected exception: {e}")

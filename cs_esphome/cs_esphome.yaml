@@ -35,7 +35,6 @@ cs_esphome:
     url: !secret influxdb2_url
     bucket: !secret influxdb2_bucket
     token: !secret influxdb2_token
-    recreate_tasks: True
     pruning:
       - task:
           name: 'pf'
