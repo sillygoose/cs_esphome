@@ -35,7 +35,6 @@ class TaskManager():
         self._query_api = None
 
         self._bucket = None
-        self._delete_before = False
         self._utility_meter = UtilityMeter(self._config, self._base_name)
 
         self._sampling_integrations_today = TaskManager._DEFAULT_SAMPLING_INTEGRATIONS_TODAY
@@ -150,12 +149,6 @@ class TaskManager():
 
                     task_name = self._base_name + '._device.' + device + location_name + '.' + measurement + '.' + period
                     tasks = tasks_api.find_tasks(name=task_name)
-                    if self._delete_before:
-                        for task in tasks:
-                            _LOGGER.debug(f"Deleting '{task.name}'")
-                            tasks_api.delete_task(task.id)
-                            tasks = None
-
                     if tasks is None or len(tasks) == 0:
                         _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
                         if period == 'today':
@@ -230,18 +223,12 @@ class TaskManager():
         tasks_api = self._tasks_api
         organization = self._organization
 
+        ts = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
         for location, sensors in self._sensors_by_location.items():
             task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
             tasks = tasks_api.find_tasks(name=task_name)
-            if self._delete_before:
-                for task in tasks:
-                    _LOGGER.debug(f"Deleting '{task.name}'")
-                    tasks_api.delete_task(task.id)
-                    tasks = None
-
             if tasks is None or len(tasks) == 0:
                 _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
-                ts = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
                 flux = \
                     f'\n' \
                     f'from(bucket: "{bucket}")\n' \
@@ -278,12 +265,6 @@ class TaskManager():
             for location, sensors in self._sensors_by_location.items():
                 task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
                 tasks = tasks_api.find_tasks(name=task_name)
-                if self._delete_before:
-                    for task in tasks:
-                        _LOGGER.debug(f"Deleting '{task.name}'")
-                        tasks_api.delete_task(task.id)
-                        tasks = None
-
                 if tasks is None or len(tasks) == 0:
                     _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
                     if period == 'today':
@@ -319,7 +300,7 @@ class TaskManager():
                         _LOGGER.error(f"Unexpected exception during task creation in influx_location_energy_tasks(): {e}")
 
     def delete_tasks(self, periods=None) -> None:
-        """."""
+        """Delete the IngluxDB tasks in the specified period."""
         _LOGGER.debug("delete_tasks()")
         tasks_api = self._influxdb_client.tasks_api()
         try:

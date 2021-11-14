@@ -150,7 +150,7 @@ class CircuitSetup():
                     raise WatchdogTimer(f"Lost connection to {self._esphome_name}")
                 saved_watchdog = current_watchdog
         except Exception as e:
-            _LOGGER.debug(f"watchdog(): {e}")
+            _LOGGER.error(f"watchdog(): {e}")
 
     async def task_esphome_sensor_post(self, queue):
         """Process the subscribed data."""
@@ -174,7 +174,7 @@ class CircuitSetup():
                     else:
                         batch_sensors.append(packet)
         except Exception as e:
-            _LOGGER.debug(f"task_esphome_sensor_post(): {e}")
+            _LOGGER.error(f"task_esphome_sensor_post(): {e}")
 
     async def task_esphome_sensor_gather(self, queue):
         """Post the subscribed data."""
@@ -192,4 +192,4 @@ class CircuitSetup():
             sensors_by_key = self._esphome_api.sensors_by_key()
             await self._esphome_api.subscribe_states(sensor_callback)
         except Exception as e:
-            _LOGGER.debug(f"task_esphome_sensor_gather(): {e}")
+            _LOGGER.error(f"task_esphome_sensor_gather(): {e}")
