@@ -97,7 +97,7 @@ class TaskManager():
 
     async def task_refresh(self) -> None:
         """Update InfluxDB tasks at midnight."""
-        periods = []
+        periods = None
         while True:
             try:
                 _LOGGER.debug(f"task_refresh() deleting and recreating tasks for the periods '{periods}'")
@@ -317,7 +317,7 @@ class TaskManager():
         tasks_api = self._influxdb_client.tasks_api()
         try:
             tasks = tasks_api.find_tasks()
-            if periods is None or periods == []:
+            if periods is None:
                 for task in tasks:
                     if task.name.startswith(self._base_name):
                         _LOGGER.debug(f"Deleting '{task.name}'")
