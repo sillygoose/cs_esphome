@@ -97,7 +97,7 @@ class TaskManager():
 
     async def task_refresh(self) -> None:
         """Update InfluxDB tasks at midnight."""
-        periods = ['now', 'today', 'month', 'year']
+        periods = []
         while True:
             try:
                 _LOGGER.debug(f"task_refresh() deleting and recreating tasks for the periods '{periods}'")
@@ -149,58 +149,63 @@ class TaskManager():
 
                     task_name = self._base_name + '._device.' + device + location_name + '.' + measurement + '.' + period
                     tasks = tasks_api.find_tasks(name=task_name)
-                    if tasks is None or len(tasks) == 0:
-                        _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
-                        if period == 'today':
-                            ts = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
-                            sampling = self._sampling_integrations_today
-                            flux = \
-                                '\n' \
-                                f'period = "{period}"\n' \
-                                f'from(bucket: "{bucket}")\n' \
-                                f'  |> range(start: {ts})\n' \
-                                f'  |> filter(fn: (r) => r._measurement == "{measurement}" and r._device == "{device}" and r._field == "sample")\n' \
-                                f'  {location_filter}\n' \
-                                f'  |> integral(unit: 1h, column: "_value")\n' \
-                                f'  |> map(fn: (r) => ({{ _time: r._start, _device: r._device, _field: period, _measurement: "energy", _value: r._value{location_map} }}))\n' \
-                                f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
-                        elif period == 'month':
-                            ts = int(datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)).timestamp())
-                            sampling = self._sampling_integrations_month
-                            flux = \
-                                f'\n' \
-                                f'period = "{period}"\n' \
-                                f'from(bucket: "{bucket}")\n' \
-                                f'  |> range(start: {ts})\n' \
-                                f'  |> filter(fn: (r) => r._measurement == "energy" and r._device == "{device}" and r._field == "today")\n' \
-                                f'  {location_filter}\n' \
-                                f'  |> sum(column: "_value")\n' \
-                                f'  |> map(fn: (r) => ({{ _time: r._start, _device: r._device, _field: period, _measurement: "energy", _value: r._value{location_map} }}))\n' \
-                                f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
-                        elif period == 'year':
-                            ts = int(datetime.datetime.combine(datetime.datetime.now().replace(month=1, day=1), datetime.time(0, 0)).timestamp())
-                            sampling = self._sampling_integrations_year
-                            flux = \
-                                f'\n' \
-                                f'period = "{period}"\n' \
-                                f'from(bucket: "{bucket}")\n' \
-                                f'  |> range(start: {ts})\n' \
-                                f'  |> filter(fn: (r) => r._measurement == "energy" and r._device == "{device}" and r._field == "month")\n' \
-                                f'  {location_filter}\n' \
-                                f'  |> sum(column: "_value")\n' \
-                                f'  |> map(fn: (r) => ({{ _time: r._start, _device: r._device, _field: period, _measurement: "energy", _value: r._value{location_map} }}))\n' \
-                                f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
-                        try:
-                            result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
-                            if result.status != 'active':
-                                _LOGGER.error(f"Failed to create task '{task_name}'")
-                            else:
-                                _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
-                        except ApiException as e:
-                            body_dict = json.loads(e.body)
-                            _LOGGER.error(f"ApiException during task creation in influx_integration_tasks(): {body_dict.get('message', '???')}")
-                        except Exception as e:
-                            _LOGGER.error(f"Unexpected exception during task creation in _integration_worker(): {e}")
+
+                    if tasks and len(tasks):
+                        _LOGGER.error(f"Task '{task_name}' exists in _integration_worker('{period}')")
+                        continue
+
+                    _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
+                    if period == 'today':
+                        ts = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
+                        sampling = self._sampling_integrations_today
+                        flux = \
+                            '\n' \
+                            f'period = "{period}"\n' \
+                            f'from(bucket: "{bucket}")\n' \
+                            f'  |> range(start: {ts})\n' \
+                            f'  |> filter(fn: (r) => r._measurement == "{measurement}" and r._device == "{device}" and r._field == "sample")\n' \
+                            f'  {location_filter}\n' \
+                            f'  |> integral(unit: 1h, column: "_value")\n' \
+                            f'  |> map(fn: (r) => ({{ _time: r._start, _device: r._device, _field: period, _measurement: "energy", _value: r._value{location_map} }}))\n' \
+                            f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
+                    elif period == 'month':
+                        ts = int(datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)).timestamp())
+                        sampling = self._sampling_integrations_month
+                        flux = \
+                            f'\n' \
+                            f'period = "{period}"\n' \
+                            f'from(bucket: "{bucket}")\n' \
+                            f'  |> range(start: {ts})\n' \
+                            f'  |> filter(fn: (r) => r._measurement == "energy" and r._device == "{device}" and r._field == "today")\n' \
+                            f'  {location_filter}\n' \
+                            f'  |> sum(column: "_value")\n' \
+                            f'  |> map(fn: (r) => ({{ _time: r._start, _device: r._device, _field: period, _measurement: "energy", _value: r._value{location_map} }}))\n' \
+                            f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
+                    elif period == 'year':
+                        ts = int(datetime.datetime.combine(datetime.datetime.now().replace(month=1, day=1), datetime.time(0, 0)).timestamp())
+                        sampling = self._sampling_integrations_year
+                        flux = \
+                            f'\n' \
+                            f'period = "{period}"\n' \
+                            f'from(bucket: "{bucket}")\n' \
+                            f'  |> range(start: {ts})\n' \
+                            f'  |> filter(fn: (r) => r._measurement == "energy" and r._device == "{device}" and r._field == "month")\n' \
+                            f'  {location_filter}\n' \
+                            f'  |> sum(column: "_value")\n' \
+                            f'  |> map(fn: (r) => ({{ _time: r._start, _device: r._device, _field: period, _measurement: "energy", _value: r._value{location_map} }}))\n' \
+                            f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
+                    try:
+                        result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
+                        if result.status != 'active':
+                            _LOGGER.error(f"Failed to create task '{task_name}'")
+                        else:
+                            _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                    except ApiException as e:
+                        body_dict = json.loads(e.body)
+                        _LOGGER.error(f"ApiException during task creation in influx_integration_tasks(): {body_dict.get('message', '???')}")
+                    except Exception as e:
+                        _LOGGER.error(f"Unexpected exception during task creation in _integration_worker(): {e}")
+
             except Exception as e:
                 _LOGGER.error(f"Unexpected exception during task creation in _integration_worker(): {e}")
 
@@ -227,30 +232,34 @@ class TaskManager():
         for location, sensors in self._sensors_by_location.items():
             task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
             tasks = tasks_api.find_tasks(name=task_name)
-            if tasks is None or len(tasks) == 0:
-                _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
-                flux = \
-                    f'\n' \
-                    f'from(bucket: "{bucket}")\n' \
-                    f'  |> range(start: {ts})\n' \
-                    f'  |> last()\n' \
-                    f'  |> filter(fn: (r) => r._measurement == "{measurement}" and r.{tag_key} == "{location}" and r._field == "sample")\n' \
-                    f'  |> drop(columns: ["_device"])\n' \
-                    f'  |> sum(column: "_value")\n' \
-                    f'  |> map(fn: (r) => ({{ _time: r._start, _measurement: "{measurement}", {tag_key}: r.{tag_key} , _field: "{period}", _value: r._value }}))\n' \
-                    f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
 
-                try:
-                    result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_locations_today}s', organization=organization)
-                    if result.status != 'active':
-                        _LOGGER.error(f"Failed to create task '{task_name}'")
-                    else:
-                        _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
-                except ApiException as e:
-                    body_dict = json.loads(e.body)
-                    _LOGGER.error(f"ApiException during task creation in influx_meter_tasks(): {body_dict.get('message', '???')}")
-                except Exception as e:
-                    _LOGGER.error(f"Unexpected exception during task creation in influx_meter_tasks(): {e}")
+            if tasks and len(tasks):
+                _LOGGER.error(f"Task '{task_name}' exists in influx_location_power_tasks()")
+                continue
+
+            _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
+            flux = \
+                f'\n' \
+                f'from(bucket: "{bucket}")\n' \
+                f'  |> range(start: {ts})\n' \
+                f'  |> last()\n' \
+                f'  |> filter(fn: (r) => r._measurement == "{measurement}" and r.{tag_key} == "{location}" and r._field == "sample")\n' \
+                f'  |> drop(columns: ["_device"])\n' \
+                f'  |> sum(column: "_value")\n' \
+                f'  |> map(fn: (r) => ({{ _time: r._start, _measurement: "{measurement}", {tag_key}: r.{tag_key} , _field: "{period}", _value: r._value }}))\n' \
+                f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
+
+            try:
+                result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{self._sampling_locations_today}s', organization=organization)
+                if result.status != 'active':
+                    _LOGGER.error(f"Failed to create task '{task_name}'")
+                else:
+                    _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+            except ApiException as e:
+                body_dict = json.loads(e.body)
+                _LOGGER.error(f"ApiException during task creation in influx_meter_tasks(): {body_dict.get('message', '???')}")
+            except Exception as e:
+                _LOGGER.error(f"Unexpected exception during task creation in influx_meter_tasks(): {e}")
 
     async def influx_location_energy_tasks(self) -> None:
         """Creates the tasks that sums up location energy."""
@@ -265,47 +274,50 @@ class TaskManager():
             for location, sensors in self._sensors_by_location.items():
                 task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
                 tasks = tasks_api.find_tasks(name=task_name)
-                if tasks is None or len(tasks) == 0:
-                    _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
-                    if period == 'today':
-                        ts = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
-                        sampling = self._sampling_locations_today
-                    elif period == 'month':
-                        ts = int(datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)).timestamp())
-                        sampling = self._sampling_locations_month
-                    elif period == 'year':
-                        ts = int(datetime.datetime.combine(datetime.datetime.now().replace(month=1, day=1), datetime.time(0, 0)).timestamp())
-                        sampling = self._sampling_locations_year
+                if tasks and len(tasks):
+                    _LOGGER.error(f"Task '{task_name}' exists in influx_location_energy_tasks()")
+                    continue
 
-                    flux = f'\n' \
-                        f'from(bucket: "{bucket}")\n' \
-                        f'  |> range(start: {ts})\n' \
-                        f'  |> last()\n' \
-                        f'  |> filter(fn: (r) => r._measurement == "{measurement}" and r.{tag_key} == "{location}" and r._field == "{period}" and exists r._device)\n' \
-                        f'  |> drop(columns: ["_device"])\n' \
-                        f'  |> sum(column: "_value")\n' \
-                        f'  |> map(fn: (r) => ({{ _time: r._start, _measurement: "{measurement}", {tag_key}: r.{tag_key} , _field: "{period}", _value: r._value }}))\n' \
-                        f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
+                _LOGGER.debug(f"InfluxDB task '{task_name}' was not found, creating...")
+                if period == 'today':
+                    ts = int(datetime.datetime.combine(datetime.datetime.now(), datetime.time(0, 0)).timestamp())
+                    sampling = self._sampling_locations_today
+                elif period == 'month':
+                    ts = int(datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)).timestamp())
+                    sampling = self._sampling_locations_month
+                elif period == 'year':
+                    ts = int(datetime.datetime.combine(datetime.datetime.now().replace(month=1, day=1), datetime.time(0, 0)).timestamp())
+                    sampling = self._sampling_locations_year
 
-                    try:
-                        result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
-                        if result.status != 'active':
-                            _LOGGER.error(f"Failed to create task '{task_name}'")
-                        else:
-                            _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
-                    except ApiException as e:
-                        body_dict = json.loads(e.body)
-                        _LOGGER.error(f"ApiException during task creation in influx_location_energy_tasks(): {body_dict.get('message', '???')}")
-                    except Exception as e:
-                        _LOGGER.error(f"Unexpected exception during task creation in influx_location_energy_tasks(): {e}")
+                flux = f'\n' \
+                    f'from(bucket: "{bucket}")\n' \
+                    f'  |> range(start: {ts})\n' \
+                    f'  |> last()\n' \
+                    f'  |> filter(fn: (r) => r._measurement == "{measurement}" and r.{tag_key} == "{location}" and r._field == "{period}" and exists r._device)\n' \
+                    f'  |> drop(columns: ["_device"])\n' \
+                    f'  |> sum(column: "_value")\n' \
+                    f'  |> map(fn: (r) => ({{ _time: r._start, _measurement: "{measurement}", {tag_key}: r.{tag_key} , _field: "{period}", _value: r._value }}))\n' \
+                    f'  |> to(bucket: "{bucket}", org: "{organization.name}")\n'
+
+                try:
+                    result = tasks_api.create_task_every(name=task_name, flux=flux, every=f'{sampling}s', organization=organization)
+                    if result.status != 'active':
+                        _LOGGER.error(f"Failed to create task '{task_name}'")
+                    else:
+                        _LOGGER.debug(f"InfluxDB task '{task_name}' was successfully created")
+                except ApiException as e:
+                    body_dict = json.loads(e.body)
+                    _LOGGER.error(f"ApiException during task creation in influx_location_energy_tasks(): {body_dict.get('message', '???')}")
+                except Exception as e:
+                    _LOGGER.error(f"Unexpected exception during task creation in influx_location_energy_tasks(): {e}")
 
     def delete_tasks(self, periods=None) -> None:
-        """Delete the IngluxDB tasks in the specified period."""
-        _LOGGER.debug("delete_tasks()")
+        """Delete the InfluxDB tasks in the specified period."""
+        _LOGGER.debug(f"delete_tasks({periods})")
         tasks_api = self._influxdb_client.tasks_api()
         try:
             tasks = tasks_api.find_tasks()
-            if periods is None:
+            if periods is None or periods == []:
                 for task in tasks:
                     if task.name.startswith(self._base_name):
                         _LOGGER.debug(f"Deleting '{task.name}'")
@@ -319,17 +331,19 @@ class TaskManager():
                             _LOGGER.error(f"Unexpected exception during task delete checking in delete_tasks({periods}): {e}")
             else:
                 for period in periods:
+                    _LOGGER.debug(f"Processing '{period}' tasks in delete_tasks({periods})\n")
                     for task in tasks:
                         if task.name.endswith('.' + period):
-                            _LOGGER.debug(f"Deleting '{task.name}'")
+                            _LOGGER.debug(f"delete_tasks({periods}): deleting '{task.name}'")
                             tasks_api.delete_task(task.id)
                             try:
                                 tasks_api.find_task_by_id(task.id)
-                                _LOGGER.error(f"Failed to delete {task.name}")
+                                _LOGGER.error(f"delete_tasks({periods}): failed to delete {task.name}")
                             except ApiException:
                                 pass
                             except Exception as e:
                                 _LOGGER.error(f"Unexpected exception during task delete checking in delete_tasks({periods}): {e}")
-
+                        else:
+                            _LOGGER.debug(f"delete_tasks({periods}): did not delete '{task.name}'")
         except Exception as e:
-            _LOGGER.error(f"delete_tasks(): unexpected exception: {e}")
+            _LOGGER.error(f"delete_tasks({periods}): unexpected exception: {e}")

@@ -1,0 +1,1863 @@
+[2021-11-15 12:08:33,962] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:08:34,082] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 15681
+[2021-11-15 12:08:34,096] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:08:34,163] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:08:34,175] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:08:35,042] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:08:35,058] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:08:35,058] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:08:38,258] [tasks] [ERROR] Task 'cs_esphome._device.guest.bedroom.power.today' exists in _integration_worker('today')
+[2021-11-15 12:08:38,268] [tasks] [ERROR] Task 'cs_esphome._device.living_room.main_floor.power.today' exists in _integration_worker('today')
+[2021-11-15 12:08:38,277] [tasks] [ERROR] Task 'cs_esphome._device.foyer.main_floor.power.today' exists in _integration_worker('today')
+[2021-11-15 12:10:40,436] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:10:40,564] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 15710
+[2021-11-15 12:10:40,629] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:10:40,989] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:10:41,011] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:10:42,254] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:10:42,264] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:10:42,264] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:10:48,069] [tasks] [ERROR] Task 'cs_esphome._device.refrigerator.basement.power.year' exists in _integration_worker('year')
+[2021-11-15 12:10:48,087] [tasks] [ERROR] Task 'cs_esphome._device.freezer.garage.power.year' exists in _integration_worker('year')
+[2021-11-15 12:10:48,101] [tasks] [ERROR] Task 'cs_esphome._device.west_basement.basement.power.year' exists in _integration_worker('year')
+[2021-11-15 12:13:31,383] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:13:31,511] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 15739
+[2021-11-15 12:13:31,559] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:13:31,807] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:13:31,829] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:13:33,029] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:13:33,043] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:13:33,043] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:13:58,652] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:13:58,769] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 15764
+[2021-11-15 12:13:58,783] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:13:59,129] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:13:59,154] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:14:00,370] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:14:00,427] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:14:00,427] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:14:11,127] [tasks] [ERROR] Task 'cs_esphome._device.guest.bedroom.power.year' exists in _integration_worker('year')
+[2021-11-15 12:14:11,142] [tasks] [ERROR] Task 'cs_esphome._device.living_room.main_floor.power.year' exists in _integration_worker('year')
+[2021-11-15 12:14:11,154] [tasks] [ERROR] Task 'cs_esphome._device.foyer.main_floor.power.year' exists in _integration_worker('year')
+[2021-11-15 12:23:47,343] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:23:47,461] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 15846
+[2021-11-15 12:23:47,476] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:23:47,527] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:23:47,542] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:23:48,575] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:23:48,586] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:23:48,586] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:23:54,439] [tasks] [ERROR] Task 'cs_esphome._device.refrigerator.basement.power.year' exists in _integration_worker('year')
+[2021-11-15 12:23:54,458] [tasks] [ERROR] Task 'cs_esphome._device.freezer.garage.power.year' exists in _integration_worker('year')
+[2021-11-15 12:23:54,473] [tasks] [ERROR] Task 'cs_esphome._device.west_basement.basement.power.year' exists in _integration_worker('year')
+[2021-11-15 12:24:27,897] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:24:28,015] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 15871
+[2021-11-15 12:24:28,030] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:24:28,306] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:24:28,329] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:24:29,580] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:24:29,592] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:24:29,592] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:25:13,182] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:25:13,299] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 15895
+[2021-11-15 12:25:13,313] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:25:13,457] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:25:13,478] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:25:14,261] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:25:14,275] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:25:14,275] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:25:57,295] [tasks] [ERROR] Task 'cs_esphome._device.guest.bedroom.power.year' exists in _integration_worker('year')
+[2021-11-15 12:25:57,311] [tasks] [ERROR] Task 'cs_esphome._device.living_room.main_floor.power.year' exists in _integration_worker('year')
+[2021-11-15 12:25:57,323] [tasks] [ERROR] Task 'cs_esphome._device.foyer.main_floor.power.year' exists in _integration_worker('year')
+[2021-11-15 12:27:45,439] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:27:45,513] [readconfig] [DEBUG] Loading /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,513] [readconfig] [DEBUG] Loading /Users/sillygoose/Projects/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,516] [readconfig] [DEBUG] Secret 'circuitsetup_url' retrieved from /Users/sillygoose/Projects/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,516] [readconfig] [DEBUG] Secret 'circuitsetup_port' retrieved from /Users/sillygoose/Projects/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,516] [readconfig] [DEBUG] Secret 'circuitsetup_password' retrieved from /Users/sillygoose/Projects/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,516] [readconfig] [DEBUG] Secret 'influxdb2_org' retrieved from /Users/sillygoose/Projects/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,516] [readconfig] [DEBUG] Secret 'influxdb2_url' retrieved from /Users/sillygoose/Projects/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,517] [readconfig] [DEBUG] Secret 'influxdb2_bucket' retrieved from /Users/sillygoose/Projects/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,517] [readconfig] [DEBUG] Secret 'influxdb2_token' retrieved from /Users/sillygoose/Projects/cs_esphome/cs_esphome_secrets.yaml
+[2021-11-15 12:27:45,559] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 15963
+[2021-11-15 12:27:45,571] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:27:45,828] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:27:45,850] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:27:46,848] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:27:46,863] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:27:46,863] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:27:46,865] [circuitsetup] [DEBUG] Added database pruning task: {'name': 'pf', 'predicate': '_measurement="power_factor"', 'keep_last': 3}
+[2021-11-15 12:27:46,866] [circuitsetup] [DEBUG] Added database pruning task: {'name': 'frequency', 'predicate': '_measurement="frequency"', 'keep_last': 3}
+[2021-11-15 12:27:46,866] [circuitsetup] [DEBUG] Added database pruning task: {'name': 'voltage', 'predicate': '_measurement="voltage"', 'keep_last': 5}
+[2021-11-15 12:27:46,866] [circuitsetup] [DEBUG] Added database pruning task: {'name': 'sample_data', 'predicate': '_measurement="power" AND _field="sample"', 'keep_last': 60}
+[2021-11-15 12:27:46,866] [circuitsetup] [DEBUG] Added database pruning task: {'name': 'power_now', 'predicate': '_measurement="power" AND _field="now"', 'keep_last': 30}
+[2021-11-15 12:27:46,867] [tasks] [DEBUG] task_refresh() deleting and recreating tasks for the periods '['now', 'today', 'month', 'year']'
+[2021-11-15 12:27:46,867] [tasks] [DEBUG] delete_tasks(['now', 'today', 'month', 'year'])
+[2021-11-15 12:27:46,948] [tasks] [DEBUG] Deleting 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:27:46,960] [tasks] [DEBUG] Deleting 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:27:46,969] [tasks] [DEBUG] Deleting 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:27:46,976] [tasks] [DEBUG] Deleting 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:27:46,984] [tasks] [DEBUG] Deleting 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:27:46,992] [tasks] [DEBUG] Deleting 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:27:46,999] [tasks] [DEBUG] Deleting 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:27:47,007] [tasks] [DEBUG] Deleting 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:27:47,015] [tasks] [DEBUG] Deleting 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:27:47,023] [tasks] [DEBUG] Deleting 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:27:47,030] [tasks] [DEBUG] Deleting 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:27:47,038] [tasks] [DEBUG] Deleting 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:27:47,045] [tasks] [DEBUG] Deleting 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:27:47,053] [tasks] [DEBUG] Deleting 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:27:47,061] [tasks] [DEBUG] Deleting 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:27:47,069] [tasks] [DEBUG] Deleting 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:27:47,076] [tasks] [DEBUG] Deleting 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:27:47,084] [tasks] [DEBUG] Deleting 'cs_esphome._device.line.power.today'
+[2021-11-15 12:27:47,092] [tasks] [DEBUG] Deleting 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:27:47,100] [tasks] [DEBUG] Deleting 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:27:47,108] [tasks] [DEBUG] Deleting 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:27:47,116] [tasks] [DEBUG] Deleting 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:27:47,124] [tasks] [DEBUG] Deleting 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:27:47,131] [tasks] [DEBUG] Deleting 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:27:47,139] [tasks] [DEBUG] Deleting 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:27:47,148] [tasks] [DEBUG] Deleting 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:27:47,155] [tasks] [DEBUG] Deleting 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:27:47,163] [tasks] [DEBUG] Deleting 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:27:47,171] [tasks] [DEBUG] Deleting 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:27:47,178] [tasks] [DEBUG] Deleting 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:27:47,186] [tasks] [DEBUG] Deleting 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:27:47,193] [tasks] [DEBUG] Deleting 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:27:47,201] [tasks] [DEBUG] Deleting 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:27:47,208] [tasks] [DEBUG] Deleting 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:27:47,216] [tasks] [DEBUG] Deleting 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:27:47,224] [tasks] [DEBUG] Deleting 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:27:47,232] [tasks] [DEBUG] Deleting 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:27:47,239] [tasks] [DEBUG] Deleting 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:27:47,248] [tasks] [DEBUG] Deleting 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:27:47,255] [tasks] [DEBUG] Deleting 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:27:47,263] [tasks] [DEBUG] Deleting 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:27:47,272] [tasks] [DEBUG] Deleting 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:27:47,280] [tasks] [DEBUG] Deleting 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:27:47,288] [tasks] [DEBUG] Deleting 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:27:47,296] [tasks] [DEBUG] Deleting 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:27:47,304] [tasks] [DEBUG] Deleting 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:27:47,312] [tasks] [DEBUG] Deleting 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:27:47,319] [tasks] [DEBUG] Deleting 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:27:47,327] [tasks] [DEBUG] Deleting 'cs_esphome._device.line.power.month'
+[2021-11-15 12:27:47,335] [tasks] [DEBUG] Deleting 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:27:47,343] [tasks] [DEBUG] Deleting 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:27:47,351] [tasks] [DEBUG] Deleting 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:27:47,360] [tasks] [DEBUG] Deleting 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:27:47,368] [tasks] [DEBUG] Deleting 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:27:47,376] [tasks] [DEBUG] Deleting 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:27:47,385] [tasks] [DEBUG] Deleting 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:27:47,393] [tasks] [DEBUG] Deleting 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:27:47,401] [tasks] [DEBUG] Deleting 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:27:47,408] [tasks] [DEBUG] Deleting 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:27:47,417] [tasks] [DEBUG] Deleting 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:27:47,425] [tasks] [DEBUG] Deleting 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:27:47,434] [tasks] [DEBUG] Deleting 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:27:47,441] [tasks] [DEBUG] Deleting 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:27:47,449] [tasks] [DEBUG] Deleting 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:27:47,457] [tasks] [DEBUG] Deleting 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:27:47,466] [tasks] [DEBUG] Deleting 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:27:47,473] [tasks] [DEBUG] Deleting 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:27:47,481] [tasks] [DEBUG] Deleting 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:27:47,489] [tasks] [DEBUG] Deleting 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:27:47,497] [tasks] [DEBUG] Deleting 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:27:47,506] [tasks] [DEBUG] Deleting 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:27:47,514] [tasks] [DEBUG] Deleting 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:27:47,522] [tasks] [DEBUG] Deleting 'cs_esphome._device.guest.bedroom.power.year'
+[2021-11-15 12:27:47,530] [tasks] [DEBUG] Deleting 'cs_esphome._device.living_room.main_floor.power.year'
+[2021-11-15 12:27:47,538] [tasks] [DEBUG] Deleting 'cs_esphome._device.foyer.main_floor.power.year'
+[2021-11-15 12:27:47,546] [tasks] [DEBUG] Deleting 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:27:47,554] [tasks] [DEBUG] Deleting 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:27:47,562] [tasks] [DEBUG] Deleting 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:27:47,570] [tasks] [DEBUG] Deleting 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:27:47,578] [tasks] [DEBUG] Deleting 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:27:47,586] [tasks] [DEBUG] Deleting 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:27:47,593] [tasks] [DEBUG] Deleting 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:27:47,601] [tasks] [DEBUG] Deleting 'cs_esphome._device.line.power.year'
+[2021-11-15 12:27:47,609] [tasks] [DEBUG] Deleting 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:27:47,618] [tasks] [DEBUG] Deleting 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:27:47,626] [tasks] [DEBUG] Deleting 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:27:47,633] [tasks] [DEBUG] Deleting 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:27:47,641] [tasks] [DEBUG] Deleting 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:27:47,649] [tasks] [DEBUG] Deleting 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:27:47,657] [tasks] [DEBUG] Deleting 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:27:47,665] [tasks] [DEBUG] Deleting 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:27:47,674] [tasks] [DEBUG] Deleting 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:27:47,682] [tasks] [DEBUG] Deleting 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:27:47,690] [tasks] [DEBUG] Deleting 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:27:47,697] [tasks] [DEBUG] Deleting 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:27:47,706] [tasks] [DEBUG] Deleting 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:27:47,714] [tasks] [DEBUG] Deleting 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:27:47,722] [tasks] [DEBUG] Deleting 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:27:47,729] [tasks] [DEBUG] Deleting 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:27:47,737] [tasks] [DEBUG] Deleting 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:27:47,745] [tasks] [DEBUG] (periods=['now', 'today', 'month', 'year'])
+[2021-11-15 12:27:47,750] [utilitymeter] [DEBUG] InfluxDB task 'cs_esphome._meter.writing.energy.today' was not found, creating...
+[2021-11-15 12:27:47,779] [utilitymeter] [DEBUG] InfluxDB task 'cs_esphome._meter.writing.energy.today' was successfully created
+[2021-11-15 12:27:47,783] [utilitymeter] [DEBUG] InfluxDB task 'cs_esphome._meter.reading.energy.today' was not found, creating...
+[2021-11-15 12:27:47,823] [utilitymeter] [DEBUG] InfluxDB task 'cs_esphome._meter.reading.energy.today' was successfully created
+[2021-11-15 12:27:47,827] [utilitymeter] [DEBUG] InfluxDB task 'cs_esphome._meter.delta_wh.energy.today' was not found, creating...
+[2021-11-15 12:27:47,880] [utilitymeter] [DEBUG] InfluxDB task 'cs_esphome._meter.delta_wh.energy.today' was successfully created
+[2021-11-15 12:27:47,885] [utilitymeter] [DEBUG] Utility meter tasks updated
+[2021-11-15 12:27:47,889] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.vehicles.energy.today' was not found, creating...
+[2021-11-15 12:27:47,924] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.vehicles.energy.today' was successfully created
+[2021-11-15 12:27:47,928] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.basement.energy.today' was not found, creating...
+[2021-11-15 12:27:47,962] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.basement.energy.today' was successfully created
+[2021-11-15 12:27:47,966] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.laundry.energy.today' was not found, creating...
+[2021-11-15 12:27:48,001] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.laundry.energy.today' was successfully created
+[2021-11-15 12:27:48,005] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.kitchen.energy.today' was not found, creating...
+[2021-11-15 12:27:48,038] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.kitchen.energy.today' was successfully created
+[2021-11-15 12:27:48,042] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.bedroom.energy.today' was not found, creating...
+[2021-11-15 12:27:48,077] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.bedroom.energy.today' was successfully created
+[2021-11-15 12:27:48,082] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.main_floor.energy.today' was not found, creating...
+[2021-11-15 12:27:48,116] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.main_floor.energy.today' was successfully created
+[2021-11-15 12:27:48,121] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.garage.energy.today' was not found, creating...
+[2021-11-15 12:27:48,154] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.garage.energy.today' was successfully created
+[2021-11-15 12:27:48,158] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.vehicles.energy.month' was not found, creating...
+[2021-11-15 12:27:48,189] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.vehicles.energy.month' was successfully created
+[2021-11-15 12:27:48,194] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.basement.energy.month' was not found, creating...
+[2021-11-15 12:27:48,227] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.basement.energy.month' was successfully created
+[2021-11-15 12:27:48,233] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.laundry.energy.month' was not found, creating...
+[2021-11-15 12:27:48,265] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.laundry.energy.month' was successfully created
+[2021-11-15 12:27:48,270] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.kitchen.energy.month' was not found, creating...
+[2021-11-15 12:27:48,304] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.kitchen.energy.month' was successfully created
+[2021-11-15 12:27:48,309] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.bedroom.energy.month' was not found, creating...
+[2021-11-15 12:27:48,341] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.bedroom.energy.month' was successfully created
+[2021-11-15 12:27:48,346] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.main_floor.energy.month' was not found, creating...
+[2021-11-15 12:27:48,380] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.main_floor.energy.month' was successfully created
+[2021-11-15 12:27:48,385] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.garage.energy.month' was not found, creating...
+[2021-11-15 12:27:48,418] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.garage.energy.month' was successfully created
+[2021-11-15 12:27:48,424] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.vehicles.energy.year' was not found, creating...
+[2021-11-15 12:27:48,455] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.vehicles.energy.year' was successfully created
+[2021-11-15 12:27:48,460] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.basement.energy.year' was not found, creating...
+[2021-11-15 12:27:48,493] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.basement.energy.year' was successfully created
+[2021-11-15 12:27:48,499] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.laundry.energy.year' was not found, creating...
+[2021-11-15 12:27:48,532] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.laundry.energy.year' was successfully created
+[2021-11-15 12:27:48,537] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.kitchen.energy.year' was not found, creating...
+[2021-11-15 12:27:48,570] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.kitchen.energy.year' was successfully created
+[2021-11-15 12:27:48,575] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.bedroom.energy.year' was not found, creating...
+[2021-11-15 12:27:48,606] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.bedroom.energy.year' was successfully created
+[2021-11-15 12:27:48,612] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.main_floor.energy.year' was not found, creating...
+[2021-11-15 12:27:48,645] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.main_floor.energy.year' was successfully created
+[2021-11-15 12:27:48,650] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.garage.energy.year' was not found, creating...
+[2021-11-15 12:27:48,684] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.garage.energy.year' was successfully created
+[2021-11-15 12:27:48,690] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.vehicles.power.now' was not found, creating...
+[2021-11-15 12:27:48,721] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.vehicles.power.now' was successfully created
+[2021-11-15 12:27:48,727] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.basement.power.now' was not found, creating...
+[2021-11-15 12:27:48,756] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.basement.power.now' was successfully created
+[2021-11-15 12:27:48,762] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.laundry.power.now' was not found, creating...
+[2021-11-15 12:27:48,793] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.laundry.power.now' was successfully created
+[2021-11-15 12:27:48,799] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.kitchen.power.now' was not found, creating...
+[2021-11-15 12:27:48,830] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.kitchen.power.now' was successfully created
+[2021-11-15 12:27:48,836] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.bedroom.power.now' was not found, creating...
+[2021-11-15 12:27:48,867] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.bedroom.power.now' was successfully created
+[2021-11-15 12:27:48,874] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.main_floor.power.now' was not found, creating...
+[2021-11-15 12:27:48,906] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.main_floor.power.now' was successfully created
+[2021-11-15 12:27:48,913] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.garage.power.now' was not found, creating...
+[2021-11-15 12:27:48,945] [tasks] [DEBUG] InfluxDB task 'cs_esphome._location.garage.power.now' was successfully created
+[2021-11-15 12:27:48,952] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.line.power.today' was not found, creating...
+[2021-11-15 12:27:48,982] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.line.power.today' was successfully created
+[2021-11-15 12:27:48,989] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.metered.power.today' was not found, creating...
+[2021-11-15 12:27:49,018] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.metered.power.today' was successfully created
+[2021-11-15 12:27:49,024] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.tesla.vehicles.power.today' was not found, creating...
+[2021-11-15 12:27:49,057] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.tesla.vehicles.power.today' was successfully created
+[2021-11-15 12:27:49,063] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.datacenter.basement.power.today' was not found, creating...
+[2021-11-15 12:27:49,097] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.datacenter.basement.power.today' was successfully created
+[2021-11-15 12:27:49,104] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.east_basement.basement.power.today' was not found, creating...
+[2021-11-15 12:27:49,138] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.east_basement.basement.power.today' was successfully created
+[2021-11-15 12:27:49,145] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dryer.laundry.power.today' was not found, creating...
+[2021-11-15 12:27:49,178] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dryer.laundry.power.today' was successfully created
+[2021-11-15 12:27:49,186] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.heatpump.power.today' was not found, creating...
+[2021-11-15 12:27:49,215] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.heatpump.power.today' was successfully created
+[2021-11-15 12:27:49,222] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.washer.laundry.power.today' was not found, creating...
+[2021-11-15 12:27:49,256] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.washer.laundry.power.today' was successfully created
+[2021-11-15 12:27:49,263] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.hot_water.power.today' was not found, creating...
+[2021-11-15 12:27:49,293] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.hot_water.power.today' was successfully created
+[2021-11-15 12:27:49,301] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.juicebox.vehicles.power.today' was not found, creating...
+[2021-11-15 12:27:49,334] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.juicebox.vehicles.power.today' was successfully created
+[2021-11-15 12:27:49,341] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.range.kitchen.power.today' was not found, creating...
+[2021-11-15 12:27:49,373] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.range.kitchen.power.today' was successfully created
+[2021-11-15 12:27:49,380] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.microwave.kitchen.power.today' was not found, creating...
+[2021-11-15 12:27:49,413] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.microwave.kitchen.power.today' was successfully created
+[2021-11-15 12:27:49,421] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.sump.basement.power.today' was not found, creating...
+[2021-11-15 12:27:49,456] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.sump.basement.power.today' was successfully created
+[2021-11-15 12:27:49,466] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.main.bedroom.power.today' was not found, creating...
+[2021-11-15 12:27:49,499] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.main.bedroom.power.today' was successfully created
+[2021-11-15 12:27:49,508] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.kitchen.power.today' was not found, creating...
+[2021-11-15 12:27:49,539] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.kitchen.power.today' was successfully created
+[2021-11-15 12:27:49,548] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_1.kitchen.power.today' was not found, creating...
+[2021-11-15 12:27:49,581] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_1.kitchen.power.today' was successfully created
+[2021-11-15 12:27:49,590] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_2.kitchen.power.today' was not found, creating...
+[2021-11-15 12:27:49,621] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_2.kitchen.power.today' was successfully created
+[2021-11-15 12:27:49,630] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dishwasher.kitchen.power.today' was not found, creating...
+[2021-11-15 12:27:49,664] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dishwasher.kitchen.power.today' was successfully created
+[2021-11-15 12:27:49,673] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.guest.bedroom.power.today' was not found, creating...
+[2021-11-15 12:27:49,708] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.guest.bedroom.power.today' was successfully created
+[2021-11-15 12:27:49,717] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.living_room.main_floor.power.today' was not found, creating...
+[2021-11-15 12:27:49,748] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.living_room.main_floor.power.today' was successfully created
+[2021-11-15 12:27:49,757] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.foyer.main_floor.power.today' was not found, creating...
+[2021-11-15 12:27:49,789] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.foyer.main_floor.power.today' was successfully created
+[2021-11-15 12:27:49,798] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.basement.power.today' was not found, creating...
+[2021-11-15 12:27:49,830] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.basement.power.today' was successfully created
+[2021-11-15 12:27:49,839] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.freezer.garage.power.today' was not found, creating...
+[2021-11-15 12:27:49,874] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.freezer.garage.power.today' was successfully created
+[2021-11-15 12:27:49,884] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.west_basement.basement.power.today' was not found, creating...
+[2021-11-15 12:27:49,916] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.west_basement.basement.power.today' was successfully created
+[2021-11-15 12:27:49,925] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.line.power.month' was not found, creating...
+[2021-11-15 12:27:49,952] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.line.power.month' was successfully created
+[2021-11-15 12:27:49,960] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.metered.power.month' was not found, creating...
+[2021-11-15 12:27:50,058] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.metered.power.month' was successfully created
+[2021-11-15 12:27:50,067] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.tesla.vehicles.power.month' was not found, creating...
+[2021-11-15 12:27:50,191] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.tesla.vehicles.power.month' was successfully created
+[2021-11-15 12:27:50,264] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.datacenter.basement.power.month' was not found, creating...
+[2021-11-15 12:27:50,478] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.datacenter.basement.power.month' was successfully created
+[2021-11-15 12:27:50,582] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.east_basement.basement.power.month' was not found, creating...
+[2021-11-15 12:27:50,754] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.east_basement.basement.power.month' was successfully created
+[2021-11-15 12:27:50,841] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dryer.laundry.power.month' was not found, creating...
+[2021-11-15 12:27:50,941] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dryer.laundry.power.month' was successfully created
+[2021-11-15 12:27:50,964] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.heatpump.power.month' was not found, creating...
+[2021-11-15 12:27:51,006] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.heatpump.power.month' was successfully created
+[2021-11-15 12:27:51,020] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.washer.laundry.power.month' was not found, creating...
+[2021-11-15 12:27:51,062] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.washer.laundry.power.month' was successfully created
+[2021-11-15 12:27:51,079] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.hot_water.power.month' was not found, creating...
+[2021-11-15 12:27:51,106] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.hot_water.power.month' was successfully created
+[2021-11-15 12:27:51,117] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.juicebox.vehicles.power.month' was not found, creating...
+[2021-11-15 12:27:51,149] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.juicebox.vehicles.power.month' was successfully created
+[2021-11-15 12:27:51,158] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.range.kitchen.power.month' was not found, creating...
+[2021-11-15 12:27:51,191] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.range.kitchen.power.month' was successfully created
+[2021-11-15 12:27:51,200] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.microwave.kitchen.power.month' was not found, creating...
+[2021-11-15 12:27:51,233] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.microwave.kitchen.power.month' was successfully created
+[2021-11-15 12:27:51,241] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.sump.basement.power.month' was not found, creating...
+[2021-11-15 12:27:51,273] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.sump.basement.power.month' was successfully created
+[2021-11-15 12:27:51,282] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.main.bedroom.power.month' was not found, creating...
+[2021-11-15 12:27:51,315] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.main.bedroom.power.month' was successfully created
+[2021-11-15 12:27:51,324] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.kitchen.power.month' was not found, creating...
+[2021-11-15 12:27:51,358] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.kitchen.power.month' was successfully created
+[2021-11-15 12:27:51,367] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_1.kitchen.power.month' was not found, creating...
+[2021-11-15 12:27:51,402] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_1.kitchen.power.month' was successfully created
+[2021-11-15 12:27:51,412] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_2.kitchen.power.month' was not found, creating...
+[2021-11-15 12:27:51,444] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_2.kitchen.power.month' was successfully created
+[2021-11-15 12:27:51,455] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dishwasher.kitchen.power.month' was not found, creating...
+[2021-11-15 12:27:51,486] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dishwasher.kitchen.power.month' was successfully created
+[2021-11-15 12:27:51,496] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.guest.bedroom.power.month' was not found, creating...
+[2021-11-15 12:27:51,531] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.guest.bedroom.power.month' was successfully created
+[2021-11-15 12:27:51,541] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.living_room.main_floor.power.month' was not found, creating...
+[2021-11-15 12:27:51,573] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.living_room.main_floor.power.month' was successfully created
+[2021-11-15 12:27:51,584] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.foyer.main_floor.power.month' was not found, creating...
+[2021-11-15 12:27:51,615] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.foyer.main_floor.power.month' was successfully created
+[2021-11-15 12:27:51,626] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.basement.power.month' was not found, creating...
+[2021-11-15 12:27:51,660] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.basement.power.month' was successfully created
+[2021-11-15 12:27:51,669] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.freezer.garage.power.month' was not found, creating...
+[2021-11-15 12:27:51,702] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.freezer.garage.power.month' was successfully created
+[2021-11-15 12:27:51,712] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.west_basement.basement.power.month' was not found, creating...
+[2021-11-15 12:27:51,745] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.west_basement.basement.power.month' was successfully created
+[2021-11-15 12:27:51,756] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.line.power.year' was not found, creating...
+[2021-11-15 12:27:51,784] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.line.power.year' was successfully created
+[2021-11-15 12:27:51,794] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.metered.power.year' was not found, creating...
+[2021-11-15 12:27:51,821] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.metered.power.year' was successfully created
+[2021-11-15 12:27:51,833] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.tesla.vehicles.power.year' was not found, creating...
+[2021-11-15 12:27:51,865] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.tesla.vehicles.power.year' was successfully created
+[2021-11-15 12:27:51,877] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.datacenter.basement.power.year' was not found, creating...
+[2021-11-15 12:27:51,907] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.datacenter.basement.power.year' was successfully created
+[2021-11-15 12:27:51,919] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.east_basement.basement.power.year' was not found, creating...
+[2021-11-15 12:27:51,950] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.east_basement.basement.power.year' was successfully created
+[2021-11-15 12:27:51,961] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dryer.laundry.power.year' was not found, creating...
+[2021-11-15 12:27:51,992] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dryer.laundry.power.year' was successfully created
+[2021-11-15 12:27:52,004] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.heatpump.power.year' was not found, creating...
+[2021-11-15 12:27:52,031] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.heatpump.power.year' was successfully created
+[2021-11-15 12:27:52,044] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.washer.laundry.power.year' was not found, creating...
+[2021-11-15 12:27:52,074] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.washer.laundry.power.year' was successfully created
+[2021-11-15 12:27:52,086] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.hot_water.power.year' was not found, creating...
+[2021-11-15 12:27:52,113] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.hot_water.power.year' was successfully created
+[2021-11-15 12:27:52,126] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.juicebox.vehicles.power.year' was not found, creating...
+[2021-11-15 12:27:52,157] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.juicebox.vehicles.power.year' was successfully created
+[2021-11-15 12:27:52,170] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.range.kitchen.power.year' was not found, creating...
+[2021-11-15 12:27:52,201] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.range.kitchen.power.year' was successfully created
+[2021-11-15 12:27:52,212] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.microwave.kitchen.power.year' was not found, creating...
+[2021-11-15 12:27:52,244] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.microwave.kitchen.power.year' was successfully created
+[2021-11-15 12:27:52,256] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.sump.basement.power.year' was not found, creating...
+[2021-11-15 12:27:52,288] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.sump.basement.power.year' was successfully created
+[2021-11-15 12:27:52,299] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.main.bedroom.power.year' was not found, creating...
+[2021-11-15 12:27:52,333] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.main.bedroom.power.year' was successfully created
+[2021-11-15 12:27:52,345] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.kitchen.power.year' was not found, creating...
+[2021-11-15 12:27:52,377] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.refrigerator.kitchen.power.year' was successfully created
+[2021-11-15 12:27:52,391] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_1.kitchen.power.year' was not found, creating...
+[2021-11-15 12:27:52,422] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_1.kitchen.power.year' was successfully created
+[2021-11-15 12:27:52,434] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_2.kitchen.power.year' was not found, creating...
+[2021-11-15 12:27:52,465] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.outlets_2.kitchen.power.year' was successfully created
+[2021-11-15 12:27:52,476] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dishwasher.kitchen.power.year' was not found, creating...
+[2021-11-15 12:27:52,509] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.dishwasher.kitchen.power.year' was successfully created
+[2021-11-15 12:27:52,522] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.guest.bedroom.power.year' was not found, creating...
+[2021-11-15 12:27:52,553] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.guest.bedroom.power.year' was successfully created
+[2021-11-15 12:27:52,566] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.living_room.main_floor.power.year' was not found, creating...
+[2021-11-15 12:27:52,597] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.living_room.main_floor.power.year' was successfully created
+[2021-11-15 12:27:52,611] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.foyer.main_floor.power.year' was not found, creating...
+[2021-11-15 12:27:52,641] [tasks] [DEBUG] InfluxDB task 'cs_esphome._device.foyer.main_floor.power.year' was successfully created
+[2021-11-15 12:27:52,655] [tasks] [ERROR] Task 'cs_esphome._device.refrigerator.basement.power.year' exists in _integration_worker('year')
+[2021-11-15 12:27:52,668] [tasks] [ERROR] Task 'cs_esphome._device.freezer.garage.power.year' exists in _integration_worker('year')
+[2021-11-15 12:27:52,683] [tasks] [ERROR] Task 'cs_esphome._device.west_basement.basement.power.year' exists in _integration_worker('year')
+[2021-11-15 12:33:14,423] [cs_esphome] [INFO] Closing CS/ESPHome application
+[2021-11-15 12:33:15,826] [circuitsetup] [ERROR] task_esphome_sensor_post(): Event loop is closed
+[2021-11-15 12:36:24,529] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:36:24,647] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16039
+[2021-11-15 12:36:24,660] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:36:24,712] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:36:24,734] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:36:25,782] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:36:25,795] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:36:25,796] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:36:25,880] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:36:25,881] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:36:25,882] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:36:25,883] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:36:25,883] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:36:25,883] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:36:25,897] [tasks] [INFO] Deleting 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:36:25,904] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:36:25,912] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:36:25,920] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:36:25,927] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:36:25,935] [tasks] [INFO] Deleting 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:36:25,943] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:36:25,944] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:36:25,945] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:36:25,946] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:36:25,947] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:36:25,948] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:36:25,949] [tasks] [INFO] Deleting 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:36:25,958] [tasks] [INFO] Deleting 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:36:25,966] [tasks] [INFO] Deleting 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:36:25,973] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:36:25,981] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:36:25,989] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:36:25,997] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:36:26,004] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:36:26,012] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:36:26,020] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:36:26,028] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:36:26,028] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:36:26,028] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:36:26,028] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:36:26,028] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:36:26,028] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:36:26,029] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:36:26,030] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:36:26,030] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:36:26,030] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:36:26,030] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:36:26,030] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.today'
+[2021-11-15 12:36:26,038] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:36:26,046] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:36:26,054] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:36:26,062] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:36:26,070] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:36:26,078] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:36:26,086] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:36:26,094] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:36:26,102] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:36:26,110] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:36:26,118] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:36:26,126] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:36:26,134] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:36:26,141] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:36:26,149] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:36:26,156] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:36:26,164] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:36:26,173] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:36:26,181] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:36:26,189] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:36:26,197] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:36:26,205] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:36:26,213] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:36:26,221] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:36:26,222] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:36:26,223] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:36:26,224] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:36:26,225] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:36:26,226] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:36:26,226] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:36:26,226] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:36:26,226] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:36:26,226] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:36:26,226] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:36:26,226] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:36:26,234] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:36:26,243] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:36:26,251] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:36:26,259] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:36:26,267] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:36:26,275] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:36:26,283] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:36:26,284] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:36:26,285] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:36:26,285] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:36:26,285] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:36:26,285] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:36:26,285] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:36:26,285] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:36:26,285] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:36:26,285] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:36:26,286] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:36:26,287] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:36:26,288] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:36:26,288] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.month'
+[2021-11-15 12:36:26,297] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:36:26,305] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:36:26,313] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:36:26,323] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:36:26,330] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:36:26,339] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:36:26,347] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:36:26,354] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:36:26,362] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:36:26,371] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:36:26,380] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:36:26,388] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:36:26,395] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:36:26,404] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:36:26,413] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:36:26,421] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:36:26,429] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:36:26,437] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:36:26,445] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:36:26,453] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:36:26,461] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:36:26,469] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:36:26,479] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:36:26,487] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:36:26,487] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:36:26,487] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:36:26,487] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:36:26,488] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:36:26,489] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:36:26,489] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:36:26,489] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:36:26,489] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:36:26,489] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:36:26,489] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:36:26,497] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:36:26,506] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:36:26,517] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:36:26,517] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:36:26,517] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:36:26,517] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:36:26,517] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:36:26,517] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:36:26,517] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:36:26,518] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:36:26,519] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:36:26,519] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:36:26,527] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:36:26,535] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:36:26,543] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:36:26,551] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:36:26,560] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:36:26,567] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:36:26,576] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:36:26,576] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:36:26,576] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:36:26,576] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:36:26,577] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:36:26,578] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:36:26,579] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:36:26,580] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:36:26,581] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:36:26,582] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:36:26,582] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:36:26,582] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:36:26,582] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.year'
+[2021-11-15 12:36:26,591] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:36:26,599] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:36:26,607] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:36:26,615] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:36:26,622] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:36:26,630] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:36:26,638] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:36:26,646] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:36:26,654] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:36:26,662] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:36:26,670] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:36:26,678] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:36:26,686] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:36:26,694] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:36:26,702] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:36:26,709] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:36:26,716] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:36:33,302] [tasks] [ERROR] Task 'cs_esphome._device.guest.bedroom.power.year' exists in _integration_worker('year')
+[2021-11-15 12:36:33,319] [tasks] [ERROR] Task 'cs_esphome._device.living_room.main_floor.power.year' exists in _integration_worker('year')
+[2021-11-15 12:36:33,335] [tasks] [ERROR] Task 'cs_esphome._device.foyer.main_floor.power.year' exists in _integration_worker('year')
+[2021-11-15 12:38:30,515] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:38:30,633] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16091
+[2021-11-15 12:38:30,650] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:38:30,965] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:38:30,987] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:38:32,234] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:38:32,267] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:38:32,267] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:38:32,270] [tasks] [INFO] delete_tasks(['now', 'today', 'month', 'year'])
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.year'
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.year'
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.year'
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:38:32,571] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:38:32,572] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:38:32,573] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:38:32,573] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:38:32,573] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:38:32,573] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:38:32,573] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:38:32,573] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:38:32,573] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:38:32,584] [tasks] [INFO] Deleting 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:38:32,595] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:38:32,606] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:38:32,617] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:38:32,627] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:38:32,638] [tasks] [INFO] Deleting 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:38:32,649] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:38:32,650] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:38:32,651] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:38:32,652] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:38:32,653] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.year'
+[2021-11-15 12:38:32,654] [tasks] [INFO] Deleting 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:38:32,665] [tasks] [INFO] Deleting 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:38:32,675] [tasks] [INFO] Deleting 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:38:32,685] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:38:32,694] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:38:32,711] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:38:32,726] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:38:32,733] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:38:32,742] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:38:32,750] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:38:32,758] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:38:32,758] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:38:32,758] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:38:32,759] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:38:32,760] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.today'
+[2021-11-15 12:38:32,768] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:38:32,775] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:38:32,783] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:38:32,791] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:38:32,799] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:38:32,807] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:38:32,815] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:38:32,823] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:38:32,831] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:38:32,838] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:38:32,846] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:38:32,853] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:38:32,861] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:38:32,869] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:38:32,877] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:38:32,885] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:38:32,893] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:38:32,901] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:38:32,908] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:38:32,916] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:38:32,924] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:38:32,931] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:38:32,940] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:38:32,948] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:38:32,948] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:38:32,948] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:38:32,948] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:38:32,948] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:38:32,948] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:38:32,948] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:38:32,948] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:38:32,949] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:38:32,950] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:38:32,951] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.year'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.year'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.year'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:38:32,952] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:38:32,953] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:38:32,953] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:38:32,953] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:38:32,953] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:38:32,953] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:38:32,961] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:38:32,969] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:38:32,978] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:38:32,986] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:38:32,993] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:38:33,001] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:38:33,009] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:38:33,009] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:38:33,009] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:38:33,009] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:38:33,009] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:38:33,010] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:38:33,011] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:38:33,012] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:38:33,013] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:38:33,013] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:38:33,013] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.month'
+[2021-11-15 12:38:33,020] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:38:33,028] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:38:33,035] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:38:33,043] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:38:33,051] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:38:33,059] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:38:33,067] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:38:33,075] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:38:33,083] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:38:33,091] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:38:33,099] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:38:33,107] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:38:33,115] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:38:33,123] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:38:33,131] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:38:33,138] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:38:33,147] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:38:33,155] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:38:33,163] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:38:33,171] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:38:33,180] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:38:33,188] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:38:33,197] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:38:33,205] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:38:33,205] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:38:33,206] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:38:33,206] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:38:33,206] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:38:33,206] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:38:33,206] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:38:33,206] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:38:33,207] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:38:33,207] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:38:33,207] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:38:33,207] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:38:33,207] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:38:33,207] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:38:33,207] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:38:33,207] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:38:33,208] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:38:33,208] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:38:33,208] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.year'
+[2021-11-15 12:38:33,217] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.year'
+[2021-11-15 12:38:33,226] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.year'
+[2021-11-15 12:38:33,235] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:38:33,235] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:38:33,235] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:38:33,235] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:38:33,235] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:38:33,235] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:38:33,235] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:38:33,236] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:38:33,236] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:38:33,236] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:38:33,236] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:38:33,236] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:38:33,236] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:38:33,236] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:38:33,236] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:38:33,237] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:38:33,237] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:38:33,237] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:38:33,246] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:38:33,254] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:38:33,263] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:38:33,271] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:38:33,280] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:38:33,288] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:38:33,296] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:38:33,297] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:38:33,297] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:38:33,297] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:38:33,297] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:38:33,297] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:38:33,297] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:38:33,297] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:38:33,298] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:38:33,298] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:38:33,298] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:38:33,298] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:38:33,298] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:38:33,298] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:38:33,298] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:38:33,299] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:38:33,299] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:38:33,299] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:38:33,299] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:38:33,299] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:38:33,299] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:38:33,299] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:38:33,299] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:38:33,300] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:38:33,300] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:38:33,300] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:38:33,300] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:38:33,300] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:38:33,300] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:38:33,300] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:38:33,301] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:38:33,301] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:38:33,301] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:38:33,301] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:38:33,301] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:38:33,301] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:38:33,301] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:38:33,301] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:38:33,302] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:38:33,302] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:38:33,302] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:38:33,302] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:38:33,302] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:38:33,302] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:38:33,302] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:38:33,302] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:38:33,303] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:38:33,303] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:38:33,303] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:38:33,303] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:38:33,303] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:38:33,303] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:38:33,303] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:38:33,303] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:38:33,304] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:38:33,304] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.year'
+[2021-11-15 12:38:33,313] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:38:33,322] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:38:33,330] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:38:33,338] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:38:33,347] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:38:33,355] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:38:33,364] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:38:33,372] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:38:33,381] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:38:33,389] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:38:33,398] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:38:33,406] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:38:33,415] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:38:33,424] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:38:33,434] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:38:33,443] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:38:33,451] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:38:37,989] [tasks] [ERROR] Task 'cs_esphome._device.refrigerator.basement.power.year' exists in _integration_worker('year')
+[2021-11-15 12:38:38,001] [tasks] [ERROR] Task 'cs_esphome._device.freezer.garage.power.year' exists in _integration_worker('year')
+[2021-11-15 12:38:38,016] [tasks] [ERROR] Task 'cs_esphome._device.west_basement.basement.power.year' exists in _integration_worker('year')
+[2021-11-15 12:42:05,357] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:42:05,474] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16127
+[2021-11-15 12:42:05,488] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:42:05,700] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:42:05,721] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:42:06,866] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:42:06,878] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:42:06,878] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:42:06,881] [tasks] [INFO] delete_tasks(['now', 'today', 'month', 'year'])
+[2021-11-15 12:42:06,959] [tasks] [INFO] Processing 'now' tasks
+
+[2021-11-15 12:42:06,959] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:42:06,959] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:42:06,959] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:42:06,959] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:42:06,959] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:42:06,959] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:42:06,960] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:42:06,961] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:42:06,974] [tasks] [INFO] Deleting 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:42:06,982] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:42:06,990] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:42:06,998] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:42:07,005] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:42:07,013] [tasks] [INFO] Deleting 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:42:07,022] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:42:07,023] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:42:07,024] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:42:07,025] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:42:07,026] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Processing 'today' tasks
+
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:42:07,027] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:42:07,028] [tasks] [INFO] Deleting 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:42:07,036] [tasks] [INFO] Deleting 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:42:07,044] [tasks] [INFO] Deleting 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:42:07,052] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:42:07,061] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:42:07,069] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:42:07,076] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:42:07,084] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:42:07,092] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:42:07,100] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:42:07,108] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:42:07,108] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:42:07,108] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:42:07,108] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:42:07,109] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:42:07,110] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:42:07,110] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:42:07,110] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:42:07,110] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:42:07,110] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:42:07,110] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:42:07,110] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:42:07,110] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.today'
+[2021-11-15 12:42:07,118] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:42:07,126] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:42:07,133] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:42:07,141] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:42:07,149] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:42:07,157] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:42:07,164] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:42:07,172] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:42:07,180] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:42:07,188] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:42:07,196] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:42:07,205] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:42:07,213] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:42:07,220] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:42:07,228] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:42:07,236] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:42:07,244] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:42:07,252] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:42:07,260] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:42:07,268] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:42:07,277] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:42:07,285] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:42:07,293] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:42:07,301] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:42:07,302] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:42:07,303] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:42:07,304] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Processing 'month' tasks
+
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:42:07,305] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:42:07,306] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:42:07,306] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:42:07,306] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:42:07,306] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:42:07,306] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:42:07,306] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:42:07,306] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:42:07,314] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:42:07,323] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:42:07,330] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:42:07,338] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:42:07,347] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:42:07,355] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:42:07,364] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:42:07,364] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:42:07,364] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:42:07,364] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:42:07,364] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:42:07,364] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:42:07,365] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:42:07,366] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:42:07,367] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.month'
+[2021-11-15 12:42:07,375] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:42:07,384] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:42:07,391] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:42:07,399] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:42:07,407] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:42:07,414] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:42:07,423] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:42:07,431] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:42:07,439] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:42:07,447] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:42:07,455] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:42:07,464] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:42:07,473] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:42:07,481] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:42:07,489] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:42:07,497] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:42:07,505] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:42:07,513] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:42:07,521] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:42:07,529] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:42:07,537] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:42:07,546] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:42:07,553] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:42:07,562] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.year'
+[2021-11-15 12:42:07,562] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:42:07,562] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:42:07,562] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:42:07,562] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:42:07,562] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:42:07,563] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:42:07,564] [tasks] [INFO] Processing 'year' tasks
+
+[2021-11-15 12:42:07,564] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:42:07,572] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:42:07,581] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:42:07,589] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:42:07,590] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:42:07,590] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:42:07,590] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:42:07,590] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:42:07,590] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:42:07,590] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:42:07,590] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:42:07,598] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:42:07,606] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:42:07,614] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:42:07,622] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:42:07,629] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:42:07,637] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:42:07,645] [tasks] [INFO] Did not delete 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:42:07,645] [tasks] [INFO] Did not delete 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:42:07,645] [tasks] [INFO] Did not delete 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.today'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:42:07,646] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:42:07,647] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.line.power.month'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:42:07,648] [tasks] [INFO] Did not delete 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:42:07,649] [tasks] [INFO] Did not delete 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:42:07,650] [tasks] [INFO] Did not delete 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:42:07,650] [tasks] [INFO] Did not delete 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:42:07,650] [tasks] [INFO] Did not delete 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:42:07,650] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.year'
+[2021-11-15 12:42:07,658] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:42:07,667] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:42:07,674] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:42:07,682] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:42:07,689] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:42:07,697] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:42:07,705] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:42:07,713] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:42:07,721] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:42:07,730] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:42:07,737] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:42:07,745] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:42:07,753] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:42:07,761] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:42:07,769] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:42:07,777] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:42:07,785] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:42:12,735] [tasks] [ERROR] Task 'cs_esphome._device.guest.bedroom.power.year' exists in _integration_worker('year')
+[2021-11-15 12:42:12,747] [tasks] [ERROR] Task 'cs_esphome._device.living_room.main_floor.power.year' exists in _integration_worker('year')
+[2021-11-15 12:42:12,760] [tasks] [ERROR] Task 'cs_esphome._device.foyer.main_floor.power.year' exists in _integration_worker('year')
+[2021-11-15 12:47:24,202] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:47:24,321] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16157
+[2021-11-15 12:47:24,333] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:47:24,559] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:47:24,580] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:47:25,404] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:47:25,418] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:47:25,419] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:47:25,421] [tasks] [INFO] delete_tasks([])
+[2021-11-15 12:47:35,842] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.year'
+[2021-11-15 12:47:44,831] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.year'
+[2021-11-15 12:47:44,851] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.year'
+[2021-11-15 12:47:44,861] [tasks] [INFO] Deleting 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:47:44,871] [tasks] [INFO] Deleting 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:47:44,880] [tasks] [INFO] Deleting 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:47:44,899] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:47:44,907] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:47:44,914] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:47:44,921] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:47:44,929] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:47:44,936] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:47:44,943] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:47:44,952] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:47:44,960] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:47:44,968] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:47:44,976] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:47:44,983] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:47:44,991] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:47:44,999] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:47:45,007] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:47:45,015] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:47:45,022] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:47:45,030] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:47:45,037] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:47:45,045] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:47:45,057] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:47:45,064] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:47:45,073] [tasks] [INFO] Deleting 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:47:45,080] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:47:45,087] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:47:45,095] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:47:45,104] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:47:45,112] [tasks] [INFO] Deleting 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:47:45,120] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.today'
+[2021-11-15 12:47:45,128] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.today'
+[2021-11-15 12:47:45,135] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.today'
+[2021-11-15 12:47:45,143] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.today'
+[2021-11-15 12:47:45,152] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.today'
+[2021-11-15 12:47:45,159] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.today'
+[2021-11-15 12:47:45,167] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.today'
+[2021-11-15 12:47:45,174] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.today'
+[2021-11-15 12:47:45,182] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.today'
+[2021-11-15 12:47:45,190] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.today'
+[2021-11-15 12:47:45,197] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.today'
+[2021-11-15 12:47:45,205] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.today'
+[2021-11-15 12:47:45,224] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.today'
+[2021-11-15 12:47:45,233] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.today'
+[2021-11-15 12:47:45,241] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.today'
+[2021-11-15 12:47:45,248] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.today'
+[2021-11-15 12:47:45,256] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.today'
+[2021-11-15 12:47:45,264] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.today'
+[2021-11-15 12:47:45,273] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.today'
+[2021-11-15 12:47:45,281] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.today'
+[2021-11-15 12:47:45,289] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.today'
+[2021-11-15 12:47:45,297] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.today'
+[2021-11-15 12:47:45,305] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.today'
+[2021-11-15 12:47:45,313] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.today'
+[2021-11-15 12:47:45,321] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.month'
+[2021-11-15 12:47:45,329] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.month'
+[2021-11-15 12:47:45,336] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.month'
+[2021-11-15 12:47:45,344] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.month'
+[2021-11-15 12:47:45,352] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.month'
+[2021-11-15 12:47:45,360] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.month'
+[2021-11-15 12:47:45,369] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.month'
+[2021-11-15 12:47:45,377] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.month'
+[2021-11-15 12:47:45,386] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.month'
+[2021-11-15 12:47:45,394] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.month'
+[2021-11-15 12:47:45,403] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.month'
+[2021-11-15 12:47:45,411] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.month'
+[2021-11-15 12:47:45,419] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.month'
+[2021-11-15 12:47:45,427] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.month'
+[2021-11-15 12:47:45,436] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.month'
+[2021-11-15 12:47:45,444] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.month'
+[2021-11-15 12:47:45,452] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.month'
+[2021-11-15 12:47:45,460] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.month'
+[2021-11-15 12:47:45,469] [tasks] [INFO] Deleting 'cs_esphome._device.guest.bedroom.power.month'
+[2021-11-15 12:47:45,478] [tasks] [INFO] Deleting 'cs_esphome._device.living_room.main_floor.power.month'
+[2021-11-15 12:47:45,486] [tasks] [INFO] Deleting 'cs_esphome._device.foyer.main_floor.power.month'
+[2021-11-15 12:47:45,494] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.month'
+[2021-11-15 12:47:45,502] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.month'
+[2021-11-15 12:47:45,511] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.month'
+[2021-11-15 12:47:45,520] [tasks] [INFO] Deleting 'cs_esphome._device.line.power.year'
+[2021-11-15 12:47:45,527] [tasks] [INFO] Deleting 'cs_esphome._device.metered.power.year'
+[2021-11-15 12:47:45,535] [tasks] [INFO] Deleting 'cs_esphome._device.tesla.vehicles.power.year'
+[2021-11-15 12:47:45,544] [tasks] [INFO] Deleting 'cs_esphome._device.datacenter.basement.power.year'
+[2021-11-15 12:47:45,553] [tasks] [INFO] Deleting 'cs_esphome._device.east_basement.basement.power.year'
+[2021-11-15 12:47:45,561] [tasks] [INFO] Deleting 'cs_esphome._device.dryer.laundry.power.year'
+[2021-11-15 12:47:45,569] [tasks] [INFO] Deleting 'cs_esphome._device.heatpump.power.year'
+[2021-11-15 12:47:45,577] [tasks] [INFO] Deleting 'cs_esphome._device.washer.laundry.power.year'
+[2021-11-15 12:47:45,586] [tasks] [INFO] Deleting 'cs_esphome._device.hot_water.power.year'
+[2021-11-15 12:47:45,594] [tasks] [INFO] Deleting 'cs_esphome._device.juicebox.vehicles.power.year'
+[2021-11-15 12:47:45,602] [tasks] [INFO] Deleting 'cs_esphome._device.range.kitchen.power.year'
+[2021-11-15 12:47:45,610] [tasks] [INFO] Deleting 'cs_esphome._device.microwave.kitchen.power.year'
+[2021-11-15 12:47:45,618] [tasks] [INFO] Deleting 'cs_esphome._device.sump.basement.power.year'
+[2021-11-15 12:47:45,627] [tasks] [INFO] Deleting 'cs_esphome._device.main.bedroom.power.year'
+[2021-11-15 12:47:45,634] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.kitchen.power.year'
+[2021-11-15 12:47:45,641] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_1.kitchen.power.year'
+[2021-11-15 12:47:45,649] [tasks] [INFO] Deleting 'cs_esphome._device.outlets_2.kitchen.power.year'
+[2021-11-15 12:47:45,659] [tasks] [INFO] Deleting 'cs_esphome._device.dishwasher.kitchen.power.year'
+[2021-11-15 12:53:24,799] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:53:24,916] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16203
+[2021-11-15 12:53:24,929] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:53:25,043] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:53:25,065] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:53:26,079] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:53:26,094] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:53:26,094] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:53:26,097] [tasks] [INFO] delete_tasks([])
+[2021-11-15 12:53:26,132] [tasks] [INFO] Deleting 'cs_esphome._device.refrigerator.basement.power.year'
+[2021-11-15 12:53:26,146] [tasks] [INFO] Deleting 'cs_esphome._device.freezer.garage.power.year'
+[2021-11-15 12:53:26,154] [tasks] [INFO] Deleting 'cs_esphome._device.west_basement.basement.power.year'
+[2021-11-15 12:53:26,162] [tasks] [INFO] Deleting 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:53:26,170] [tasks] [INFO] Deleting 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:53:26,178] [tasks] [INFO] Deleting 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:53:26,186] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:53:26,195] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:53:26,204] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:53:26,211] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:53:26,219] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:53:26,228] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:53:26,235] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:53:26,244] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:53:26,252] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:53:26,260] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:53:26,268] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:53:26,276] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:53:26,284] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:53:26,292] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:53:26,300] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:53:26,308] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:53:26,317] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:53:26,326] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:53:26,334] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:53:26,343] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:53:26,351] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:53:26,359] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:53:26,367] [tasks] [INFO] Deleting 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:53:26,375] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:53:26,384] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:53:26,392] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:53:26,400] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:53:26,408] [tasks] [INFO] Deleting 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:54:07,193] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:54:07,311] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16231
+[2021-11-15 12:54:07,326] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:54:07,372] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:54:07,393] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:54:08,633] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:54:08,649] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:54:08,649] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:54:08,652] [tasks] [INFO] delete_tasks([])
+[2021-11-15 12:54:08,686] [tasks] [INFO] Deleting 'cs_esphome._meter.writing.energy.today'
+[2021-11-15 12:54:08,706] [tasks] [INFO] Deleting 'cs_esphome._meter.reading.energy.today'
+[2021-11-15 12:54:08,714] [tasks] [INFO] Deleting 'cs_esphome._meter.delta_wh.energy.today'
+[2021-11-15 12:54:08,723] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.today'
+[2021-11-15 12:54:08,731] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.today'
+[2021-11-15 12:54:08,739] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.today'
+[2021-11-15 12:54:08,748] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.today'
+[2021-11-15 12:54:08,756] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.today'
+[2021-11-15 12:54:08,764] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.today'
+[2021-11-15 12:54:08,772] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.today'
+[2021-11-15 12:54:08,780] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.month'
+[2021-11-15 12:54:08,789] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.month'
+[2021-11-15 12:54:08,797] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.month'
+[2021-11-15 12:54:08,806] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.month'
+[2021-11-15 12:54:08,814] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.month'
+[2021-11-15 12:54:08,822] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.month'
+[2021-11-15 12:54:08,830] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.month'
+[2021-11-15 12:54:08,839] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.energy.year'
+[2021-11-15 12:54:08,847] [tasks] [INFO] Deleting 'cs_esphome._location.basement.energy.year'
+[2021-11-15 12:54:08,856] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.energy.year'
+[2021-11-15 12:54:08,864] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.energy.year'
+[2021-11-15 12:54:08,872] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.energy.year'
+[2021-11-15 12:54:08,881] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.energy.year'
+[2021-11-15 12:54:08,890] [tasks] [INFO] Deleting 'cs_esphome._location.garage.energy.year'
+[2021-11-15 12:54:08,898] [tasks] [INFO] Deleting 'cs_esphome._location.vehicles.power.now'
+[2021-11-15 12:54:08,907] [tasks] [INFO] Deleting 'cs_esphome._location.basement.power.now'
+[2021-11-15 12:54:08,916] [tasks] [INFO] Deleting 'cs_esphome._location.laundry.power.now'
+[2021-11-15 12:54:08,924] [tasks] [INFO] Deleting 'cs_esphome._location.kitchen.power.now'
+[2021-11-15 12:54:08,933] [tasks] [INFO] Deleting 'cs_esphome._location.bedroom.power.now'
+[2021-11-15 12:54:08,942] [tasks] [INFO] Deleting 'cs_esphome._location.main_floor.power.now'
+[2021-11-15 12:54:08,950] [tasks] [INFO] Deleting 'cs_esphome._location.garage.power.now'
+[2021-11-15 12:54:15,078] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:54:15,196] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16255
+[2021-11-15 12:54:15,208] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:54:15,299] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:54:15,329] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:54:16,458] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:54:16,472] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:54:16,473] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:54:16,476] [tasks] [INFO] delete_tasks([])
+[2021-11-15 12:55:18,254] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:55:18,371] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16292
+[2021-11-15 12:55:18,384] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:55:18,607] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:55:18,629] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:55:19,879] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:55:19,891] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:55:19,891] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 12:55:25,129] [logfiles] [INFO] Created application log /Users/sillygoose/Projects/cs_esphome/cs_esphome/cs_esphome_2021-11-15.log
+[2021-11-15 12:55:25,248] [circuitsetup] [INFO] CS/ESPHome energy collection utility 0.4.2.dev, PID is 16315
+[2021-11-15 12:55:25,263] [influx] [INFO] Connected to InfluxDB: '192.168.1.81:8086', bucket 'cs24'
+[2021-11-15 12:55:25,352] [esphome] [INFO] ESPHome API version 1.6
+[2021-11-15 12:55:25,375] [esphome] [INFO] Name: 'cs24', model is nodemcu-32s, version 2021.10.2 built on Oct 23 2021, 02:08:28
+[2021-11-15 12:55:26,682] [esphome] [INFO] CS/ESPHome core started, ESPHome reports sampling sensors every 10 seconds
+[2021-11-15 12:55:26,697] [utilitymeter] [INFO] CS/ESPHome Utility Meter starting up, utility meter update task will run every 150 seconds
+[2021-11-15 12:55:26,697] [tasks] [INFO] CS/ESPHome Task Manager starting up, integration tasks will run every 30/300/600 seconds
+[2021-11-15 13:18:12,858] [circuitsetup] [ERROR] watchdog(): Lost connection to cs24

@@ -43,7 +43,20 @@ def fill_consumption_data(influxdb_client) -> None:
         {'date': '2021-10-31', 'cons': 37},
         {'date': '2021-11-01', 'cons': 87},
         {'date': '2021-11-02', 'cons': 45},
-   ]
+        {'date': '2021-11-03', 'cons': 103},
+        {'date': '2021-11-04', 'cons': 92},
+        {'date': '2021-11-05', 'cons': 44},
+        {'date': '2021-11-06', 'cons': 49},
+        {'date': '2021-11-07', 'cons': 78},
+        {'date': '2021-11-08', 'cons': 43},
+        {'date': '2021-11-09', 'cons': 39},
+        {'date': '2021-11-10', 'cons': 85},
+        {'date': '2021-11-11', 'cons': 109},
+        {'date': '2021-11-12', 'cons': 23},
+        {'date': '2021-11-13', 'cons': 48},
+        {'date': '2021-11-14', 'cons': 50},
+        {'date': '2021-11-15', 'cons': 88},
+    ]
 
     for day in parker_lane_daily:
         current = datetime.datetime.fromisoformat(day.get('date'))
