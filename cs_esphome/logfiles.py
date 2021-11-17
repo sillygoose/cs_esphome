@@ -2,14 +2,14 @@
 
 import os
 import sys
-from datetime import datetime
+# from datetime import datetime
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
 
 _LOGGER = logging.getLogger('cs_esphome')
 
-_DEFAULT_LOG_FILE = 'cs_esphome'
+_DEFAULT_LOG_FILE = 'log/cs_esphome'
 _DEFAULT_LOG_FORMAT = '[%(asctime)s] [%(module)s] [%(levelname)s] %(message)s'
 _DEFAULT_LOG_LEVEL = 'INFO'
 
@@ -24,8 +24,9 @@ def start():
     log_format = _DEFAULT_LOG_FORMAT
     log_level = _DEFAULT_LOG_LEVEL if not debug_mode else 'DEBUG'
 
-    now = datetime.now()
-    filename = os.path.expanduser(log_file + "_" + now.strftime("%Y-%m-%d") + ".log")
+    # now = datetime.now()
+    # filename = os.path.expanduser(log_file + "_" + now.strftime("%Y-%m-%d") + ".log")
+    filename = os.path.expanduser(log_file + ".log")
 
     # Create the directory if needed
     filename_parts = os.path.split(filename)
@@ -35,7 +36,7 @@ def start():
 
     # Change log files at midnight
     handler = TimedRotatingFileHandler(filename, when='midnight', interval=1, backupCount=10)
-    handler.suffix = "%Y-%m-%d"
+    handler.suffix = "-%Y-%m-%d"
     handler.setLevel(log_level)
     formatter = logging.Formatter(log_format)
     handler.setFormatter(formatter)
