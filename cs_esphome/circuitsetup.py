@@ -83,7 +83,8 @@ class CircuitSetup():
         except FailedInitialization as e:
             _LOGGER.error(f"run(): {e}")
         except WatchdogTimer as e:
-            _LOGGER.error(f"run(): {e}")
+            _LOGGER.debug(f"run(): {e}")
+            raise
         except Exception as e:
             _LOGGER.error(f"Unexpected exception in run(): {e}")
 

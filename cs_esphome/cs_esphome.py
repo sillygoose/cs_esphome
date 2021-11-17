@@ -48,7 +48,6 @@ class CS_ESPHome():
                 raise
 
             self._run()
-            raise NormalCompletion
 
         except (KeyboardInterrupt, NormalCompletion, TerminateSignal):
             pass
