@@ -56,6 +56,8 @@ def fill_consumption_data(influxdb_client) -> None:
         {'date': '2021-11-13', 'cons': 48},
         {'date': '2021-11-14', 'cons': 50},
         {'date': '2021-11-15', 'cons': 88},
+        {'date': '2021-11-16', 'cons': 56},
+        {'date': '2021-11-17', 'cons': 72},
     ]
 
     for day in parker_lane_daily:
@@ -71,7 +73,7 @@ def fill_consumption_data(influxdb_client) -> None:
     _LOGGER.info("Past monthly consumption written")
 
 
-def fill_grafana_data(config, influxdb_client) -> None:
+def fill_grafana_data(influxdb_client) -> None:
     """Fill in missing data for Grafana."""
 
     start = datetime.datetime.combine(datetime.datetime.now().replace(day=1), datetime.time(0, 0)) - relativedelta(months=13)
@@ -120,4 +122,4 @@ if __name__ == "__main__":
             influxdb_client = InfluxDB(config.cs_esphome)
             influxdb_client.start()
             fill_consumption_data(influxdb_client)
-            fill_grafana_data(config.cs_esphome, influxdb_client)
+            fill_grafana_data(influxdb_client)

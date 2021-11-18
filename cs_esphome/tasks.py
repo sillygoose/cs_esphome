@@ -347,7 +347,7 @@ class TaskManager():
                 for period in periods:
                     _LOGGER.debug(f"Processing '{period}' tasks in delete_tasks({periods})\n")
                     for task in tasks:
-                        if task.name.endswith('.' + period):
+                        if task.name.startswith(self._base_name) and task.name.endswith('.' + period):
                             _LOGGER.debug(f"delete_tasks({periods}): deleting '{task.name}'")
                             tasks_api.delete_task(task.id)
                             try:
