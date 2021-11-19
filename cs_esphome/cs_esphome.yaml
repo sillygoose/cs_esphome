@@ -56,6 +56,11 @@ cs_esphome:
           name: 'power_today'
           predicate: '_measurement="power" AND _field="today"'
           keep_last: 30
+### remember to delete this ###
+      - task:
+          name: 'power_now'
+          predicate: '_measurement="power" AND _field="now"'
+          keep_last: 1
 
   # CS/ESPHome settings
   # Allows some settings to be modified without editing the code

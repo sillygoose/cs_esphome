@@ -326,9 +326,9 @@ class TaskManager():
         _LOGGER.debug(f"delete_tasks({periods})")
         tasks_api = self._influxdb_client.tasks_api()
         try:
-            tasks = tasks_api.find_tasks(limit=200)
-            _LOGGER.debug(f"delete_tasks(): deleting up to {len(tasks)} tasks")
             if periods is None:
+                tasks = tasks_api.find_tasks(limit=200)
+                _LOGGER.debug(f"delete_tasks(): deleting {len(tasks)} tasks")
                 for task in tasks:
                     if task.name.startswith(self._base_name):
                         _LOGGER.debug(f"Deleting '{task.name}'")
@@ -345,7 +345,8 @@ class TaskManager():
                     _LOGGER.error("InfluxDB task API failure to delete all tasks")
             else:
                 for period in periods:
-                    _LOGGER.debug(f"Processing '{period}' tasks in delete_tasks({periods})\n")
+                    tasks = tasks_api.find_tasks(limit=200)
+                    _LOGGER.debug(f"Processing '{period}' tasks in delete_tasks({periods}), total of {len(tasks)} to examine\n")
                     for task in tasks:
                         if task.name.startswith(self._base_name) and task.name.endswith('.' + period):
                             _LOGGER.debug(f"delete_tasks({periods}): deleting '{task.name}'")
