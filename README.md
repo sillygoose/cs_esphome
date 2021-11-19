@@ -137,7 +137,7 @@ Data is organized in InfluxDB using the following schemas, refer to the Flux que
 
         _measurement    power
         _location       current power being consumed in the location
-        _field          now (W)
+        _field          today (W)
         _time           midnight
 
     Energy:

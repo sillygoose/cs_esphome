@@ -97,10 +97,10 @@ class TaskManager():
 
     async def task_refresh(self) -> None:
         """Update InfluxDB tasks at midnight."""
-        periods = None
+        periods = periods = ['today', 'month', 'year']
         while True:
             try:
-                _LOGGER.debug(f"task_refresh() deleting and recreating tasks for the periods '{periods}'")
+                _LOGGER.info(f"CS/ESPHome refreshing InfluxDB tasks for the periods {periods}")
                 self.delete_tasks(periods)
                 await self.influx_tasks(periods)
             except ApiException as e:
@@ -113,8 +113,8 @@ class TaskManager():
             midnight = datetime.datetime.combine(right_now + datetime.timedelta(days=1), datetime.time(0, 0, 10))
             await asyncio.sleep((midnight - right_now).total_seconds())
 
-            # Restart any InfluxDB now, today, month, and year tasks
-            periods = ['now', 'today']
+            # Restart any InfluxDB today, month, and year tasks
+            periods = ['today']
             right_now = datetime.datetime.now()
             if right_now.day == 1:
                 periods.append('month')
@@ -227,7 +227,7 @@ class TaskManager():
 
         measurement = 'power'
         tag_key = '_location'
-        period = 'now'
+        period = 'today'
 
         bucket = self._bucket
         tasks_api = self._tasks_api
@@ -281,9 +281,6 @@ class TaskManager():
             periods = ['today', 'month', 'year']
 
         for period in periods:
-            if period == 'now':
-                continue
-            
             for location, sensors in self._sensors_by_location.items():
                 task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
                 tasks = tasks_api.find_tasks(name=task_name)

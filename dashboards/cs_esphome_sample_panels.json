@@ -1790,12 +1790,12 @@
           "pluginVersion": "8.2.3",
           "targets": [
             {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\": r._value }))\n",
+              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\": r._value }))\n",
               "refId": "Kitchen"
             },
             {
               "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"vehicles\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"EVs\": r._value }))\n",
+              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"vehicles\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"EVs\": r._value }))\n",
               "refId": "EVs"
             },
             {
@@ -1810,7 +1810,7 @@
             },
             {
               "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"basement\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Basement\": r._value }))\n",
+              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"basement\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Basement\": r._value }))\n",
               "refId": "Basement"
             },
             {
@@ -1820,17 +1820,17 @@
             },
             {
               "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Laundry\": r._value }))\n",
+              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Laundry\": r._value }))\n",
               "refId": "Laundry"
             },
             {
               "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"bedroom\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Bedrooms\": r._value }))\n",
+              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"bedroom\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Bedrooms\": r._value }))\n",
               "refId": "Bedrooms"
             },
             {
               "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"main_floor\" and r._field == \"now\")\n  |> map(fn: (r) => ({ _time: r._time, \"Main Floor\": r._value }))\n",
+              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"main_floor\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Main Floor\": r._value }))\n",
               "refId": "Main Floor"
             }
           ],

@@ -36,8 +36,7 @@ class CS_ESPHome():
 
     def run(self):
         """Code to handle the start(), run(), and stop() interfaces."""
-        # ERROR_DELAY might be non-zero when some errors are detected *for now not implemented)
-        ERROR_DELAY = 0
+        _ERROR_DELAY = 10
         delay = 0
         try:
             try:
@@ -56,10 +55,10 @@ class CS_ESPHome():
             delay = 10
         except AbnormalCompletion:
             _LOGGER.critical("Received AbnormalCompletion exception")
-            delay = ERROR_DELAY
+            delay = _ERROR_DELAY
         except FailedInitialization:
             # _LOGGER.critical("Received FailedInitialization exception")
-            delay = ERROR_DELAY
+            delay = _ERROR_DELAY
         except Exception as e:
             _LOGGER.error(f"Unexpected exception caught: {e}")
         finally:
