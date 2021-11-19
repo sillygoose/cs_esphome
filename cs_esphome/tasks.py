@@ -281,6 +281,9 @@ class TaskManager():
             periods = ['today', 'month', 'year']
 
         for period in periods:
+            if period == 'now':
+                continue
+            
             for location, sensors in self._sensors_by_location.items():
                 task_name = self._base_name + '.' + tag_key + '.' + location + '.' + measurement + '.' + period
                 tasks = tasks_api.find_tasks(name=task_name)
@@ -327,7 +330,7 @@ class TaskManager():
         tasks_api = self._influxdb_client.tasks_api()
         try:
             tasks = tasks_api.find_tasks(limit=200)
-            _LOGGER.debug(f"delete_tasks(): deleting {len(tasks)} tasks")
+            _LOGGER.debug(f"delete_tasks(): deleting up to {len(tasks)} tasks")
             if periods is None:
                 for task in tasks:
                     if task.name.startswith(self._base_name):
