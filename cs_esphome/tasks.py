@@ -100,7 +100,7 @@ class TaskManager():
         periods = periods = ['today', 'month', 'year']
         while True:
             try:
-                _LOGGER.info(f"CS/ESPHome refreshing InfluxDB tasks for the periods {periods}")
+                _LOGGER.info(f"CS/ESPHome refreshing InfluxDB tasks for the period(s) {periods}")
                 self.delete_tasks(periods)
                 await self.influx_tasks(periods)
             except ApiException as e:

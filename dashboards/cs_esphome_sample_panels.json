@@ -18,17 +18,18 @@
       }
     ]
   },
+  "description": "Sample dashboard for the CS/ESPHome repo",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
   "id": 17,
-  "iteration": 1636493987783,
+  "iteration": 1637376550313,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
@@ -37,957 +38,956 @@
         "y": 0
       },
       "id": 75,
-      "panels": [
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds",
-                "seriesBy": "last"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 30,
-                "gradientMode": "scheme",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "smooth",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "light-red",
-                    "value": -50000
-                  },
-                  {
-                    "color": "light-green",
-                    "value": 0
-                  }
-                ]
-              },
-              "unit": "watt"
+      "panels": [],
+      "title": "Overview",
+      "type": "row"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds",
+            "seriesBy": "last"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
             },
-            "overrides": [
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
               {
-                "matcher": {
-                  "id": "byName",
-                  "options": "_device"
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": true,
-                      "tooltip": true,
-                      "viz": true
-                    }
-                  }
-                ]
+                "color": "green",
+                "value": null
               },
               {
-                "matcher": {
-                  "id": "byName",
-                  "options": "_value"
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": true,
-                      "tooltip": true,
-                      "viz": true
-                    }
-                  }
-                ]
+                "color": "light-red",
+                "value": -50000
               },
               {
-                "matcher": {
-                  "id": "byName",
-                  "options": "line"
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": true,
-                      "tooltip": true,
-                      "viz": true
-                    }
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "power"
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": true,
-                      "tooltip": true,
-                      "viz": true
-                    }
-                  }
-                ]
+                "color": "light-green",
+                "value": 0
               }
             ]
           },
-          "gridPos": {
-            "h": 8,
-            "w": 14,
-            "x": 0,
-            "y": 1
-          },
-          "id": 57,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "hidden",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "production = from(bucket: \"multisma2\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({ _time: r._time, _value: float(v: r._value), _device: r._inverter }))\n  |> yield(name: \"production\")\n  \nconsumption = from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._device}))\n  |> yield(name: \"consumption\")\n\nunion(tables: [production, consumption])\n  |> truncateTimeColumn(unit: 1m)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> fill(column: \"site\", value: 0.0)\n  |> sort(columns: [\"_time\"], desc: false)\n  |> map(fn: (r) => ({ _time: r._time, \"Net Power\": r.site - r.line }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false, column: \"Net Power\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
-              "refId": "Delta"
-            }
-          ],
-          "title": "Net Power",
-          "type": "timeseries"
+          "unit": "watt"
         },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_device"
             },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 5,
-            "x": 14,
-            "y": 1
-          },
-          "id": 8,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Line$/",
-              "values": false
-            },
-            "text": {
-              "valueSize": 50
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> map(fn: (r) => ({ _time: r._time, Line: r._value }))\n  |> aggregateWindow(every: v.windowPeriod, fn: last, column: \"Line\", createEmpty: false)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
-              "refId": "Current"
-            }
-          ],
-          "title": "Current Consumption",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "max": 20000,
-              "min": -20000,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "light-red",
-                    "value": -20000
-                  },
-                  {
-                    "color": "light-green",
-                    "value": 0
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 5,
-            "x": 19,
-            "y": 1
-          },
-          "id": 59,
-          "options": {
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Delta$/",
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true,
-            "text": {}
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "production = from(bucket: \"multisma2\")\n  |> range(start: -30m)\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> map(fn: (r) => ({ _value: float(v: r._value) }))\n  |> yield(name: \"production\")\n\nconsumption = from(bucket: \"cs24\")\n  |> range(start: -10m)\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> map(fn: (r) => ({ _value: r._value * -1.0 }))\n  |> yield(name: \"consumption\")\n  \nunion(tables: [production, consumption])\n  |> sum(column: \"_value\")\n  |> map(fn: (r) => ({ Delta: r._value }))\n",
-              "refId": "Net Power"
-            }
-          ],
-          "title": "Net Power",
-          "type": "gauge"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "fixedColor": "green",
-                "mode": "fixed"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 5,
-            "x": 14,
-            "y": 5
-          },
-          "id": 84,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Production$/",
-              "values": false
-            },
-            "text": {
-              "valueSize": 50
-            },
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "from(bucket: \"multisma2\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> map(fn: (r) => ({ _time: r._time, \"Production\": r._value }))\n  |> aggregateWindow(every: v.windowPeriod, fn: last, column: \"Production\", createEmpty: false)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
-              "refId": "Current"
-            }
-          ],
-          "title": "Current Production",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "kwatth"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 0,
-            "y": 9
-          },
-          "id": 94,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^_kwh$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "value"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
                 }
-              ],
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"multisma2\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"production\" and r._inverter == \"site\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _kwh: (float(v: r._value) * 1.0) }))\n",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Production",
-          "type": "stat"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_value"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "line"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "power"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 14,
+        "x": 0,
+        "y": 1
+      },
+      "id": 57,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom"
         },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
         {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "kwatth"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 3,
-            "y": 9
-          },
-          "id": 16,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Consumption",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 6,
-            "y": 9
-          },
-          "id": 10,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"kitchen\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Kitchen",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 8,
-            "y": 9
-          },
-          "id": 12,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"heatpump\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Heat pump",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 10,
-            "y": 9
-          },
-          "id": 26,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"hot_water\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Hot water",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 12,
-            "y": 9
-          },
-          "id": 14,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"vehicles\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "EVs",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 14,
-            "y": 9
-          },
-          "id": 34,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"basement\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Basement",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 16,
-            "y": 9
-          },
-          "id": 37,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"laundry\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Laundry",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 18,
-            "y": 9
-          },
-          "id": 40,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"main_floor\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Main Floor",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 20,
-            "y": 9
-          },
-          "id": 71,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"garage\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Garage",
-          "type": "stat"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 2,
-            "x": 22,
-            "y": 9
-          },
-          "id": 31,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "/^Value$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "auto"
-          },
-          "pluginVersion": "8.2.2",
-          "targets": [
-            {
-              "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"bedroom\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Bedrooms",
-          "type": "stat"
+          "query": "production = from(bucket: \"multisma2\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({ _time: r._time, _value: float(v: r._value), _device: r._inverter }))\n  |> yield(name: \"production\")\n  \nconsumption = from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value, _device: r._device}))\n  |> yield(name: \"consumption\")\n\nunion(tables: [production, consumption])\n  |> truncateTimeColumn(unit: 1m)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> fill(column: \"site\", value: 0.0)\n  |> sort(columns: [\"_time\"], desc: false)\n  |> map(fn: (r) => ({ _time: r._time, \"Net Power\": r.site - r.line }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false, column: \"Net Power\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
+          "refId": "Delta"
         }
       ],
-      "title": "Overview",
-      "type": "row"
+      "title": "Net Power",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 14,
+        "y": 1
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Line$/",
+          "values": false
+        },
+        "text": {
+          "valueSize": 50
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> map(fn: (r) => ({ _time: r._time, Line: r._value }))\n  |> aggregateWindow(every: v.windowPeriod, fn: last, column: \"Line\", createEmpty: false)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
+          "refId": "Current"
+        }
+      ],
+      "title": "Current Consumption",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 20000,
+          "min": -20000,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "light-red",
+                "value": -20000
+              },
+              {
+                "color": "light-green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 19,
+        "y": 1
+      },
+      "id": 59,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Delta$/",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "production = from(bucket: \"multisma2\")\n  |> range(start: -30m)\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> map(fn: (r) => ({ _value: float(v: r._value) }))\n  |> yield(name: \"production\")\n\nconsumption = from(bucket: \"cs24\")\n  |> range(start: -10m)\n  |> last()\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"line\" and r._field == \"sample\")\n  |> map(fn: (r) => ({ _value: r._value * -1.0 }))\n  |> yield(name: \"consumption\")\n  \nunion(tables: [production, consumption])\n  |> sum(column: \"_value\")\n  |> map(fn: (r) => ({ Delta: r._value }))\n",
+          "refId": "Net Power"
+        }
+      ],
+      "title": "Net Power",
+      "type": "gauge"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 14,
+        "y": 5
+      },
+      "id": 84,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Production$/",
+          "values": false
+        },
+        "text": {
+          "valueSize": 50
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "from(bucket: \"multisma2\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"ac_measurements\" and r._field == \"power\" and r._inverter == \"site\")\n  |> map(fn: (r) => ({ _time: r._time, \"Production\": r._value }))\n  |> aggregateWindow(every: v.windowPeriod, fn: last, column: \"Production\", createEmpty: false)\n  |> drop(columns: [\"_start\", \"_stop\"])\n",
+          "refId": "Current"
+        }
+      ],
+      "title": "Current Production",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 0,
+        "y": 9
+      },
+      "id": 94,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^_kwh$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"multisma2\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"production\" and r._inverter == \"site\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _kwh: (float(v: r._value) * 1.0) }))\n",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Production",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 3,
+        "y": 9
+      },
+      "id": 16,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"line\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Consumption",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 6,
+        "y": 9
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"kitchen\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Kitchen",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 8,
+        "y": 9
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"heatpump\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Heat pump",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 10,
+        "y": 9
+      },
+      "id": 26,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._device == \"hot_water\" and r._field == lookup.${period}.f)\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Hot water",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 12,
+        "y": 9
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"vehicles\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "EVs",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 14,
+        "y": 9
+      },
+      "id": 34,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"basement\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Basement",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 16,
+        "y": 9
+      },
+      "id": 37,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"laundry\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Laundry",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 18,
+        "y": 9
+      },
+      "id": 40,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"main_floor\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Main Floor",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 20,
+        "y": 9
+      },
+      "id": 71,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"garage\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Garage",
+      "type": "stat"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 2,
+        "x": 22,
+        "y": 9
+      },
+      "id": 31,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "lookup = {Today: {p: -1d, f: \"today\"}, Month: {p: -32d, f: \"month\"}, Year: {p: -13mo, f: \"year\"}}\nfrom(bucket: \"cs24\")\n  |> range(start: lookup.${period}.p)\n  |> filter(fn: (r) => r._measurement == \"energy\" and r._location == \"bedroom\" and r._field == lookup.${period}.f and not (exists r._device))\n  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 0.001}))\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Bedrooms",
+      "type": "stat"
     },
     {
       "collapsed": true,
@@ -996,7 +996,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 12
       },
       "id": 83,
       "panels": [
@@ -1123,7 +1123,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 2
+        "y": 13
       },
       "id": 77,
       "panels": [
@@ -1733,973 +1733,972 @@
       "type": "row"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 14
       },
       "id": 79,
-      "panels": [
-        {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "fixedColor": "red",
-                "mode": "fixed"
-              },
-              "decimals": 0,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 24,
-            "x": 0,
-            "y": 4
-          },
-          "id": 70,
-          "options": {
-            "displayMode": "basic",
-            "orientation": "horizontal",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showUnfilled": false,
-            "text": {}
-          },
-          "pluginVersion": "8.2.3",
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\": r._value }))\n",
-              "refId": "Kitchen"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"vehicles\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"EVs\": r._value }))\n",
-              "refId": "EVs"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"heatpump\" and r._field == \"sample\")\n  |> last()\n  |> map(fn: (r) => ({ _time: r._time, \"Heat Pump\": r._value }))\n",
-              "refId": "Heat Pump"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"hot_water\" and r._field == \"sample\")\n  |> last()\n  |> map(fn: (r) => ({ _time: r._time, \"Hot Water\": r._value }))\n",
-              "refId": "Hot Water"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"basement\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Basement\": r._value }))\n",
-              "refId": "Basement"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"garage\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Garage\": r._value }))\n",
-              "refId": "Garage"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Laundry\": r._value }))\n",
-              "refId": "Laundry"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"bedroom\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Bedrooms\": r._value }))\n",
-              "refId": "Bedrooms"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"main_floor\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Main Floor\": r._value }))\n",
-              "refId": "Main Floor"
-            }
-          ],
-          "title": "Current Power Consumption (W)",
-          "type": "bargauge"
-        },
-        {
-          "datasource": "${datasource}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "left",
-                "axisSoftMax": 10000,
-                "axisSoftMin": 0,
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "sample line"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Line"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "sample l1"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "L1"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "sample l2"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "L2"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 24,
-            "x": 0,
-            "y": 10
-          },
-          "id": 2,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"sample\")\n  |> filter(fn: (r) => r._device == \"line\" or r._device == \"l1\" or r._device == \"l2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "A"
-            }
-          ],
-          "title": "Line Characteristics",
-          "type": "timeseries"
-        },
-        {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "axisSoftMax": 6000,
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "heatpump"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Heat Pump"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "hot_water"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Hot Water"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 24,
-            "x": 0,
-            "y": 17
-          },
-          "id": 5,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"hot_water\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "Hot Water"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"heatpump\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "Heat Pump"
-            }
-          ],
-          "title": "Heat Pump & Hot Water",
-          "type": "timeseries"
-        },
-        {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "axisSoftMax": 2000,
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "dishwasher"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Dishwasher"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "microwave"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Microwave"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "range"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Range"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "refrigerator"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Refrigerator "
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byFrameRefID",
-                  "options": "Outlets"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Outlets"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 24,
-            "x": 0,
-            "y": 24
-          },
-          "id": 6,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"sample\")\n  |> filter(fn: (r) => r._device != \"outlets_1\" and r._device != \"outlets_2\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "TheRest"
-            },
-            {
-              "hide": false,
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\")\n  |> filter(fn: (r) => r._device == \"outlets_1\" or r._device == \"outlets_2\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: r.outlets_1 + r.outlets_2 }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\", \"outlets_1\", \"outlets_2\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "Outlets"
-            }
-          ],
-          "title": "Kitchen",
-          "type": "timeseries"
-        },
-        {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "axisSoftMax": 2000,
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "dryer"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Dryer"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "washer"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Washer"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 24,
-            "x": 0,
-            "y": 30
-          },
-          "id": 60,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "Laundry"
-            }
-          ],
-          "title": "Laundry",
-          "type": "timeseries"
-        },
-        {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "axisSoftMax": 10000,
-                "axisSoftMin": 0,
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "juicebox"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Juicebox"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "tesla"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Tesla HPWC"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 6,
-            "w": 24,
-            "x": 0,
-            "y": 36
-          },
-          "id": 4,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"vehicles\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "EV Charging"
-            }
-          ],
-          "title": "EV Charging",
-          "type": "timeseries"
-        },
-        {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "guest"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Guest Bedrooms"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "main"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Main Bedroom"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 24,
-            "x": 0,
-            "y": 42
-          },
-          "id": 85,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"bedroom\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "Bedrooms"
-            }
-          ],
-          "title": "Bedrooms",
-          "type": "timeseries"
-        },
-        {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "foyer"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Foyer"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "living_room"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Living Room"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 24,
-            "x": 0,
-            "y": 49
-          },
-          "id": 87,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"main_floor\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "Bedrooms"
-            }
-          ],
-          "title": "Main Floor",
-          "type": "timeseries"
-        },
-        {
-          "datasource": "${datasource}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "watt"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "garage"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Garage"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 24,
-            "x": 0,
-            "y": 56
-          },
-          "id": 86,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "multi"
-            }
-          },
-          "targets": [
-            {
-              "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"garage\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
-              "refId": "Bedrooms"
-            }
-          ],
-          "title": "Garage",
-          "type": "timeseries"
-        }
-      ],
+      "panels": [],
       "title": "Power",
       "type": "row"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "red",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 70,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false,
+        "text": {}
+      },
+      "pluginVersion": "8.2.4",
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Kitchen\": r._value }))\n",
+          "refId": "Kitchen"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"vehicles\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"EVs\": r._value }))\n",
+          "refId": "EVs"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"heatpump\" and r._field == \"sample\")\n  |> last()\n  |> map(fn: (r) => ({ _time: r._time, \"Heat Pump\": r._value }))\n",
+          "refId": "Heat Pump"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1m)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"hot_water\" and r._field == \"sample\")\n  |> last()\n  |> map(fn: (r) => ({ _time: r._time, \"Hot Water\": r._value }))\n",
+          "refId": "Hot Water"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"basement\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Basement\": r._value }))\n",
+          "refId": "Basement"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"garage\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Garage\": r._value }))\n",
+          "refId": "Garage"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Laundry\": r._value }))\n",
+          "refId": "Laundry"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"bedroom\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Bedrooms\": r._value }))\n",
+          "refId": "Bedrooms"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: -1d)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"main_floor\" and r._field == \"today\")\n  |> map(fn: (r) => ({ _time: r._time, \"Main Floor\": r._value }))\n",
+          "refId": "Main Floor"
+        }
+      ],
+      "title": "Current Power Consumption (W)",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "axisSoftMax": 10000,
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sample line"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Line"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sample l1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "L1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sample l2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "L2"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._field == \"sample\")\n  |> filter(fn: (r) => r._device == \"line\" or r._device == \"l1\" or r._device == \"l2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Line Characteristics",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 6000,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "heatpump"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Heat Pump"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "hot_water"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Hot Water"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"hot_water\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "Hot Water"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._device == \"heatpump\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "Heat Pump"
+        }
+      ],
+      "title": "Heat Pump & Hot Water",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 2000,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dishwasher"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Dishwasher"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "microwave"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Microwave"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "range"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Range"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "refrigerator"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Refrigerator "
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Outlets"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Outlets"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 35
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\" and r._field == \"sample\")\n  |> filter(fn: (r) => r._device != \"outlets_1\" and r._device != \"outlets_2\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "TheRest"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"kitchen\")\n  |> filter(fn: (r) => r._device == \"outlets_1\" or r._device == \"outlets_2\")\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_device\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({ r with _value: r.outlets_1 + r.outlets_2 }))\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\", \"outlets_1\", \"outlets_2\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "Outlets"
+        }
+      ],
+      "title": "Kitchen",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 2000,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "dryer"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Dryer"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "washer"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Washer"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 41
+      },
+      "id": 60,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"laundry\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "Laundry"
+        }
+      ],
+      "title": "Laundry",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 10000,
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "juicebox"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Juicebox"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tesla"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Tesla HPWC"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 47
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"vehicles\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "EV Charging"
+        }
+      ],
+      "title": "EV Charging",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "guest"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Guest Bedrooms"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "main"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Main Bedroom"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 53
+      },
+      "id": 85,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"bedroom\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "Bedrooms"
+        }
+      ],
+      "title": "Bedrooms",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "foyer"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Foyer"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "living_room"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Living Room"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "id": 87,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"main_floor\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "Bedrooms"
+        }
+      ],
+      "title": "Main Floor",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "garage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Garage"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 67
+      },
+      "id": 86,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"cs24\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"power\" and r._location == \"garage\" and r._field == \"sample\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_location\", \"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n",
+          "refId": "Bedrooms"
+        }
+      ],
+      "title": "Garage",
+      "type": "timeseries"
     },
     {
       "collapsed": true,
@@ -2708,7 +2707,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 74
       },
       "id": 81,
       "panels": [
@@ -3201,9 +3200,12 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 31,
+  "schemaVersion": 32,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "ESPHome",
+    "multisma2"
+  ],
   "templating": {
     "list": [
       {
@@ -3269,9 +3271,19 @@
     "from": "now-12h",
     "to": "now"
   },
-  "timepicker": {},
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m"
+    ]
+  },
   "timezone": "",
   "title": "CS/ESPHome Sample Panels",
   "uid": "_-Qzs-Dmy",
-  "version": 6
+  "version": 12
 }

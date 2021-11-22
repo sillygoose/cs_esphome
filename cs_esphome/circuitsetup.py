@@ -74,7 +74,6 @@ class CircuitSetup():
             queue = asyncio.Queue()
             self._task_gather = asyncio.gather(
                 self._task_manager.run(),
-                self.watchdog(),
                 self.task_deletions(),
                 self.task_esphome_sensor_post(queue),
                 self.task_esphome_sensor_gather(queue),
@@ -104,7 +103,9 @@ class CircuitSetup():
 
         if self._task_gather:
             self._task_gather.cancel()
-            await asyncio.sleep(0.5)
+            self._task_gather = None
+
+        await asyncio.sleep(1.0)
 
     async def task_deletions(self) -> None:
         """Task to remove older database entries."""
@@ -140,29 +141,28 @@ class CircuitSetup():
             except Exception as e:
                 _LOGGER.debug(f"Unexpected exception in task_deletions(): {e}")
 
-    async def watchdog(self):
-        """Check that we are connected to the CircuitSetup hardware."""
-        try:
-            saved_watchdog = CircuitSetup._WATCHDOG
-            while True:
-                await asyncio.sleep(self._watchdog)
-                current_watchdog = CircuitSetup._WATCHDOG
-                if saved_watchdog == current_watchdog:
-                    raise WatchdogTimer(f"Lost connection to {self._esphome_name}")
-                saved_watchdog = current_watchdog
-        except Exception as e:
-            _LOGGER.error(f"watchdog(): {e}")
-
     async def task_esphome_sensor_post(self, queue):
         """Process the subscribed data."""
         batch_ts = 0
         batch_sensors = []
         try:
+            watchdog = self._watchdog
             while True:
-                packet = await queue.get()
+                try:
+                    packet = queue.get_nowait()
+                except asyncio.QueueEmpty:
+                    _PACKET_DELAY = 0.1
+                    watchdog -= _PACKET_DELAY
+                    if watchdog < 0.0:
+                        raise WatchdogTimer(f"Lost connection to {self._esphome_name}")
+                    await asyncio.sleep(_PACKET_DELAY)
+                    continue
+
                 sensor = packet.get('sensor', None)
                 state = packet.get('state', None)
                 queue.task_done()
+                watchdog = self._watchdog
+
                 if sensor and state and self._influxdb_client:
                     ts = packet.get('ts', None)
                     if batch_ts != ts:
@@ -174,6 +174,8 @@ class CircuitSetup():
                             _LOGGER.warning(f"{e}")
                     else:
                         batch_sensors.append(packet)
+        except WatchdogTimer as e:
+            raise
         except Exception as e:
             _LOGGER.error(f"task_esphome_sensor_post(): {e}")
 
