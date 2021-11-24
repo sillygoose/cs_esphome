@@ -136,8 +136,10 @@ class CircuitSetup():
                 start = datetime.datetime(1970, 1, 1).isoformat() + 'Z'
                 for task in pruning_tasks:
                     stop = datetime.datetime.combine(datetime.datetime.now() - datetime.timedelta(days=keep_last), datetime.time(0, 0)).isoformat() + 'Z'
+                    predicate = task.get('predicate')
+                    keep_last = task.get('keep_last')
                     delete_api.delete(start, stop, predicate, bucket=bucket, org=org)
-                    _LOGGER.debug(f"Pruned database '{bucket}': {predicate}, kept last {keep_last} days")
+                    _LOGGER.info(f"Pruned database '{bucket}': {predicate}, kept last {keep_last} days")
             except Exception as e:
                 _LOGGER.debug(f"Unexpected exception in task_deletions(): {e}")
 
@@ -174,7 +176,7 @@ class CircuitSetup():
                             _LOGGER.warning(f"{e}")
                     else:
                         batch_sensors.append(packet)
-        except WatchdogTimer as e:
+        except WatchdogTimer:
             raise
         except Exception as e:
             _LOGGER.error(f"task_esphome_sensor_post(): {e}")
