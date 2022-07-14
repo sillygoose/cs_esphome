@@ -92,6 +92,13 @@ class InfluxDB:
             except InfluxDBBucketError as e:
                 raise FailedInitialization(f"{e}")
 
+            try:
+                organizations = self._organizations_api.find_organizations(org=self._org)
+                if not organizations:
+                    raise FailedInitialization(f"Unable to access organizations at '{self._url}' (check token permissions)")
+            except InfluxDBBucketError as e:
+                raise FailedInitialization(f"{e}")
+
             _LOGGER.info(f"Connected to InfluxDB: '{self._url}', bucket '{self._bucket}'")
             result = True
 

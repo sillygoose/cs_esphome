@@ -50,6 +50,7 @@ At startup the application creates numerous InfluxDB tasks which run independent
 - reduced CPU use by batching sensors
 - create database pruning predicates in the YAML configuration file: [Pruning database entries](#pruning-database)
 - set the initial value of the utility meter: [Setting the utility meter](#setting-utility-meter)
+- test that the InfluxDB token permits full access (needed for organization access)
 
 #
 
