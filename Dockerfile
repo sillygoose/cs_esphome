@@ -1,4 +1,4 @@
-# Ubuntu Hirsute gets Python 3.10.x
+# Ubuntu Jammy gets Python 3.10.4
 FROM ubuntu:jammy
 
 # tzdata setup
@@ -23,5 +23,5 @@ WORKDIR /sillygoose/cs_esphome/cs_esphome
 ADD cs_esphome_secrets.yaml .
 
 # run CS/ESPHome
-WORKDIR /sillygoose
-CMD ["python3", "cs_esphome/cs_esphome/cs_esphome.py"]
+WORKDIR /sillygoose/cs_esphome
+CMD ["python3", "cs_esphome/cs_esphome.py"]
