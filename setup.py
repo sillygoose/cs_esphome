@@ -25,6 +25,7 @@ setup(
         "python-dateutil",
         "python-configuration",
         "pyyaml",
+        "pytz",
     ],
     zip_safe=True,
 )
