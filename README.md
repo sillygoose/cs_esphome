@@ -46,7 +46,7 @@ At startup the application creates numerous InfluxDB tasks which run independent
 <a id='whats-new'></a>
 
 ## What's new
-
+- updated Docker contaainer to use Ubuntu Jammy
 - reduced CPU use by batching sensors
 - create database pruning predicates in the YAML configuration file: [Pruning database entries](#pruning-database)
 - set the initial value of the utility meter: [Setting the utility meter](#setting-utility-meter)
@@ -58,7 +58,7 @@ At startup the application creates numerous InfluxDB tasks which run independent
 
 ### Requirements
 
-- Python 3.8 or later (currently using 3.9.5 from an Ubuntu Hirsute Docker container)
+- Python 3.8 or later (currently using 3.10 from an Ubuntu Jammy Docker container)
 - Python packages used include (but the list in the `setup.py` file is the definitive list of packages)
 
   - asyncio
@@ -116,8 +116,8 @@ where `your-tag` is a string of your choosing (the `--no-cache` option will forc
 As an example, suppose you download the current **CS/ESPHome** build of 1.0.0. Then to create and run the Docker container you would use
 
 ```
-    sudo docker build --no-cache -t cs_esphome:1.0.0 .
-    sudo docker image tag cs_esphome:1.0.0 cs_esphome:latest
+    sudo docker build --no-cache -t cs_esphome:0.4.9 .
+    sudo docker image tag cs_esphome:0.4.9 cs_esphome:latest
     sudo docker-compose up -d
 ```
 

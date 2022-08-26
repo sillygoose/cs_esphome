@@ -1,6 +1,5 @@
 # Ubuntu Jammy gets Python 3.10.4
-FROM ubuntu:jammy
-
+FROM ubuntu:22.04
 # tzdata setup
 ENV TZ America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
